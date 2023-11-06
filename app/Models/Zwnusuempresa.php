@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Zwnusuempresa extends Model
+{
+    use HasFactory;
+
+    protected $table = 'zwnusuempresas'; 
+    protected $primaryKey = ['IDUSUARIOEMPRESA']; 
+
+    public $incrementing = false; 
+
+    protected $fillable = [
+        'IDUSUARIOEMPRESA',
+        'IDEMPRESA',
+        'EMPRESA',
+        'ATIVO',
+        'RECCREATEDBY',
+        'RECCREATEDON',
+        'RECMODIFIEDBY',
+        'RECMODIFIEDON',
+    ];
+    public $timestamps = false; 
+
+    public function empresa()
+    {
+        return $this->belongsTo(Zwnempresa::class, 'IDEMPRESA', 'IDEMPRESA');
+    }
+
+}
