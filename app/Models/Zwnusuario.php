@@ -59,23 +59,6 @@ class Zwnusuario extends Authenticatable implements JWTSubject
     {
         return [];
     }
-
-    
-    // public function getJWTIdentifier()
-    // {
-    //     return $this->getKey();
-    // }
-
-    // public function getJWTCustomClaims()
-    // {
-    //     return [];
-    // }
-
-    // public function getAuthIdentifierName()
-    // {
-    //     return 'IDUSUARIO'; // Nome da coluna que representa o ID do usuário
-    // }
-
     
     public function getAuthIdentifier()
     {
@@ -87,19 +70,4 @@ class Zwnusuario extends Authenticatable implements JWTSubject
         return $this->SENHA; 
     }
     
-    // // Métodos adicionais da interface Authenticatable
-    // public function getRememberToken()
-    // {
-    //     // Se você não precisa do recurso "remember me", pode deixar este método vazio.
-    // }
-
-    // public function setRememberToken($value)
-    // {
-    //     // Se você não precisa do recurso "remember me", pode deixar este método vazio.
-    // }
-
-    // public function getRememberTokenName()
-    // {
-    //     // Se você não precisa do recurso "remember me", pode deixar este método vazio.
-    // }
 }

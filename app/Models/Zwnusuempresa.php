@@ -10,14 +10,12 @@ class Zwnusuempresa extends Model
     use HasFactory;
 
     protected $table = 'zwnusuempresas'; 
-    protected $primaryKey = ['IDUSUARIOEMPRESA']; 
+    protected $primaryKey = 'IDUSUARIOEMPRESA'; 
 
-    public $incrementing = false; 
 
     protected $fillable = [
-        'IDUSUARIOEMPRESA',
+        'IDUSUARIO',
         'IDEMPRESA',
-        'EMPRESA',
         'ATIVO',
         'RECCREATEDBY',
         'RECCREATEDON',
@@ -29,6 +27,11 @@ class Zwnusuempresa extends Model
     public function empresa()
     {
         return $this->belongsTo(Zwnempresa::class, 'IDEMPRESA', 'IDEMPRESA');
+    }
+
+    public function usuario()
+    {
+        return $this->belongsTo(Zwnusuario::class, 'IDUSUARIO', 'IDUSUARIO');
     }
 
 }

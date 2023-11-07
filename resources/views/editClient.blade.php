@@ -14,8 +14,7 @@
 </div>
 @endif
 
-<div class="container mt-5">
-    <h1 class="text-center">Editar Cliente</h1>
+<div class="container">
 
     <form method="POST" action="{{ route('clientes.update', ['IDCLIENTE' => $cliente->IDCLIENTE]) }}">
         @csrf
@@ -38,15 +37,11 @@
         </div>
         <div class="mb-3">
             <label for="EMPRESA" class="form-label">Empresa</label>
-            <select class="form-select" id="EMPRESA" name="EMPRESA">
-               @foreach($empresas as $empresa)
-               <option value="{{ $empresa->IDEMPRESA }}" {{ $cliente->IDEMPRESA == $empresa->IDEMPRESA ? 'selected' : '' }}>{{ $empresa->NOME }}</option>
-               @endforeach
-            </select>
+            <input type="text" class="form-control" id="EMPRESA" name="EMPRESA" value="{{ $cliente->empresa->NOME }}" disabled>
         </div>
         <div class="text-center">
-            <button type="submit" class="btn btn-primary">Atualizar</button>
-            <a href="{{ route('clientes.index') }}" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn-s btn-suc">Atualizar</button>
+            <a href="{{ route('clientes.index') }}" class="btn-ajust btn-edi">Cancelar</a>
         </div>
     </form>
 </div>

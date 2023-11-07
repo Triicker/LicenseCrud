@@ -3,23 +3,23 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <div class="container">
-    <h1 class="text-center mt-5">Lista de Contatos</h1>
+    <h1 class="text-center mg-top-title">Lista de Contatos</h1>
+    <p>Nome do cliente: @isset($data['contatos'][0]->cliente->NOME) {{ $data['contatos'][0]->cliente->NOME }} @endisset</p>
     <div class="d-flex justify-content-end">
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">Novo Contato</button>
+    <button class="btn-btn btn-principal mg-bottom" data-bs-toggle="modal" data-bs-target="#createModal">Novo Contato</button>
     </div>
-    <table class="table table-striped table-bordered mt-5 text-center">
+    <table id="contactTable" class="table table-striped table-bordered mt-5 text-center">
         <thead>
             <tr>
-                <th scope="col" class="align-middle">ID</th>
-                <th scope="col" class="align-middle">IDCLIENTE</th>
                 <th scope="col" class="align-middle">Nome</th>
                 <th scope="col" class="align-middle">Apelido</th>
                 <th scope="col" class="align-middle">Telefone</th>
                 <th scope="col" class="align-middle">Celular</th>
                 <th scope="col" class="align-middle">Email</th>
                 <th scope="col" class="align-middle">Ativo</th>
-                <th scope="col" class="align-middle">Cliente</th>
                 <th scope="col" class="align-middle">Ações</th>
             </tr>
         </thead>
@@ -27,18 +27,15 @@
             @foreach($data['contatos'] as $contato)
 
                 <tr>
-                    <td class="align-middle">{{ $contato->IDCONTATO }}</td>
-                    <td class="align-middle">{{ $contato->IDCLIENTE }}</td>
                     <td class="align-middle">{{ $contato->NOME }}</td>
                     <td class="align-middle">{{ $contato->APELIDO }}</td>
                     <td class="align-middle">{{ $contato->TELEFONE }}</td>
                     <td class="align-middle">{{ $contato->CELULAR }}</td>
                     <td class="align-middle">{{ $contato->EMAIL }}</td>
                     <td class="align-middle">{{ $contato->ATIVO }}</td>
-                    <td class="align-middle">{{ $contato->cliente->NOME }}</td>
                     <td class="align-middle">
-                        <button class="btn btn-secondary edit-btn" data-contato-id="{{ $contato->IDCONTATO }}" data-bs-toggle="modal" data-bs-target="#editModal">Editar</button>
-                        <a href="#" class="btn btn-danger delete-btn" data-contato-id="{{ $contato->IDCONTATO }}">Excluir</a>                            
+                        <button class="btn-ajust btn-edit" data-contato-id="{{ $contato->IDCONTATO }}" data-bs-toggle="modal" data-bs-target="#editModal">Editar</button>
+                        <a href="#" class="btn-e btn-excluir" data-contato-id="{{ $contato->IDCONTATO }}">Excluir</a>          
                     </td>
                 </tr>
             @endforeach
@@ -55,13 +52,10 @@
             <div class="modal-body">
 
             
-                <div class="container mt-5">
+                <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-md-16">
                             <div class="row">
-                                <div class="text-center">
-                                    <h1>Criar Contato</h1>
-                                </div>
                                 <div class="card-body">
                                     @if ($errors->any())
                                         <div class="alert alert-danger">
@@ -111,17 +105,13 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="CLIENTE" class="form-label">Cliente</label>
-                                            <select name="CLIENTE" class="form-select" required>
-                                            @foreach($data['clientes'] as $cliente)
-                                                    <option value="{{ $cliente->IDCLIENTE }}">{{ $cliente->NOME }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+            <label for="CLIENTE" class="form-label">Cliente</label>
+            <input type="text" class="form-control" id="CLIENTE" name="CLIENTE" value="{{ $contato->cliente->NOME }}" disabled>
+        </div>
 
                                         <div class="text-center">
-                                            <button type="submit" class="btn btn-primary">Criar Contato</button>
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <button type="submit" class="btn-s btn-suc">Criar Contato</button>
+                                            <button type="button" class="btn-ajust btn-edi" data-bs-dismiss="modal">Cancelar</button>
                                         </div>
                                     </form>
                                 </div>
@@ -146,7 +136,27 @@
 
 <script>
 $(document).ready(function () {
-    $('.edit-btn').click(function () {
+    var dataTable = $('#contactTable').DataTable({
+        "searching": true,   
+        "paging": true,      
+        "language": {
+            "decimal": ",",
+            "thousands": ".",
+            "lengthMenu": "Mostrar _MENU_ registros por página", 
+            "zeroRecords": "Nenhum registro encontrado",
+            "info": "Página _PAGE_ de _PAGES_",
+            "infoEmpty": "Sem registros disponíveis",
+            "infoFiltered": "(filtrado de _MAX_ registros no total)",
+            "search": "Pesquisar:",
+            "paginate": {
+                "first": "Primeiro",
+                "last": "Último",
+                "next": "Próximo",
+                "previous": "Anterior"
+            }
+        }
+    });
+    $('.btn-edit').click(function () {
         var contatoId = $(this).data('contato-id');
         $.ajax({
             type: 'GET',
@@ -160,7 +170,7 @@ $(document).ready(function () {
         });
     });
 
-    $('.delete-btn').click(function (e) {
+    $('.btn-excluir').click(function (e) {
         e.preventDefault(); 
 
         var contatoId = $(this).data('contato-id');

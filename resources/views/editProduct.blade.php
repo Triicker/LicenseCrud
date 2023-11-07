@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Usuário</title>
+    <title>Editar Produto</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 <body>
@@ -14,39 +14,31 @@
 </div>
 @endif
 
-<div class="container mt-5">
-    <h1 class="text-center">Editar Usuário</h1>
+<div class="container ">
+    <h1 class="text-center">Editar Produto</h1>
 
-    <form method="POST" action="{{ route('usuarios.updateUser', ['IDUSUARIO' => $usuario->IDUSUARIO]) }}">
+    <form method="POST" action="{{ route('produtos.update', ['IDPRODUTO' => $produto->IDPRODUTO]) }}">
         @csrf
         @method('PUT')
         
         <div class="mb-3">
             <label for="NOME" class="form-label">Nome</label>
-            <input type="text" class="form-control" id="NOME" name="NOME" value="{{ $usuario->NOME }}">
+            <input type="text" class="form-control" id="NOME" name="NOME" value="{{ $produto->NOME }}">
         </div>
         <div class="mb-3">
             <label for="APELIDO" class="form-label">Apelido</label>
-            <input type="text" class="form-control" id="APELIDO" name="APELIDO" value="{{ $usuario->APELIDO }}">
-        </div>
-        <div class="mb-3">
-            <label for="USUARIO" class="form-label">Usuário</label>
-            <input type="text" class="form-control" id="USUARIO" name="USUARIO" value="{{ $usuario->USUARIO }}">
-        </div>
-        <div class="mb-3">
-            <label for="EMAIL" class="form-label">Email</label>
-            <input type="email" class="form-control" id="EMAIL" name="EMAIL" value="{{ $usuario->EMAIL }}">
+            <input type="text" class="form-control" id="APELIDO" name="APELIDO" value="{{ $produto->APELIDO }}">
         </div>
         <div class="mb-3">
             <label for="ATIVO" class="form-label">Ativo</label>
             <select class="form-select" id="ATIVO" name="ATIVO">
-                <option value="1" {{ $usuario->ATIVO ? 'selected' : '' }}>Sim</option>
-                <option value="0" {{ !$usuario->ATIVO ? 'selected' : '' }}>Não</option>
+                <option value="1" {{ $produto->ATIVO ? 'selected' : '' }}>Sim</option>
+                <option value="0" {{ !$produto->ATIVO ? 'selected' : '' }}>Não</option>
             </select>
         </div>
         <div class="text-center">
-            <button type="submit" class="btn btn-primary">Atualizar</button>
-            <a href="{{ route('usuarios.indexUser') }}" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn-s btn-suc">Atualizar</button>
+            <a href="{{ route('produtos.index') }}" class="btn-ajust btn-edi">Cancelar</a>
         </div>
     </form>
 </div>

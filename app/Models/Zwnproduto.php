@@ -5,20 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Zwnclicontato extends Model
+class Zwnproduto extends Model
 {
     use HasFactory;
 
-    protected $table = 'zwnclicontatos';
-    protected $primaryKey = 'IDCONTATO';
+    protected $table = 'zwnproduto'; 
+    protected $primaryKey = 'IDPRODUTO';
 
     protected $fillable = [
-        'IDCLIENTE',
+        'IDPRODUTO',
         'NOME',
         'APELIDO',
-        'TELEFONE',
-        'CELULAR',
-        'EMAIL',
         'ATIVO',
         'RECCREATEDBY',
         'RECCREATEDON',
@@ -27,8 +24,4 @@ class Zwnclicontato extends Model
     ];
     public $timestamps = false; 
 
-    public function cliente()
-    {
-        return $this->belongsTo(Zwncliente::class, 'IDCLIENTE', 'IDCLIENTE');
-    }
 }

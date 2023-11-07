@@ -1,61 +1,65 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Http\Controllers\LogCadastroController;
-use App\Models\Zwnclicontato;
-use App\Models\Zwnempresa;
+use App\Models\Zwncoligada;
 use App\Models\Zwncliente;
-use App\Models\Zwnusuempresa;
 use App\Models\Zwnlogcadastro;
+use App\Models\Zwnusuempresa;
+use App\Models\Zwnempresa;
+use App\Models\Zwncoliglicenca;
+
 use JWTAuth;
 
 use Illuminate\Http\Request;
 
 
-class ContactController extends Controller
+class ColigadaController extends Controller
 {
     public function index(Request $request)
 {
     try {
-        $contatos = Zwnclicontato::with('cliente')->get();
-        $clientes = Zwncliente::all(); 
+        $coligadas = Zwncoligada::with('cliente', 'licenca')->get();
+        $clientes = Zwncliente::all();
+        $licencas = Zwncoliglicenca::all();
 
-        $data = ['contatos' => $contatos, 'clientes' => $clientes];
+        $data = ['coligadas' => $coligadas, 'clientes' => $clientes, 'licencas' => $licencas];
 
         if ($request->is('api/*') || $request->wantsJson()) {
             $response = [
                 'status' => 'success',
-                'message' => 'Contatos recuperados com sucesso',
-                'data' => $contatos,
+                'message' => 'Coligadas recuperadas com sucesso',
+                'data' => $coligadas,
             ];
             return response()->json($response);
         } else {
-            return view('indexContact', compact('data'));
+            return view('indexColigada', compact('data'));
         }
     } catch (\Exception $e) {
         if ($request->is('api/*') || $request->wantsJson()) {
             $response = [
                 'status' => 'error',
-                'message' => 'Erro ao recuperar contatos',
+                'message' => 'Erro ao recuperar coligadas',
                 'data' => $e->getMessage(),
             ];
             return response()->json($response, 400);
         } else {
-            return back()->withErrors(['error' => 'Erro ao recuperar contatos: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Erro ao recuperar coligadas: ' . $e->getMessage()]);
         }
     }
 }
 
 
-public function indexId($IDCONTATO)
+public function indexId($IDCOLIGADA)
 {
     try {
-        $contato = Zwnclicontato::find($IDCONTATO);
+        $coligada = Zwncoligada::find($IDCOLIGADA);
 
-        if (!$contato) {
+        if (!$coligada) {
             $response = [
                 'status' => 'error',
-                'message' => 'Contato não encontrado',
+                'message' => 'Coligada não encontrada',
                 'data' => null,
             ];
             return response()->json($response, 404);
@@ -63,14 +67,14 @@ public function indexId($IDCONTATO)
 
         $response = [
             'status' => 'success',
-            'message' => 'Contato recuperado com sucesso',
-            'data' => $contato,
+            'message' => 'Coligada recuperada com sucesso',
+            'data' => $coligada,
         ];
         return response()->json($response);
     } catch (\Exception $e) {
         $response = [
             'status' => 'error',
-            'message' => 'Erro ao recuperar o contato',
+            'message' => 'Erro ao recuperar a coligada',
             'data' => $e->getMessage(),
         ];
         return response()->json($response, 400);
@@ -78,33 +82,34 @@ public function indexId($IDCONTATO)
 }
 
 
-public function indexClient($IDCLIENTE, Request $request) 
+public function indexClient($IDCLIENTE, Request $request)
 {
     try {
-        $contatos = Zwnclicontato::where('IDCLIENTE', $IDCLIENTE)->with('cliente')->get();
+        $coligadas = Zwncoligada::where('IDCLIENTE', $IDCLIENTE)->with('cliente')->get();
         $clientes = Zwncliente::all();
+        $data = ['coligadas' => $coligadas, 'clientes' => $clientes];
 
         if ($request->is('api/*') || $request->wantsJson()) {
             $response = [
                 'status' => 'success',
-                'message' => 'Contatos do cliente recuperados com sucesso',
-                'data' => $contatos,
+                'message' => 'Coligadas do cliente recuperadas com sucesso',
+                'data' => $coligadas,
             ];
             return response()->json($response);
         } else {
-            $data = ['contatos' => $contatos, 'clientes' => $clientes];
-            return view('indexContact', compact('data'));
+            $data = ['coligadas' => $coligadas, 'clientes' => $clientes];
+            return view('indexColigada', compact('data'));
         }
     } catch (\Exception $e) {
         if ($request->is('api/*') || $request->wantsJson()) {
             $response = [
                 'status' => 'error',
-                'message' => 'Erro ao recuperar contatos do cliente',
+                'message' => 'Erro ao recuperar coligadas do cliente',
                 'data' => $e->getMessage(),
             ];
             return response()->json($response, 400);
         } else {
-            return back()->withErrors(['error' => 'Erro ao recuperar contatos do cliente: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Erro ao recuperar coligadas do cliente: ' . $e->getMessage()]);
         }
     }
 }
@@ -120,29 +125,31 @@ protected function getEmpresaID($user)
     return null; 
 }
 
-    
 public function store(Request $request)
 {
-    $userName = null;
-    $empresaNome = null;
-    $idempresa = null;
-    $idusuario = null;
-
-    if ($request->is('api/*')) {
-        list($userName, $idusuario, $idempresa) = $this->getUserInfoFromJWT();
-    } else {
-        list($userName, $idusuario, $idempresa) = $this->getUserInfoFromSession();
-    }
-
     try {
+        $userName = null;
+        $empresaNome = null;
+        $idempresa = null;
+        $idusuario = null;
+
+        if ($request->is('api/*')) {
+            list($userName, $idusuario, $idempresa) = $this->getUserInfoFromJWT();
+        } else {
+            list($userName, $idusuario, $idempresa) = $this->getUserInfoFromSession();
+        }
+
         $validatedData = $request->validate([
-            'NOME' => 'required|string|max:255',
-            'APELIDO' => 'required|string|max:255',
-            'TELEFONE' => 'required|string|max:15',
-            'CELULAR' => 'required|string|max:15',
-            'EMAIL' => 'required|string|max:60',
-            'ATIVO' => 'required|boolean',
+            'NOME' => 'string|max:255',
+            'APELIDO' => 'string|max:255',
             'IDCLIENTE' => 'integer',
+            'IDIMAGEM' => 'integer|max:11',
+            'NOMEFANTASIA' => 'string|max:255',
+            'CGC' => 'string|max:255',
+            'TELEFONE' => 'string|max:15',
+            'CELULAR' => 'string|max:15',
+            'EMAIL' => 'string|max:60',
+            'ATIVO' => 'boolean',
         ]);
 
         $validatedData['RECCREATEDON'] = now();
@@ -154,11 +161,12 @@ public function store(Request $request)
             $validatedData['IDCLIENTE'] = $request->input('CLIENTE');
         }
 
-        $newContact = Zwnclicontato::create($validatedData);
+        $newColigada = Zwncoligada::create($validatedData);
+        $newColigadaId = $newColigada->IDCOLIGADA;
 
         $logData = [
             'IDUSUARIO' => $idusuario,
-            'CADASTRO' => 'Contato criado: ' . $validatedData['NOME'],
+            'CADASTRO' => 'Coligada criada: ' . $newColigada->NOME,
             'VALORANTERIOR' => null,
             'VALORNOVO' => json_encode($validatedData),
             'RECCREATEDBY' => $userName,
@@ -171,23 +179,25 @@ public function store(Request $request)
         if ($request->is('api/*')) {
             $response = [
                 'status' => 'success',
-                'message' => 'Contato criado com sucesso',
-                'data' => $newContact,
+                'message' => 'Coligada criada com sucesso',
+                'data' => ['id' => $newColigadaId],
             ];
             return response()->json($response, 201);
         } else {
-            return redirect()->route('contatos.cliente', ['IDCLIENTE' => $newContact->IDCLIENTE])->with('success', 'Contato criado com sucesso.');
+            return redirect()->route('coligadas.index', ['IDCOLIGADA' => $newColigadaId, 'IDCLIENTE' => $lastClient->IDCLIENTE])
+
+                ->with('success', 'Coligada criada com sucesso.');
         }
     } catch (\Exception $e) {
         if ($request->is('api/*')) {
             $response = [
                 'status' => 'error',
-                'message' => 'Erro ao criar o contato',
+                'message' => 'Erro ao criar a coligada',
                 'data' => $e->getMessage(),
             ];
             return response()->json($response, 400);
         } else {
-            return back()->withInput()->withErrors(['error' => 'Erro ao criar o contato: ' . $e->getMessage()]);
+            return back()->withInput()->withErrors(['error' => 'Erro ao criar a coligada: ' . $e->getMessage()]);
         }
     }
 }
@@ -218,86 +228,58 @@ private function createLog($logData, $request) {
     $log->save();
 }
 
-private function createApiResponse($data, $statusCode) {
-    $response = [
-        'status' => 'success',
-        'message' => 'Contato criado com sucesso!',
-        'data' => $data,
-    ];
-    return response()->json($response, $statusCode);
-}
-
-private function createWebResponse($message) {
-    return redirect()->route('contatos.cliente')->with('success', $message);
-}
-
-private function handleError($e, $request) {
-    if ($request->is('api/*')) {
-        $response = [
-            'status' => 'error',
-            'message' => 'Erro ao criar o contato',
-            'data' => $e->getMessage(),
-        ];
-        return response()->json($response, 400);
-    } else {
-        return back()->withInput()->withErrors(['error' => 'Erro ao criar o contato: ' . $e->getMessage()]);
-    }
-}
-
-
     public function create()
     {
-        $contatos = Zwnclicontato::all();
+        $coligadas = Zwncoligada::all();
 
         if (request()->is('api/*')) {
-            return response()->json(['contatos' => $contatos]);
+            return response()->json(['coligadas' => $coligadas]);
         } else {
-            return view('createContact', compact('contatos'));
+            return view('createColigada', compact('coligadas'));
         }
     }
     
-    public function edit($IDCONTATO)
+    public function edit($IDCOLIGADA)
     {
-        $contato = Zwnclicontato::find($IDCONTATO);
+        $coligada = Zwncoligada::find($IDCOLIGADA);
 
-        if (!$contato) {
+        if (!$coligada) {
             if (request()->is('api/*')) {
-                return response()->json(['error' => 'Contato não encontrado'], 404);
+                return response()->json(['error' => 'Coligada não encontrado'], 404);
             } else {
                 abort(404);
             }
         }
 
         $clientes = Zwncliente::all();
-
+ 
         if (request()->is('api/*')) {
-            return response()->json(['contato' => $contato, 'clientes' => $clientes]);
+            return response()->json(['coligada' => $coligada, 'clientes' => $clientes]);
         } else {
-            return view('editContact', compact('contato', 'clientes'));
+            return view('editColigada', compact('coligada', 'clientes'));
         }
     }
 
     
-    public function update(Request $request, $IDCONTATO)
+    public function update(Request $request, $IDCOLIGADA)
     {
         try {
             $validatedData = $request->validate([
                 'NOME' => 'string|max:255',
                 'APELIDO' => 'string|max:255',
                 'TELEFONE' => 'string|max:15',
-                'CELULAR' => 'string|max:15',
                 'EMAIL' => 'string|max:60',
                 'ATIVO' => 'boolean',
                 'CLIENTE' => 'exists:zwnclientes,IDCLIENTE',
             ]);
     
-            $contato = Zwnclicontato::find($IDCONTATO);
+            $coligada = Zwncoligada::find($IDCOLIGADA);
     
-            if (!$contato) {
+            if (!$coligada) {
                 if ($request->is('api/*')) {
                     $response = [
                         'status' => 'error',
-                        'message' => 'Contato não encontrado',
+                        'message' => 'Coligada não encontrada',
                         'data' => null,
                     ];
                     return response()->json($response, 404);
@@ -306,22 +288,19 @@ private function handleError($e, $request) {
                 }
             }
     
+            $coligadaAntesDaAtualizacao = $coligada->toArray();
+    
+            $coligada->update($validatedData);
+    
+            $coligadaDepoisDaAtualizacao = $coligada->toArray();
+    
             list($userName, $idusuario, $idempresa) = $this->getUserInfoForUpdate($request);
-    
-            $validatedData['RECMODIFIEDON'] = now();
-            $validatedData['RECMODIFIEDBY'] = $userName;
-    
-            $contatoAntesDaAtualizacao = $contato->toArray();
-    
-            $contato->update($validatedData);
-    
-            $contatoDepoisDaAtualizacao = $contato->toArray();
     
             $logData = [
                 'IDUSUARIO' => $idusuario,
-                'CADASTRO' => 'Contato atualizado: ' . $contato->NOME,
-                'VALORANTERIOR' => json_encode($contatoAntesDaAtualizacao),
-                'VALORNOVO' => json_encode($contatoDepoisDaAtualizacao),
+                'CADASTRO' => 'Coligada atualizada: ' . $coligada->NOME,
+                'VALORANTERIOR' => json_encode($coligadaAntesDaAtualizacao),
+                'VALORNOVO' => json_encode($coligadaDepoisDaAtualizacao),
                 'RECCREATEDBY' => $userName,
                 'RECCREATEDON' => now(),
                 'RECMODIFIEDBY' => $userName,
@@ -334,23 +313,23 @@ private function handleError($e, $request) {
             if ($request->is('api/*')) {
                 $response = [
                     'status' => 'success',
-                    'message' => 'Contato atualizado com sucesso',
-                    'data' => $contato,
+                    'message' => 'Coligada atualizada com sucesso',
+                    'data' => $coligada,
                 ];
                 return response()->json($response);
             } else {
-                return redirect()->route('contatos.cliente', ['IDCLIENTE' => $contato->IDCLIENTE])->with('success', 'Contato atualizado com sucesso');
+                return redirect()->route('coligadas.cliente', ['IDCOLIGADA' => $IDCOLIGADA])->with('success', 'Coligada atualizada com sucesso');
             }
         } catch (\Exception $e) {
             if ($request->is('api/*')) {
                 $response = [
                     'status' => 'error',
-                    'message' => 'Erro ao atualizar o contato',
+                    'message' => 'Erro ao atualizar a coligada',
                     'data' => $e->getMessage(),
                 ];
                 return response()->json($response, 400);
             } else {
-                return back()->withErrors(['error' => 'Erro ao atualizar o contato: ' . $e->getMessage()]);
+                return back()->withErrors(['error' => 'Erro ao atualizar a coligada: ' . $e->getMessage()]);
             }
         }
     }
@@ -366,16 +345,18 @@ private function handleError($e, $request) {
     }
     
 
-public function delete(Request $request, $IDCONTATO)
+    
+        
+public function delete(Request $request, $IDCOLIGADA)
 {
     try {
-        $contato = Zwnclicontato::find($IDCONTATO);
+        $coligada = Zwncoligada::find($IDCOLIGADA);
 
-        if (!$contato) {
+        if (!$coligada) {
             if ($request->is('api/*')) {
                 $response = [
                     'status' => 'error',
-                    'message' => 'Contato não encontrado',
+                    'message' => 'Coligada não encontrada',
                     'data' => null,
                 ];
                 return response()->json($response, 404);
@@ -384,28 +365,28 @@ public function delete(Request $request, $IDCONTATO)
             }
         }
 
-        $contato->delete();
+        $coligada->delete();
 
         if ($request->is('api/*')) {
             $response = [
                 'status' => 'success',
-                'message' => 'Contato excluído com sucesso',
+                'message' => 'Coligada excluída com sucesso',
                 'data' => null, 
             ];
             return response()->json($response);
         } else {
-            return redirect()->route('contatos.index')->with('success', 'Contato excluído com sucesso');
+            return redirect()->route('coligadas.index')->with('success', 'Coligada excluída com sucesso');
         }
     } catch (\Exception $e) {
         if ($request->is('api/*')) {
             $response = [
                 'status' => 'error',
-                'message' => 'Erro ao excluir o contato',
+                'message' => 'Erro ao excluir a coligada',
                 'data' => $e->getMessage(),
             ];
             return response()->json($response, 400);
         } else {
-            return back()->withErrors(['error' => 'Erro ao excluir o contato: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Erro ao excluir a coligada: ' . $e->getMessage()]);
         }
     }
 }

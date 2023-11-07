@@ -5,30 +5,35 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Zwncliente extends Model
+class Zwnlogcadastro extends Model
 {
     use HasFactory;
 
-    protected $table = 'zwnclientes'; 
-    protected $primaryKey = 'IDCLIENTE';
+    protected $table = 'zwnlogcadastro';
+
+    protected $primaryKey = 'IDLOGCAD';
 
     protected $fillable = [
         'IDEMPRESA',
-        'NOME',
-        'APELIDO',
-        'ATIVO',
-        'EMPRESA',
-        'DIASLICENCA',
+        'IDUSUARIO',
+        'CADASTRO',
+        'VALORANTERIOR',
+        'VALORNOVO',
         'RECCREATEDBY',
         'RECCREATEDON',
         'RECMODIFIEDBY',
         'RECMODIFIEDON',
     ];
-    public $timestamps = false; 
 
+    public $timestamps = false;
 
     public function empresa()
     {
         return $this->belongsTo(Zwnempresa::class, 'IDEMPRESA', 'IDEMPRESA');
+    }
+
+    public function usuario()
+    {
+        return $this->belongsTo(Zwnusuario::class, 'IDUSUARIO', 'IDUSUARIO');
     }
 }

@@ -5,47 +5,44 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-
 <div class="container">
-    <h1 class="text-center mg-top-title">Lista de Clientes</h1>
+    <h1 class="text-center mg-top-title">Lista de Produtos</h1>
     <div class="d-flex justify-content-end">
-    <button class="btn-btn btn-principal mg-bottom" data-bs-toggle="modal" data-bs-target="#createModal">Novo Cliente</button>
+    <button class="btn-btn btn-principal mg-bottom" data-bs-toggle="modal" data-bs-target="#createModal">Novo Produto</button>
 </div>
-<table id="clienteTable" class="table table-striped table-bordered text-center mt-5">
+    <table id="productTable" class="table table-striped table-bordered text-center mt-5">
         <thead>
             <tr>
+                <th scope="col" class="align-middle">ID</th>
                 <th scope="col" class="align-middle">Nome</th>
                 <th scope="col" class="align-middle">Apelido</th>
                 <th scope="col" class="align-middle">Ativo</th>
-                <th scope="col" class="align-middle">Empresa</th>
                 <th scope="col" class="align-middle">Ações</th>
             </tr>
         </thead>
         <tbody>
-        @foreach($data['clientes'] as $cliente)
+        @foreach($produtos as $produto)
 <tr>
-    <td class="align-middle">{{ $cliente->NOME }}</td>
-    <td class="align-middle">{{ $cliente->APELIDO }}</td>
-    <td class="align-middle">{{ $cliente->ATIVO }}</td>
-    <td class="align-middle">{{ $cliente->empresa->NOME }}</td>
+    <td class="align-middle">{{ $produto->IDPRODUTO }}</td>
+    <td class="align-middle">{{ $produto->NOME }}</td>
+    <td class="align-middle">{{ $produto->APELIDO }}</td>
+    <td class="align-middle">{{ $produto->ATIVO }}</td>
     <td class="align-middle">
-    <a class="btn-c btn-col" href="{{ route('contatos.cliente', ['IDCLIENTE' => $cliente->IDCLIENTE]) }}">Contato</a>
-    <a class="btn-c btn-col" href="{{ route('coligadas.cliente', ['IDCLIENTE' => $cliente->IDCLIENTE]) }}">Coligada</a>
-    <button class="btn-ajust btn-edit" data-cliente-id="{{ $cliente->IDCLIENTE }}" data-bs-toggle="modal" data-bs-target="#editModal">Editar</button>
-    <a href="#" class="btn-e btn-excluir" data-cliente-id="{{ $cliente->IDCLIENTE }}">Excluir</a>
+    <button class="btn-ajust btn-edit" data-produto-id="{{ $produto->IDPRODUTO }}" data-bs-toggle="modal" data-bs-target="#editModal">Editar</button>
+    <a href="#" class="btn-e btn-excluir" data-produto-id="{{ $produto->IDPRODUTO }}">Excluir</a>
 
     </td>
 </tr>
 @endforeach
+
         </tbody>
     </table>
 </div>
-
 <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="createModalLabel">Novo Cliente</h5>
+                <h5 class="modal-title" id="createModalLabel">Novo Produto</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -56,6 +53,9 @@
         <div class="row justify-content-center">
             <div class="col-md-16">
                 <div class="row">
+                    <div class="text-center">
+                        <h1>Criar Produtos</h1>
+                    </div>
                     <div class="card-body">
                         @if ($errors->any())
                             <div class="alert alert-danger">
@@ -67,7 +67,7 @@
                             </div>
                         @endif
 
-                        <form method="POST" action="{{ route('clientes.store') }}">
+                        <form method="POST" action="{{ route('produtos.store') }}">
                             @csrf
                             @method('POST')
 
@@ -89,18 +89,9 @@
                                 </select>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="IDEMPRESA" class="form-label">Empresa</label>
-                                <select name="IDEMPRESA" class="form-select" required>
-                                @foreach($data['empresas'] as $empresa)
-                                    <option value="{{ $empresa->IDEMPRESA }}">{{ $empresa->NOME }}</option>
-                                 @endforeach
-                                </select>
-                            </div>
-
                             <div class="text-center">
-                                <button type="submit" class="btn-s btn-suc">Criar Cliente</button>
-                                <a href="{{ route('clientes.index') }}" class="btn-ajust btn-edi">Cancelar</a>
+                                <button type="submit" class="btn-s btn-suc">Criar Produto</button>
+                                <a href="{{ route('produtos.index') }}" class="btn-ajust btn-edi">Cancelar</a>
                             </div>
                         </form>
                     </div>
@@ -116,15 +107,16 @@
     </div>
 </div>
 
-@foreach($data['clientes'] as $cliente)
-    @include('editUserModal', ['cliente' => $cliente, 'empresas' => $data['empresas']])
+
+@foreach($produtos as $produto)
+    @include('editProductModal', ['produto' => $produto])
 @endforeach
 
 <script>
 $(document).ready(function () {
-    var dataTable = $('#clienteTable').DataTable({
+    var dataTable = $('#productTable').DataTable({
         "searching": true,   
-        "paging": true,     
+        "paging": true,      
         "language": {
             "decimal": ",",
             "thousands": ".",
@@ -143,36 +135,36 @@ $(document).ready(function () {
         }
     });
     $('.btn-edit').click(function () {
-        var clienteId = $(this).data('cliente-id');
+        var produtoId = $(this).data('produto-id');
         $.ajax({
             type: 'GET',
-            url: "{{ route('clientes.edit', ['IDCLIENTE' => '__IDCLIENTE__']) }}".replace('__IDCLIENTE__', clienteId),
+            url: "{{ route('produtos.edit', ['IDPRODUTO' => '__IDPRODUTO__']) }}".replace('__IDPRODUTO__', produtoId),
             success: function (data) {
                 $('#editModalContent').html(data);
-            }, 
+            },
             error: function () {
-                alert('Erro ao carregar os detalhes do cliente.');
+                alert('Erro ao carregar os detalhes do produto.');
             }
         });
     });
 
     $('.btn-excluir').click(function (e) {
-        e.preventDefault(); 
+        e.preventDefault();
 
-        var clienteId = $(this).data('cliente-id');
-        if (confirm('Tem certeza de que deseja excluir este cliente?')) {
+        var produtoId = $(this).data('produto-id');
+        if (confirm('Tem certeza de que deseja excluir este produto?')) {
             $.ajax({
                 type: 'POST',
-                url: "{{ route('clientes.delete-web', ['IDCLIENTE' => '__IDCLIENTE__']) }}".replace('__IDCLIENTE__', clienteId),
+                url: "{{ route('produtos.delete-web', ['IDPRODUTO' => '__IDPRODUTO__']) }}".replace('__IDPRODUTO__', produtoId),
                 data: {
                     "_token": "{{ csrf_token() }}"
                 },
                 success: function (result) {
-                    alert('Cliente excluído com sucesso.');
+                    alert('Produto excluído com sucesso.');
                     window.location.reload();
                 },
                 error: function () {
-                    alert('Erro ao excluir o cliente.');
+                    alert('Erro ao excluir o produto.');
                 }
             });
         }
@@ -182,7 +174,7 @@ $(document).ready(function () {
     $('.create-btn').click(function () {
         $.ajax({
             type: 'GET',
-            url: "{{ route('clientes.create') }}", 
+            url: "{{ route('produtos.create') }}",
             success: function (data) {
                 $('#createModalContent').html(data);
             },
@@ -193,4 +185,5 @@ $(document).ready(function () {
     });
 });
 </script>
+
 @endsection

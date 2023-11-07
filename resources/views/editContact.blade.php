@@ -14,9 +14,8 @@
 </div>
 @endif
 
-<div class="container mt-5">
-    <h1 class="text-center">Editar Contato</h1>
-
+<div class="container">
+    
     <form method="POST" action="{{ route('contatos.update', ['IDCONTATO' => $contato->IDCONTATO]) }}">
         @csrf
         @method('PUT')
@@ -43,11 +42,7 @@
         </div>
         <div class="mb-3">
             <label for="CLIENTE" class="form-label">Cliente</label>
-            <select class="form-select" id="CLIENTE" name="CLIENTE">
-               @foreach($clientes as $cliente)
-               <option value="{{ $cliente->IDCLIENTE }}" {{ $contato->IDCLIENTE == $cliente->IDCLIENTE ? 'selected' : '' }}>{{ $cliente->NOME }}</option>
-               @endforeach
-            </select>
+            <input type="text" class="form-control" id="CLIENTE" name="CLIENTE" value="{{ $contato->cliente->NOME }}" disabled>
         </div>
         <div class="mb-3">
             <label for="ATIVO" class="form-label">Ativo</label>
@@ -57,8 +52,8 @@
             </select>
         </div>
         <div class="text-center">
-            <button type="submit" class="btn btn-primary">Atualizar</button>
-            <a href="{{ route('contatos.index') }}" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn-s btn-suc">Atualizar</button>
+            <a href="#" class="btn-ajust btn-edi" id="cancelButton">Cancelar</a>
         </div>
     </form>
 </div>
@@ -66,5 +61,11 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+oL6F5f5f5k5F5eLl5d5F5t5f5R5O5y5.5G5v5Q5" crossorigin="anonymous"></script>
 </body>
 </html>
+<script>
+    document.getElementById('cancelButton').addEventListener('click', function () {
+        location.reload(); 
+    });
+</script>
+
 
 

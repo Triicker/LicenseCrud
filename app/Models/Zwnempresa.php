@@ -18,6 +18,7 @@ class Zwnempresa extends Model
         'NOME',
         'APELIDO',
         'ATIVO',
+        'LOGO',
         'RECCREATEDBY',
         'RECCREATEDON',
         'RECMODIFIEDBY',

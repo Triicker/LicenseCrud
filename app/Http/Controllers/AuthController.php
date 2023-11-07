@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Validator;
 use Illuminate\Http\Request;
 use App\Models\Zwnusuario;
+use App\Models\Zwnusuempresa;
+use App\Models\Zwnempresa;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
@@ -16,31 +18,63 @@ class AuthController extends Controller
     }
 
     public function login(Request $request)
-    {
-        $credentials = $request->only(['USUARIO', 'SENHA']);
-        $token = $this->authenticateToken('api', $credentials);
+{
+    $credentials = $request->only(['USUARIO', 'SENHA']);
+    $token = $this->authenticateToken('api', $credentials);
 
-        if ($token === false) {
-            return response()->json(['error' => 'Credenciais inválidas', 'credentials' => $credentials], 401);
-        }
-    
-        return $this->respondWithToken($token);
+    if ($token === false) {
+        return response()->json(['error' => 'Credenciais inválidas', 'credentials' => $credentials], 401);
     }
 
-    public function loginWeb(Request $request)
-    {
-        $credentials = $request->only(['USUARIO', 'SENHA']);
-        $token = $this->authenticateToken('web', $credentials);
+    $userName = $credentials['USUARIO'];
 
-        if ($token === false) {
-            return redirect()->route('index')->with(['error' => 'Credenciais inválidas']);
+    $user = Zwnusuario::where('USUARIO', $userName)->first();
+
+    if ($user) {
+        $empresa = Zwnusuempresa::where('IDUSUARIO', $user->IDUSUARIO)->first();
+        if ($empresa) {
+            $empresaNome = Zwnempresa::where('IDEMPRESA', $empresa->IDEMPRESA)->value('NOME');
+            $empresaID = $empresa->IDEMPRESA; 
+        } else {
+            $empresaNome = 'Empresa não encontrada';
+            $empresaID = null; 
         }
-
-        $user = Auth::user();
-        $userName = $user->NOME; 
-
-        return redirect()->route('login')->with(['user' => $user, 'userName' => $userName]);
+    } else {
+        $empresaNome = 'Usuário não encontrado';
+        $empresaID = null; 
     }
+
+    return response()->json(['token' => $token, 'userName' => $userName, 'empresaNome' => $empresaNome, 'empresaID' => $empresaID]);
+}
+
+
+
+public function loginWeb(Request $request)
+{
+    $credentials = $request->only(['USUARIO', 'SENHA']);
+    $token = $this->authenticateToken('web', $credentials);
+
+    if ($token === false) {
+        return redirect()->route('index')->with(['error' => 'Credenciais inválidas']);
+    }
+
+    $user = Auth::user();
+    $userName = $user->NOME; 
+
+    $empresa = Zwnusuempresa::where('IDUSUARIO', $user->IDUSUARIO)->first();
+
+    if ($empresa) {
+        $empresaNome = Zwnempresa::where('IDEMPRESA', $empresa->IDEMPRESA)->value('NOME');
+    } else {
+        $empresaNome = 'Empresa não encontrada';
+    }
+
+    session(['userName' => $userName, 'empresaNome' => $empresaNome, 'IDEMPRESA' => $empresa->IDEMPRESA, 'IDUSUARIO' => $user->IDUSUARIO]);
+
+    return redirect()->route('login');
+}
+
+
 
     private function authenticateToken($guard, $credentials)
     {
@@ -75,7 +109,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 60
+            'expires_in' => auth('api')->factory()->getTTL() * 20
         ]);
     }
 }
