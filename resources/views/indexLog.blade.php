@@ -7,29 +7,19 @@
     <table id="logTable" class="table table-striped table-bordered text-center mt-5">
         <thead>
             <tr>
-                <th scope="col" class="align-middle">Data de Criação</th>
-                <th scope="col" class="align-middle">Cadastro</th>
-                <th scope="col" class="align-middle">Valor Anterior</th>
-                <th scope="col" class="align-middle">Valor Novo</th>
+                <th scope="col" class="align-middle">Data de consulta</th>
+                <th scope="col" class="align-middle">Usuário</th>
+                <th scope="col" class="align-middle">Liberado</th>
+                <th scope="col" class="align-middle">Liberado até</th>
             </tr>
         </thead>
         <tbody>
             @foreach($logs as $log)
             <tr>
                 <td class="align-middle">{{ $log->RECCREATEDON }}</td>
-                <td class="align-middle">{{ $log->CADASTRO }}</td>
-                <td class="align-middle">
-                    @php
-                        $valorAnterior = json_decode($log->VALORANTERIOR);
-                        echo json_encode($valorAnterior, JSON_PRETTY_PRINT);
-                    @endphp
-                </td>
-                <td class="align-middle">
-                    @php
-                        $valorNovo = json_decode($log->VALORNOVO);
-                        echo json_encode($valorNovo, JSON_PRETTY_PRINT);
-                    @endphp
-                </td>
+                <td class="align-middle">{{ $log->USUARIO }}</td>
+                <td class="align-middle">{{ $log->LIBERADO }}</td>
+                <td class="align-middle">{{ $log->LIBERADOATE }}</td>
             </tr>
             @endforeach
         </tbody>

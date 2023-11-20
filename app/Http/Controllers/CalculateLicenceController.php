@@ -71,6 +71,8 @@ class CalculateLicenceController extends Controller
             $dataHoje = now();
             $liberadoAte = $this->calcularDataLiberacao($dataHoje, $DTINICIO, $DTFIM, $ATIVO, $cliente);
 
+            
+
             $log = new Zwnloglicenca();
             $log->IDCLIENTE = $IDCLIENTE;
             $log->IDCOLIGADA = $IDCOLIGADA;
@@ -86,7 +88,7 @@ class CalculateLicenceController extends Controller
             $log->QTDCHAMADAS = $QTDCHAMADAS;
             $log->VERSAOTOTVS = $VERSAOTOTVS;
             $log->VERSAOWORKNOW = $VERSAOWORKNOW;
-            $log->LIBERADO = $ATIVO;
+            $log->LIBERADO = !empty($liberadoAte) ? 1 : 0;
             $log->LIBERADOATE = $liberadoAte;
             $log->RECCREATEDBY = $userName;
             $log->RECCREATEDON = now();
