@@ -17,6 +17,7 @@ use App\Http\Controllers\CalculateLicenceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+
 // Métodos de login/logout
 Route::post('auth/login', [AuthController::class, 'login']);
 Route::post('auth/logout', [AuthController::class, 'logout']);
@@ -42,8 +43,8 @@ Route::post('Zwnloglicenca', [CalculateLicenceController::class, 'calcularLicenc
 // Usuarios 
 Route::get('Zwnusuarios', [UserControllerAPI::class, "index"]);
 Route::get('Zwnusuarios/{IDUSUARIO}', [UserControllerAPI::class, 'indexId']);
-Route::post('Zwnusuarios', [UserControllerAPI::class, "store"]);
 Route::patch('Zwnusuarios/{IDUSUARIO}', [UserControllerAPI::class, "update"]);
+Route::post('Zwnusuarios', [UserControllerAPI::class, "store"]);
 Route::delete('Zwnusuarios/{IDUSUARIO}', [UserControllerAPI::class, "delete"]);
 
 // Empresas 

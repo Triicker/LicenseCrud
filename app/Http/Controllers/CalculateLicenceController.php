@@ -141,7 +141,7 @@ private function calcularDataLiberacao($dataHoje, $DTINICIO, $DTFIM, $ATIVO, $cl
 
         return $liberadoAte;
     } else {
-        return '';
+        return null;
     }
 }
 

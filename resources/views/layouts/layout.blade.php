@@ -11,7 +11,7 @@
 
 $IDEMPRESA = session('IDEMPRESA'); 
 
-if ($IDEMPRESA === 3) {
+if ($IDEMPRESA === 1) {
     $logoUrlFromDatabase = "/css/img_svg/icon-teste-worknow.png";
     $cor_menu_superior = "#14efca ";
     $cor_menu_lateral = "#14efca ";
@@ -42,7 +42,7 @@ if ($IDEMPRESA === 3) {
 
     <style>
         .bg-light-menu-sup {
-            background-color: <?php echo $cor_menu_superior; ?> !important;
+            background-color:  <?php echo $cor_menu_superior; ?> !important;
         }
         .bg-light-menu-lat {
             background-color: <?php echo $cor_menu_lateral ?> !important;
@@ -54,7 +54,7 @@ if ($IDEMPRESA === 3) {
             background-color: <?php echo $cor_fundo_logo_menu  ?> !important;
         }
         .navbar .btn-sup:hover {
-            background-color: <?php echo $cor_hover_menu_sup  ?> !important;
+            background-color: <?php echo  $cor_hover_menu_sup  ?> !important;
         }
         .color-if-menu {
             fill: <?php echo $cor_fonte_icon_lateral  ?> !important;
@@ -63,7 +63,7 @@ if ($IDEMPRESA === 3) {
             color: <?php echo $cor_fonte_icon_lateral  ?> !important;
         }
         .sidebar .list-group-item {
-            background-color: <?php echo $cor_menu_lateral  ?> !important;
+            background-color: echo <?php  $cor_menu_lateral  ?> !important;
         }
         .cor-if-menu-sup {
             fill: <?php echo $cor_fonte_icon_sup  ?> !important;
@@ -82,7 +82,7 @@ if ($IDEMPRESA === 3) {
         }
 
         .footer {
-        background-color:  <?php echo $cor_menu_lateral ?> !important;
+        background-color: <?php echo $cor_menu_lateral ?> !important;
         }
     </style>
 </head>

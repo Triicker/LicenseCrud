@@ -36,4 +36,10 @@ class Zwnempresalayout extends Model
 
     public $timestamps = false;
 
+    public function empresa()
+    {
+        return $this->belongsTo(Zwnempresa::class, 'IDEMPRESA', 'IDEMPRESA');
+    }
+
+
 }
