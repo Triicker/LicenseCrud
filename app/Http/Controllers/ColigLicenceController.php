@@ -33,7 +33,9 @@ class ColigLicenceController extends Controller
         }
         $licencas = $query->get();
         $cliente = $licencas->isNotEmpty() ? $licencas->first()->cliente : null;
-
+        $produto = $licencas->isNotEmpty() ? $licencas->first()->produto : null;
+        $coligada = $licencas->isNotEmpty() ? $licencas->first()->coligada : null;
+        
         if ($licencas->isEmpty()) {
             if ($request->is('api/*') || $request->wantsJson()) {
                 return response()->json(['message' => 'Nenhum resultado encontrado'], 404);
@@ -45,7 +47,7 @@ class ColigLicenceController extends Controller
         if ($request->is('api/*') || $request->wantsJson()) {
             return response()->json(['licencas' => $licencas]);
         } else {
-            return view('indexLicense', compact('licencas', 'cliente'));
+            return view('indexLicense', compact('licencas', 'cliente', 'produto', 'coligada'));
         }
     }
 
@@ -83,15 +85,16 @@ public function store(Request $request)
 
     try {
         $validatedData = $request->validate([
-            'IDCLIENTE' => 'required|integer',
-            'IDPRODUTO' => 'required|integer',
-            'IDCOLIGADA' => 'required|integer',
             'IDFILIAL' => 'integer',
             'DTINICIO' => 'date',
             'DTFIM' => 'date',
             'ATIVO' => 'boolean',
         ]);
 
+        $validatedData['IDFILIAL'] = 1;
+        $validatedData['IDCLIENTE'] = $request->input('IDCLIENTE');
+        $validatedData['IDPRODUTO'] = $request->input('IDPRODUTO');
+        $validatedData['IDCOLIGADA'] = $request->input('IDCOLIGADA');
         $validatedData['RECCREATEDON'] = now();
         $validatedData['RECCREATEDBY'] = $userName;
 

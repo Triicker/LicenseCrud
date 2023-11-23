@@ -51,20 +51,9 @@
                         @csrf
                         @method('POST')
 
-                        <div class="mb-3">
-                            <label for="IDCLIENTE" class="form-label">ID Cliente</label>
-                            <input type="text" name="IDCLIENTE" class="form-control" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="IDPRODUTO" class="form-label">ID Produto</label>
-                            <input type="text" name="IDPRODUTO" class="form-control" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="IDCOLIGADA" class="form-label">ID Coligada</label>
-                            <input type="text" name="IDCOLIGADA" class="form-control" required>
-                        </div>
+                        <input type="hidden" name="IDCLIENTE" value="{{ $cliente->IDCLIENTE }}">
+                        <input type="hidden" name="IDPRODUTO" value="{{ $produto->IDPRODUTO }}">
+                        <input type="hidden" name="IDCOLIGADA" value="{{ $coligada->IDCOLIGADA }}">
 
                         <div class="mb-3">
                             <label for="DTINICIO" class="form-label">Data de Início</label>
