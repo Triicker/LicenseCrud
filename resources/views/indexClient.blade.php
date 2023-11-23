@@ -33,7 +33,6 @@
     <a class="btn-c btn-col" href="{{ route('coligadas.cliente', ['IDCLIENTE' => $cliente->IDCLIENTE]) }}">Coligada</a>
     <button class="btn-ajust btn-edit" data-cliente-id="{{ $cliente->IDCLIENTE }}" data-bs-toggle="modal" data-bs-target="#editModal">Editar</button>
     <a href="#" class="btn-e btn-excluir" data-cliente-id="{{ $cliente->IDCLIENTE }}">Excluir</a>
-
     </td>
 </tr>
 @endforeach
@@ -91,11 +90,7 @@
 
                             <div class="mb-3">
                                 <label for="IDEMPRESA" class="form-label">Empresa</label>
-                                <select name="IDEMPRESA" class="form-select" required>
-                                @foreach($data['empresas'] as $empresa)
-                                    <option value="{{ $empresa->IDEMPRESA }}">{{ $empresa->NOME }}</option>
-                                 @endforeach
-                                </select>
+                                <input type="text" class="form-control" id="EMPRESA" name="EMPRESA" value="{{ $cliente->empresa->NOME }}" disabled>
                             </div>
 
                             <div class="text-center">

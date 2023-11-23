@@ -17,7 +17,12 @@ class ContactController extends Controller
     public function index(Request $request)
 {
     try {
-        $contatos = Zwnclicontato::with('cliente')->get();
+        list($userName, $idusuario, $idempresa) = $this->getUserInfoFromSession();
+
+        $contatos = Zwnclicontato::whereHas('cliente', function ($query) use ($idempresa) {
+            $query->where('IDEMPRESA', $idempresa);
+        })->with('cliente')->get();
+
         $clientes = Zwncliente::all(); 
 
         $data = ['contatos' => $contatos, 'clientes' => $clientes];
@@ -84,6 +89,8 @@ public function indexClient($IDCLIENTE, Request $request)
         $contatos = Zwnclicontato::where('IDCLIENTE', $IDCLIENTE)->with('cliente')->get();
         $clientes = Zwncliente::all();
 
+        $cliente = $clientes->find($IDCLIENTE);
+
         if ($request->is('api/*') || $request->wantsJson()) {
             $response = [
                 'status' => 'success',
@@ -92,7 +99,7 @@ public function indexClient($IDCLIENTE, Request $request)
             ];
             return response()->json($response);
         } else {
-            $data = ['contatos' => $contatos, 'clientes' => $clientes];
+            $data = ['contatos' => $contatos, 'clientes' => $clientes, 'cliente' => $cliente];
             return view('indexContact', compact('data'));
         }
     } catch (\Exception $e) {
@@ -108,6 +115,8 @@ public function indexClient($IDCLIENTE, Request $request)
         }
     }
 }
+
+
 
 protected function getEmpresaID($user)
 {
@@ -148,11 +157,7 @@ public function store(Request $request)
         $validatedData['RECCREATEDON'] = now();
         $validatedData['RECCREATEDBY'] = $userName;
 
-        if ($request->is('api/*')) {
-            $validatedData['IDCLIENTE'] = $validatedData['IDCLIENTE'];
-        } else {
-            $validatedData['IDCLIENTE'] = $request->input('CLIENTE');
-        }
+        $validatedData['IDCLIENTE'] = $request->is('api/*') ? $validatedData['IDCLIENTE'] : $request->input('CLIENTE');
 
         $newContact = Zwnclicontato::create($validatedData);
 

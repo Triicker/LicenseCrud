@@ -90,25 +90,11 @@ protected function getEmpresaID($user)
 public function store(Request $request)
 {
     try {
-        $userName = null;
-        $empresaNome = null;
         $user = null;
 
         if ($request->is('api/*')) {
-            $token = JWTAuth::getToken();
-            $user = JWTAuth::toUser($token);
-
-            if ($user) {
-                $userName = $user->USUARIO;
-                $empresa = Zwnusuempresa::where('IDUSUARIO', $user->IDUSUARIO)->first();
-
-                if ($empresa) {
-                    $empresaNome = Zwnempresa::where('IDEMPRESA', $empresa->IDEMPRESA)->value('NOME');
-                }
-            }
+            $user = $this->getUserInfoFromJWT();
         } else {
-            $userName = session('userName');
-            $empresaNome = session('empresaNome');
             $user = $this->getUserInfoFromSession();
         }
 
@@ -119,20 +105,20 @@ public function store(Request $request)
         ]);
 
         $validatedData['RECCREATEDON'] = now();
-        $validatedData['RECCREATEDBY'] = $userName;
-
+        $validatedData['RECCREATEDBY'] = $user->userName;
+        $validatedData['IDEMPRESA'] = $user->idempresa;
+        
         $produto = Zwnproduto::create($validatedData);
 
         $logData = [
-            'IDUSUARIO' => $user->IDUSUARIO,
+            'IDUSUARIO' => $user->idusuario,
             'CADASTRO' => 'Produto criado: ' . $produto->NOME,
             'VALORANTERIOR' => null,
             'VALORNOVO' => json_encode($validatedData),
-            'RECCREATEDBY' => $userName,
+            'RECCREATEDBY' => $user->userName,
             'RECCREATEDON' => now(),
+            'IDEMPRESA' => $user->idempresa,
         ];
-
-        $logData['IDEMPRESA'] = $this->getEmpresaID($user);
 
         $this->createLog($logData);
 
@@ -146,12 +132,18 @@ public function store(Request $request)
     }
 }
 
-private function getUserInfoFromSession() {
-    $userName = session('userName');
+
+
+private function getUserInfoFromSession()
+{
     $user = new \stdClass();
-    $user->IDUSUARIO = session('IDUSUARIO');
+    $user->userName = session('userName');
+    $user->idusuario = session('IDUSUARIO');
+    $user->idempresa = session('IDEMPRESA');
+
     return $user;
 }
+
 
 private function createLog($logData) {
     $log = new Zwnlogcadastro();

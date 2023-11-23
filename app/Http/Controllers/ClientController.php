@@ -17,11 +17,16 @@ class ClientController extends Controller
     public function index(Request $request)
 {
     try {
-        $clientes = Zwncliente::with('empresa')->get();
-        $empresas = Zwnempresa::all(); 
+        list($userName, $idusuario, $idempresa) = $this->getUserInfoFromSession();
+
+        $clientes = Zwncliente::whereHas('empresa', function ($query) use ($idempresa) {
+            $query->where('IDEMPRESA', $idempresa);
+        })->with('empresa')->get();
+
+        $empresas = Zwnempresa::all();
 
         $data = ['clientes' => $clientes, 'empresas' => $empresas];
-        
+
         if ($request->is('api/*') || $request->wantsJson()) {
             $response = [
                 'status' => 'success',
@@ -45,6 +50,7 @@ class ClientController extends Controller
         }
     }
 }
+
 
 public function indexId($IDCLIENTE)
 {
@@ -225,16 +231,20 @@ private function handleError($e, $request) {
 }
 
 
-    public function create()
+public function create()
 {
+    list($userName, $idusuario, $idempresa) = $this->getUserInfoFromSession();
+
     $empresas = Zwnempresa::all();
+    $empresaSelecionada = Zwnempresa::find($idempresa);
 
     if (request()->is('api/*')) {
-        return response()->json(['empresas' => $empresas]);
+        return response()->json(['empresas' => $empresas, 'empresaSelecionada' => $empresaSelecionada]);
     } else {
-        return view('createClient', compact('empresas'));
+        return view('createClient', compact('empresas', 'empresaSelecionada'));
     }
 }
+
 
 
     public function edit($IDCLIENTE)

@@ -31,9 +31,9 @@ class ColigLicenceController extends Controller
         if ($IDCLIENTE !== null) {
             $query->where('IDCLIENTE', $IDCLIENTE);
         }
-    
         $licencas = $query->get();
-    
+        $cliente = $licencas->isNotEmpty() ? $licencas->first()->cliente : null;
+
         if ($licencas->isEmpty()) {
             if ($request->is('api/*') || $request->wantsJson()) {
                 return response()->json(['message' => 'Nenhum resultado encontrado'], 404);
@@ -45,7 +45,7 @@ class ColigLicenceController extends Controller
         if ($request->is('api/*') || $request->wantsJson()) {
             return response()->json(['licencas' => $licencas]);
         } else {
-            return view('indexLicense', compact('licencas'));
+            return view('indexLicense', compact('licencas', 'cliente'));
         }
     }
 

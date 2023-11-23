@@ -7,11 +7,7 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 <div class="container">
     <h1 class="text-center mg-top-title">Lista de Licenças</h1>
-    @foreach ($licencas as $licenca)
-    @if ($licenca->cliente) 
-        <p>Nome do cliente: {{ $licenca->cliente->NOME }}</p>
-    @endif
-@endforeach
+    <p>Nome do cliente: {{ $cliente ? $cliente->NOME : 'N/A' }}</p>
 
     <div class="d-flex justify-content-end">
     <button class="btn-btn btn-principal mg-bottom" data-bs-toggle="modal" data-bs-target="#createModal">Nova Licença</button>

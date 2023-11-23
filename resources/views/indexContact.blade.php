@@ -7,7 +7,7 @@
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <div class="container">
     <h1 class="text-center mg-top-title">Lista de Contatos</h1>
-    <p>Nome do cliente: @isset($data['contatos'][0]->cliente->NOME) {{ $data['contatos'][0]->cliente->NOME }} @endisset</p>
+    <p>Nome do cliente: @isset($data['cliente']->NOME) {{ $data['cliente']->NOME }} @endisset</p>
     <div class="d-flex justify-content-end">
     <button class="btn-btn btn-principal mg-bottom" data-bs-toggle="modal" data-bs-target="#createModal">Novo Contato</button>
     </div>
@@ -105,9 +105,10 @@
                                         </div>
 
                                         <div class="mb-3">
-            <label for="CLIENTE" class="form-label">Cliente</label>
-            <input type="text" class="form-control" id="CLIENTE" name="CLIENTE" value="{{ $contato->cliente->NOME }}" disabled>
-        </div>
+                                            <label for="CLIENTE" class="form-label">Cliente</label>
+                                            <input type="text" class="form-control" id="CLIENTE_NOME" name="CLIENTE_NOME" value="{{ isset($data['cliente']->NOME) ? $data['cliente']->NOME : '' }}" disabled>
+                                            <input type="hidden" id="CLIENTE" name="CLIENTE" value="{{ isset($data['cliente']->IDCLIENTE) ? $data['cliente']->IDCLIENTE : '' }}">
+                                        </div>
 
                                         <div class="text-center">
                                             <button type="submit" class="btn-s btn-suc">Criar Contato</button>

@@ -14,6 +14,7 @@ class Zwnproduto extends Model
 
     protected $fillable = [
         'IDPRODUTO',
+        'IDEMPRESA',
         'NOME',
         'APELIDO',
         'ATIVO',

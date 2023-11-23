@@ -87,6 +87,8 @@ public function indexClient($IDCLIENTE, Request $request)
     try {
         $coligadas = Zwncoligada::where('IDCLIENTE', $IDCLIENTE)->with('cliente')->get();
         $clientes = Zwncliente::all();
+        $cliente = $clientes->find($IDCLIENTE);
+
         $data = ['coligadas' => $coligadas, 'clientes' => $clientes];
 
         if ($request->is('api/*') || $request->wantsJson()) {
@@ -97,7 +99,7 @@ public function indexClient($IDCLIENTE, Request $request)
             ];
             return response()->json($response);
         } else {
-            $data = ['coligadas' => $coligadas, 'clientes' => $clientes];
+            $data = ['coligadas' => $coligadas, 'clientes' => $clientes, 'cliente' => $cliente];
             return view('indexColigada', compact('data'));
         }
     } catch (\Exception $e) {

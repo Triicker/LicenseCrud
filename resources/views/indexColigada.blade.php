@@ -122,9 +122,10 @@
                     </div>
 
                     <div class="mb-3">
-            <label for="CLIENTE" class="form-label">Cliente</label>
-            <input type="text" class="form-control" id="CLIENTE" name="CLIENTE" value="{{ $coligada->cliente->NOME }}" disabled>
-        </div>
+                        <label for="CLIENTE" class="form-label">Cliente</label>
+                        <input type="text" class="form-control" id="CLIENTE_NOME" name="CLIENTE_NOME" value="{{ isset($data['cliente']->NOME) ? $data['cliente']->NOME : '' }}" disabled>
+                        <input type="hidden" id="CLIENTE" name="CLIENTE" value="{{ isset($data['cliente']->IDCLIENTE) ? $data['cliente']->IDCLIENTE : '' }}">
+                    </div>
 
                     <div class="text-center">
                         <button type="submit" class="btn-s btn-suc">Criar Coligada</button>
