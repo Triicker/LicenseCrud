@@ -30,10 +30,7 @@ class Zwnloglicenca extends Model
         'RECCREATEDBY',
         'RECCREATEDON',
         'RECMODIFIEDBY',
-        'RECMODIFIEDON',
-        'CNPJ',          
-        'USUARIO',        
-        'NOMEPRODUTO',    
+        'RECMODIFIEDON',   
     ];
     public $timestamps = false;
 
