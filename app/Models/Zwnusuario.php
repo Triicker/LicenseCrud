@@ -62,7 +62,7 @@ class Zwnusuario extends Authenticatable implements JWTSubject
     
     public function getAuthIdentifier()
     {
-        return $this->USUARIO;
+        return $this->attributes['USUARIO'];
     }
 
     public function getAuthPassword()

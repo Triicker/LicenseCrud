@@ -7,6 +7,7 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 <div class="container">
     <h1 class="text-center mg-top-title">Lista de Licenças</h1>
+    <button onclick="goBack()" class="btn-ajust btn-edit">Voltar</button>
     <p>Nome do cliente: {{ $cliente ? $cliente->NOME : 'N/A' }}</p>
 
     <div class="d-flex justify-content-end">
@@ -15,20 +16,20 @@
     <table id="licenseTable" class="table table-striped table-bordered text-center mt-5">
         <thead>
             <tr>
+                <th scope="col" class="align-middle">Nome do Produto</th>
                 <th scope="col" class="align-middle">Data inicio</th>
                 <th scope="col" class="align-middle">Data fim</th>
-                <th scope="col" class="align-middle">Ativo</th>     
-                <th scope="col" class="align-middle">Nome do Produto</th>
+                <th scope="col" class="align-middle">Ativo</th>              
                 <th scope="col" class="align-middle">Ações</th>
             </tr>
         </thead>
         <tbody>
         @foreach($licencas as $licenca)
       <tr>
+        <td class="align-middle">{{ $licenca->produto->NOME }}</td>
         <td class="align-middle">{{ \Carbon\Carbon::parse($licenca->DTINICIO)->format('d/m/Y') }}</td>
         <td class="align-middle">{{ \Carbon\Carbon::parse($licenca->DTFIM)->format('d/m/Y') }}</td>
-        <td class="align-middle">{{ $licenca->ATIVO }}</td>
-        <td class="align-middle">{{ $licenca->produto->NOME }}</td>
+        <td class="align-middle">{{ $licenca->ATIVO == 1 ? 'Sim' : 'Não' }}</td>
         <td class="align-middle">
             <button class="btn-ajust btn-edit" data-licenca-id="{{ $licenca->IDCOLIGADA }}" data-bs-toggle="modal" data-bs-target="#editModal">Editar</button>
             <a href="#" class="btn-e btn-excluir" data-licenca-id="{{ $licenca->IDCOLIGADA }}">Excluir</a>
@@ -50,10 +51,17 @@
                     <form method="POST" action="{{ route('licencas.store') }}">
                         @csrf
                         @method('POST')
-
+            
                         <input type="hidden" name="IDCLIENTE" value="{{ $cliente->IDCLIENTE }}">
-                        <input type="hidden" name="IDPRODUTO" value="{{ $produto->IDPRODUTO }}">
                         <input type="hidden" name="IDCOLIGADA" value="{{ $coligada->IDCOLIGADA }}">
+                        <div class="mb-3">
+    <label for="IDPRODUTO" class="form-label">Produto</label>
+    <select name="IDPRODUTO" class="form-select" required>
+        @foreach($produtos as $produtoOption)
+            <option value="{{ $produtoOption->IDPRODUTO }}">{{ $produtoOption->NOME }}</option>
+        @endforeach
+    </select>
+</div>
 
                         <div class="mb-3">
                             <label for="DTINICIO" class="form-label">Data de Início</label>
@@ -168,5 +176,8 @@ $(document).ready(function () {
         });
     });
 });
+function goBack() {
+    window.history.back();
+}
 </script>
 @endsection

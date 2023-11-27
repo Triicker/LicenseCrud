@@ -24,6 +24,14 @@
         <input type="text" class="form-control" id="NOME" name="NOME" value="{{ $coligada->NOME }}">
     </div>
     <div class="mb-3">
+        <label for="NOMEFANTASIA" class="form-label">Nome Fantasia</label>
+        <input type="text" class="form-control" id="NOMEFANTASIA" name="NOMEFANTASIA" value="{{ $coligada->NOMEFANTASIA }}">
+    </div>
+    <div class="mb-3">
+        <label for="CGC" class="form-label">CGC</label>
+        <input type="text" class="form-control" id="CGC" name="CGC" value="{{ $coligada->CGC }}">
+    </div>
+    <div class="mb-3">
         <label for="APELIDO" class="form-label">Apelido</label>
         <input type="text" class="form-control" id="APELIDO" name="APELIDO" value="{{ $coligada->APELIDO }}">
     </div>

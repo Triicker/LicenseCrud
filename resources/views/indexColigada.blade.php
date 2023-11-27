@@ -7,13 +7,16 @@
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <div class="container">
     <h1 class="text-center mg-top-title">Lista de Coligadas</h1>
-    <p>Nome do cliente: @isset($data['coligadas'][0]->cliente->NOME) {{ $data['coligadas'][0]->cliente->NOME }} @endisset</p>
+    <button onclick="goBack()" class="btn-ajust btn-edit">Voltar</button>
+    <p>Nome do cliente: @isset($data['cliente']->NOME) {{ $data['cliente']->NOME }} @endisset</p>
+
     <div class="d-flex justify-content-end">
     <button class="btn-btn btn-principal mg-bottom" data-bs-toggle="modal" data-bs-target="#createModal">Nova Coligada</button>
 </div>
     <table id="coligadaTable" class="table table-striped table-bordered text-center mt-5">
         <thead>
             <tr>
+                <th scope="col" class="align-middle">ID</th>
                 <th scope="col" class="align-middle">Nome</th>
                 <th scope="col" class="align-middle">Nome Fantasia</th>
                 <th scope="col" class="align-middle">CGC</th>
@@ -28,6 +31,7 @@
         <tbody>
         @foreach($data['coligadas'] as $coligada)
 <tr>
+    <td class="align-middle">{{ $coligada->IDCOLIGADA }}</td>
     <td class="align-middle">{{ $coligada->NOME }}</td>
     <td class="align-middle">{{ $coligada->NOMEFANTASIA }}</td>
     <td class="align-middle">{{ $coligada->CGC }}</td>
@@ -35,7 +39,7 @@
     <td class="align-middle">{{ $coligada->TELEFONE }}</td>
     <td class="align-middle">{{ $coligada->IDIMAGEM }}</td>
     <td class="align-middle">{{ $coligada->APELIDO }}</td>
-    <td class="align-middle">{{ $coligada->ATIVO }}</td>
+    <td class="align-middle">{{ $coligada->ATIVO == 1 ? 'Sim' : 'Não' }}</td>
     <td class="align-middle">
     <a class="btn-c btn-col" href="{{ route('licencas.coligada', ['IDCOLIGADA' => $coligada->IDCOLIGADA]) }}" >Licenças</a>
     <button class="btn-ajust btn-edit" data-coligada-id="{{ $coligada->IDCOLIGADA }}" data-bs-toggle="modal" data-bs-target="#editModal">Editar</button>
@@ -77,6 +81,11 @@
                         <form method="POST" action="{{ route('coligadas.store') }}">
                             @csrf
                             @method('POST')
+
+                            <div class="mb-3">
+                        <label for="IDCOLIGADA" class="form-label">IDCOLIGADA</label>
+                        <input type="text" name="IDCOLIGADA" class="form-control" required>
+                    </div>
 
                             <div class="mb-3">
                         <label for="NOME" class="form-label">Nome</label>
@@ -153,12 +162,12 @@
 <script>
 $(document).ready(function () {
     var dataTable = $('#coligadaTable').DataTable({
-        "searching": true,   // Ativar barra de pesquisa
-        "paging": true,      // Ativar paginação
+        "searching": true,   
+        "paging": true,      
         "language": {
             "decimal": ",",
             "thousands": ".",
-            "lengthMenu": "Mostrar _MENU_ registros por página", // Aqui você pode definir o texto desejado
+            "lengthMenu": "Mostrar _MENU_ registros por página", 
             "zeroRecords": "Nenhum registro encontrado",
             "info": "Página _PAGE_ de _PAGES_",
             "infoEmpty": "Sem registros disponíveis",
@@ -222,6 +231,9 @@ $(document).ready(function () {
         });
     });
 });
+function goBack() {
+    window.history.back();
+}
 </script>
 
 @endsection

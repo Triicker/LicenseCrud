@@ -98,7 +98,7 @@ Route::delete('Zwncoliglicenca/{IDCOLIGADA}', [ColigLicenceController::class, "d
 Route::get('Zwnusuempresas', [UserCompanyControllerAPI::class, "index"]);
 Route::get('Zwnusuempresas{IDUSUARIOEMPRESA}', [UserCompanyControllerAPI::class, "indexId"]);
 Route::post('Zwnusuempresas', [UserCompanyControllerAPI::class, "store"]);
-Route::put('Zwnusuempresas/{IDUSUARIOEMPRESA}', [UserCompanyControllerAPI::class, "update"]);
+Route::patch('Zwnusuempresas/{IDUSUARIOEMPRESA}', [UserCompanyControllerAPI::class, "update"]);
 Route::delete('Zwnusuempresas/{IDUSUARIOEMPRESA}', [UserCompanyControllerAPI::class, "delete"]);
 
 });

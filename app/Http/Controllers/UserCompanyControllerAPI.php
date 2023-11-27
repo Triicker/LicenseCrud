@@ -55,7 +55,7 @@ public function store(Request $request)
 }
 
 
-    public function update(Request $request, $IDUSUARIO)
+    public function update(Request $request, $IDUSUARIOEMPRESA)
 {
     $token = JWTAuth::getToken();
     $user = JWTAuth::toUser($token);
@@ -68,10 +68,10 @@ public function store(Request $request)
     $validatedData['RECMODIFIEDON'] = now();
     $validatedData['RECMODIFIEDBY'] = $userName;
 
-    $registros = Zwnusuempresa::where('IDUSUARIO', $IDUSUARIO)->get();
+    $registros = Zwnusuempresa::where('IDUSUARIOEMPRESA', $IDUSUARIOEMPRESA)->get();
 
     if ($registros->isEmpty()) {
-        return response()->json(['error' => 'Nenhum registro encontrado para o IDUSUARIO especificado'], 404);
+        return response()->json(['error' => 'Nenhum registro encontrado para o IDUSUARIOEMPRESA especificado'], 404);
     }
 
     foreach ($registros as $registro) {
@@ -82,9 +82,9 @@ public function store(Request $request)
 }
 
 
-    public function delete($IDUSUARIO)
+    public function delete($IDUSUARIOEMPRESA)
 {
-    $registro = Zwnusuempresa::where('IDUSUARIO', $IDUSUARIO)->first();
+    $registro = Zwnusuempresa::where('IDUSUARIOEMPRESA', $IDUSUARIOEMPRESA)->first();
 
     if (!$registro) {
         return response()->json(['error' => 'Registro não encontrado'], 404);

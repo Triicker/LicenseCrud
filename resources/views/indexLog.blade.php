@@ -7,6 +7,8 @@
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <div class="container">
     <h1 class="text-center mg-top-title">Registros de Log</h1>
+    <button onclick="goBack()" class="btn-ajust btn-edit">Voltar</button>
+
     <table id="logTable" class="table table-striped table-bordered text-center mt-5">
         <thead>
             <tr>
@@ -61,6 +63,9 @@ $(document).ready(function () {
         }
     });
 });
+function goBack() {
+    window.history.back();
+}
 </script>
 
 @endsection

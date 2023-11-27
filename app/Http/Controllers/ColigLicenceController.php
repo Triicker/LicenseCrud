@@ -19,7 +19,8 @@ class ColigLicenceController extends Controller
     public function index(Request $request, $IDCOLIGADA = null, $IDPRODUTO = null, $IDCLIENTE = null)
     {
         $query = Zwncoliglicenca::with(['coligada', 'produto', 'cliente']);
-    
+        $produtos = Zwnproduto::all();
+
         if ($IDCOLIGADA !== null) {
             $query->where('IDCOLIGADA', $IDCOLIGADA);
         }
@@ -35,7 +36,6 @@ class ColigLicenceController extends Controller
         $cliente = $licencas->isNotEmpty() ? $licencas->first()->cliente : null;
         $produto = $licencas->isNotEmpty() ? $licencas->first()->produto : null;
         $coligada = $licencas->isNotEmpty() ? $licencas->first()->coligada : null;
-        
         if ($licencas->isEmpty()) {
             if ($request->is('api/*') || $request->wantsJson()) {
                 return response()->json(['message' => 'Nenhum resultado encontrado'], 404);
@@ -47,7 +47,7 @@ class ColigLicenceController extends Controller
         if ($request->is('api/*') || $request->wantsJson()) {
             return response()->json(['licencas' => $licencas]);
         } else {
-            return view('indexLicense', compact('licencas', 'cliente', 'produto', 'coligada'));
+            return view('indexLicense', compact('licencas', 'cliente', 'produto', 'coligada', 'produtos'));
         }
     }
 
@@ -89,6 +89,7 @@ public function store(Request $request)
             'DTINICIO' => 'date',
             'DTFIM' => 'date',
             'ATIVO' => 'boolean',
+            'IDPRODUTO' => 'integer',
         ]);
 
         $validatedData['IDFILIAL'] = 1;

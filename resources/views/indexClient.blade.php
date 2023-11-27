@@ -8,12 +8,15 @@
 
 <div class="container">
     <h1 class="text-center mg-top-title">Lista de Clientes</h1>
+    <button onclick="goBack()" class="btn-ajust btn-edit">Voltar</button>
+
     <div class="d-flex justify-content-end">
     <button class="btn-btn btn-principal mg-bottom" data-bs-toggle="modal" data-bs-target="#createModal">Novo Cliente</button>
 </div>
 <table id="clienteTable" class="table table-striped table-bordered text-center mt-5">
         <thead>
             <tr>
+                <th scope="col" class="align-middle">ID</th>
                 <th scope="col" class="align-middle">Nome</th>
                 <th scope="col" class="align-middle">Apelido</th>
                 <th scope="col" class="align-middle">Ativo</th>
@@ -24,9 +27,10 @@
         <tbody>
         @foreach($data['clientes'] as $cliente)
 <tr>
+    <td class="align-middle">{{ $cliente->IDCLIENTE }}</td>
     <td class="align-middle">{{ $cliente->NOME }}</td>
     <td class="align-middle">{{ $cliente->APELIDO }}</td>
-    <td class="align-middle">{{ $cliente->ATIVO }}</td>
+    <td class="align-middle">{{ $cliente->ATIVO == 1 ? 'Sim' : 'Não' }}</td>
     <td class="align-middle">{{ $cliente->empresa->NOME }}</td>
     <td class="align-middle">
     <a class="btn-c btn-col" href="{{ route('contatos.cliente', ['IDCLIENTE' => $cliente->IDCLIENTE]) }}">Contato</a>
@@ -187,5 +191,8 @@ $(document).ready(function () {
         });
     });
 });
+function goBack() {
+    window.history.back();
+}
 </script>
 @endsection

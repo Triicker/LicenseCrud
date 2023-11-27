@@ -7,6 +7,7 @@
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <div class="container">
     <h1 class="text-center mg-top-title">Lista de Contatos</h1>
+    <button onclick="goBack()" class="btn-ajust btn-edit">Voltar</button>
     <p>Nome do cliente: @isset($data['cliente']->NOME) {{ $data['cliente']->NOME }} @endisset</p>
     <div class="d-flex justify-content-end">
     <button class="btn-btn btn-principal mg-bottom" data-bs-toggle="modal" data-bs-target="#createModal">Novo Contato</button>
@@ -14,6 +15,7 @@
     <table id="contactTable" class="table table-striped table-bordered mt-5 text-center">
         <thead>
             <tr>
+                <th scope="col" class="align-middle">ID</th>
                 <th scope="col" class="align-middle">Nome</th>
                 <th scope="col" class="align-middle">Apelido</th>
                 <th scope="col" class="align-middle">Telefone</th>
@@ -27,12 +29,13 @@
             @foreach($data['contatos'] as $contato)
 
                 <tr>
+                    <td class="align-middle">{{ $contato->IDCONTATO }}</td>
                     <td class="align-middle">{{ $contato->NOME }}</td>
                     <td class="align-middle">{{ $contato->APELIDO }}</td>
                     <td class="align-middle">{{ $contato->TELEFONE }}</td>
                     <td class="align-middle">{{ $contato->CELULAR }}</td>
                     <td class="align-middle">{{ $contato->EMAIL }}</td>
-                    <td class="align-middle">{{ $contato->ATIVO }}</td>
+                    <td class="align-middle">{{ $contato->ATIVO == 1 ? 'Sim' : 'Não' }}</td>
                     <td class="align-middle">
                         <button class="btn-ajust btn-edit" data-contato-id="{{ $contato->IDCONTATO }}" data-bs-toggle="modal" data-bs-target="#editModal">Editar</button>
                         <a href="#" class="btn-e btn-excluir" data-contato-id="{{ $contato->IDCONTATO }}">Excluir</a>          
@@ -207,5 +210,8 @@ $(document).ready(function () {
         });
     });
 });
+function goBack() {
+    window.history.back();
+}
 </script>
 @endsection

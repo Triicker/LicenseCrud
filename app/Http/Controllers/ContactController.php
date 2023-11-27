@@ -133,6 +133,7 @@ protected function getEmpresaID($user)
 public function store(Request $request)
 {
     $userName = null;
+    $userLogin = null;
     $empresaNome = null;
     $idempresa = null;
     $idusuario = null;
@@ -140,7 +141,7 @@ public function store(Request $request)
     if ($request->is('api/*')) {
         list($userName, $idusuario, $idempresa) = $this->getUserInfoFromJWT();
     } else {
-        list($userName, $idusuario, $idempresa) = $this->getUserInfoFromSession();
+        list($userName, $userLogin, $idusuario, $idempresa) = $this->getUserInfoFromSession();
     }
 
     try {
@@ -166,7 +167,7 @@ public function store(Request $request)
             'CADASTRO' => 'Contato criado: ' . $validatedData['NOME'],
             'VALORANTERIOR' => null,
             'VALORNOVO' => json_encode($validatedData),
-            'RECCREATEDBY' => $userName,
+            'RECCREATEDBY' => $userLogin,
             'RECCREATEDON' => now(),
             'IDEMPRESA' => $idempresa,
         ];
@@ -211,10 +212,11 @@ private function getUserInfoFromJWT() {
 
 private function getUserInfoFromSession() {
     $userName = session('userName');
+    $userLogin = session('userLogin');
     $idusuario = session('IDUSUARIO');
     $idempresa = session('IDEMPRESA');
 
-    return [$userName, $idusuario, $idempresa];
+    return [$userName, $userLogin, $idusuario, $idempresa];
 }
 
 private function createLog($logData, $request) {
@@ -311,10 +313,10 @@ private function handleError($e, $request) {
                 }
             }
     
-            list($userName, $idusuario, $idempresa) = $this->getUserInfoForUpdate($request);
+            list($userName, $userLogin, $idusuario, $idempresa) = $this->getUserInfoForUpdate($request);
     
             $validatedData['RECMODIFIEDON'] = now();
-            $validatedData['RECMODIFIEDBY'] = $userName;
+            $validatedData['RECMODIFIEDBY'] = $userLogin;
     
             $contatoAntesDaAtualizacao = $contato->toArray();
     
@@ -327,9 +329,7 @@ private function handleError($e, $request) {
                 'CADASTRO' => 'Contato atualizado: ' . $contato->NOME,
                 'VALORANTERIOR' => json_encode($contatoAntesDaAtualizacao),
                 'VALORNOVO' => json_encode($contatoDepoisDaAtualizacao),
-                'RECCREATEDBY' => $userName,
-                'RECCREATEDON' => now(),
-                'RECMODIFIEDBY' => $userName,
+                'RECMODIFIEDBY' => $userLogin,
                 'RECMODIFIEDON' => now(),
                 'IDEMPRESA' => $idempresa,
             ];
@@ -364,10 +364,10 @@ private function handleError($e, $request) {
         if ($request->is('api/*')) {
             list($userName, $idusuario, $idempresa) = $this->getUserInfoFromJWT();
         } else {
-            list($userName, $idusuario, $idempresa) = $this->getUserInfoFromSession();
+            list($userName, $userLogin, $idusuario, $idempresa) = $this->getUserInfoFromSession();
         }
     
-        return [$userName, $idusuario, $idempresa];
+        return [$userName, $userLogin, $idusuario, $idempresa];
     }
     
 

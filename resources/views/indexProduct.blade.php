@@ -7,6 +7,7 @@
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <div class="container">
     <h1 class="text-center mg-top-title">Lista de Produtos</h1>
+    <button onclick="goBack()" class="btn-ajust btn-edit">Voltar</button>
     <div class="d-flex justify-content-end">
     <button class="btn-btn btn-principal mg-bottom" data-bs-toggle="modal" data-bs-target="#createModal">Novo Produto</button>
 </div>
@@ -26,7 +27,7 @@
     <td class="align-middle">{{ $produto->IDPRODUTO }}</td>
     <td class="align-middle">{{ $produto->NOME }}</td>
     <td class="align-middle">{{ $produto->APELIDO }}</td>
-    <td class="align-middle">{{ $produto->ATIVO }}</td>
+    <td class="align-middle">{{ $produto->ATIVO == 1 ? 'Sim' : 'Não' }}</td>
     <td class="align-middle">
     <button class="btn-ajust btn-edit" data-produto-id="{{ $produto->IDPRODUTO }}" data-bs-toggle="modal" data-bs-target="#editModal">Editar</button>
     <a href="#" class="btn-e btn-excluir" data-produto-id="{{ $produto->IDPRODUTO }}">Excluir</a>
@@ -184,6 +185,9 @@ $(document).ready(function () {
         });
     });
 });
+function goBack() {
+    window.history.back();
+}
 </script>
 
 @endsection

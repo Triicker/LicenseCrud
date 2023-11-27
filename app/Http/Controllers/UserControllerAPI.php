@@ -148,6 +148,7 @@ public function update(Request $request, $IDUSUARIO)
             'NOME' => 'string|max:255',
             'APELIDO' => 'string|max:255',
             'USUARIO' => 'string|max:255',
+            'SENHA' => 'string|min:6', 
             'ATIVO' => 'boolean',
         ]);
 
@@ -163,6 +164,10 @@ public function update(Request $request, $IDUSUARIO)
         }
 
         $dadosAntigos = $usuario->toArray();
+
+        if (isset($validatedData['SENHA'])) {
+            $validatedData['SENHA'] = bcrypt($validatedData['SENHA']);
+        }
 
         $usuario->update($validatedData);
 
@@ -203,6 +208,7 @@ public function update(Request $request, $IDUSUARIO)
         return response()->json($response, 400);
     }
 }
+
 
 
     public function delete($IDUSUARIO)

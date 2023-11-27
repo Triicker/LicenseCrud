@@ -60,7 +60,7 @@ public function loginWeb(Request $request)
 
     $user = Auth::user();
     $userName = $user->NOME; 
-
+    $userLogin = $user->USUARIO; 
     $empresa = Zwnusuempresa::where('IDUSUARIO', $user->IDUSUARIO)->first();
 
     if ($empresa) {
@@ -69,7 +69,7 @@ public function loginWeb(Request $request)
         $empresaNome = 'Empresa não encontrada';
     }
 
-    session(['userName' => $userName, 'empresaNome' => $empresaNome, 'IDEMPRESA' => $empresa->IDEMPRESA, 'IDUSUARIO' => $user->IDUSUARIO]);
+    session(['userName' => $userName, 'userLogin' => $userLogin, 'empresaNome' => $empresaNome, 'IDEMPRESA' => $empresa->IDEMPRESA, 'IDUSUARIO' => $user->IDUSUARIO]);
 
     return redirect()->route('login');
 }

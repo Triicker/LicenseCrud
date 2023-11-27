@@ -17,33 +17,34 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
     public function index(Request $request)
-{
-    try {
-        $produtos = Zwnproduto::all();
-
-        if ($request->is('api/*') || $request->wantsJson()) {
-            $response = [
-                'status' => 'success',
-                'message' => 'Produtos recuperados com sucesso',
-                'data' => $produtos,
-            ];
-            return response()->json($response);
-        } else {
-            return view('indexProduct', compact('produtos'));
-        }
-    } catch (\Exception $e) {
-        if ($request->is('api/*') || $request->wantsJson()) {
-            $response = [
-                'status' => 'error',
-                'message' => 'Erro ao recuperar produtos',
-                'data' => $e->getMessage(),
-            ];
-            return response()->json($response, 400);
-        } else {
-            return back()->withErrors(['error' => 'Erro ao recuperar produtos: ' . $e->getMessage()]);
+    {
+        try {
+            $produtos = Zwnproduto::with('empresa')->get();
+    
+            if ($request->is('api/*') || $request->wantsJson()) {
+                $response = [
+                    'status' => 'success',
+                    'message' => 'Produtos recuperados com sucesso',
+                    'data' => $produtos,
+                ];
+                return response()->json($response);
+            } else {
+                return view('indexProduct', compact('produtos'));
+            }
+        } catch (\Exception $e) {
+            if ($request->is('api/*') || $request->wantsJson()) {
+                $response = [
+                    'status' => 'error',
+                    'message' => 'Erro ao recuperar produtos',
+                    'data' => $e->getMessage(),
+                ];
+                return response()->json($response, 400);
+            } else {
+                return back()->withErrors(['error' => 'Erro ao recuperar produtos: ' . $e->getMessage()]);
+            }
         }
     }
-}
+    
 
 
 public function indexId($IDPRODUTO)
@@ -105,7 +106,7 @@ public function store(Request $request)
         ]);
 
         $validatedData['RECCREATEDON'] = now();
-        $validatedData['RECCREATEDBY'] = $user->userName;
+        $validatedData['RECCREATEDBY'] = $user->userLogin;
         $validatedData['IDEMPRESA'] = $user->idempresa;
         
         $produto = Zwnproduto::create($validatedData);
@@ -115,7 +116,7 @@ public function store(Request $request)
             'CADASTRO' => 'Produto criado: ' . $produto->NOME,
             'VALORANTERIOR' => null,
             'VALORNOVO' => json_encode($validatedData),
-            'RECCREATEDBY' => $user->userName,
+            'RECCREATEDBY' => $user->userLogin,
             'RECCREATEDON' => now(),
             'IDEMPRESA' => $user->idempresa,
         ];
@@ -138,6 +139,7 @@ private function getUserInfoFromSession()
 {
     $user = new \stdClass();
     $user->userName = session('userName');
+    $user->userLogin = session('userLogin');
     $user->idusuario = session('IDUSUARIO');
     $user->idempresa = session('IDEMPRESA');
 
@@ -221,21 +223,21 @@ public function update(Request $request, $IDPRODUTO)
             }
         }
 
-        $userName = null;
+        $userLogin = null;
 
         if ($request->is('api/*')) {
             $token = JWTAuth::getToken();
             $user = JWTAuth::toUser($token);
 
             if ($user) {
-                $userName = $user->USUARIO;
+                $userLogin = $user->USUARIO;
             }
         } else {
-            $userName = session('userName');
+            $userLogin = session('userLogin');
         }
 
         $validatedData['RECMODIFIEDON'] = now();
-        $validatedData['RECMODIFIEDBY'] = $userName;
+        $validatedData['RECMODIFIEDBY'] = $userLogin;
 
         $produto->update($validatedData);
 

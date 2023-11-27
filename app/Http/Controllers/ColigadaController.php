@@ -131,6 +131,7 @@ public function store(Request $request)
 {
     try {
         $userName = null;
+        $userLogin = null;
         $empresaNome = null;
         $idempresa = null;
         $idusuario = null;
@@ -142,6 +143,7 @@ public function store(Request $request)
         }
 
         $validatedData = $request->validate([
+            'IDCOLIGADA' => 'integer',
             'NOME' => 'string|max:255',
             'APELIDO' => 'string|max:255',
             'IDCLIENTE' => 'integer',
@@ -155,7 +157,7 @@ public function store(Request $request)
         ]);
 
         $validatedData['RECCREATEDON'] = now();
-        $validatedData['RECCREATEDBY'] = $userName;
+        $validatedData['RECCREATEDBY'] = $userLogin;
 
         if ($request->is('api/*')) {
             $validatedData['IDCLIENTE'] = $validatedData['IDCLIENTE'];
@@ -163,15 +165,15 @@ public function store(Request $request)
             $validatedData['IDCLIENTE'] = $request->input('CLIENTE');
         }
 
-        $newColigada = Zwncoligada::create($validatedData);
-        $newColigadaId = $newColigada->IDCOLIGADA;
+        $validatedData['IDCOLIGADA'] = $request->input('IDCOLIGADA');
+
 
         $logData = [
             'IDUSUARIO' => $idusuario,
-            'CADASTRO' => 'Coligada criada: ' . $newColigada->NOME,
+            'CADASTRO' => 'Coligada criada: ' . $request->input('IDCOLIGADA'),
             'VALORANTERIOR' => null,
             'VALORNOVO' => json_encode($validatedData),
-            'RECCREATEDBY' => $userName,
+            'RECCREATEDBY' => $userLogin,
             'RECCREATEDON' => now(),
             'IDEMPRESA' => $idempresa,
         ];
@@ -182,11 +184,11 @@ public function store(Request $request)
             $response = [
                 'status' => 'success',
                 'message' => 'Coligada criada com sucesso',
-                'data' => ['id' => $newColigadaId],
+                'data' => ['id' => $request->input('IDCOLIGADA')],
             ];
             return response()->json($response, 201);
         } else {
-            return redirect()->route('coligadas.index', ['IDCOLIGADA' => $newColigadaId, 'IDCLIENTE' => $lastClient->IDCLIENTE])
+            return redirect()->route('coligadas.index', ['IDCOLIGADA' => $request->input('IDCOLIGADA')])
 
                 ->with('success', 'Coligada criada com sucesso.');
         }
@@ -217,11 +219,12 @@ private function getUserInfoFromJWT() {
 }
 
 private function getUserInfoFromSession() {
+    $userLogin = Session('userLogin');
     $userName = session('userName');
     $idusuario = session('IDUSUARIO');
     $idempresa = session('IDEMPRESA');
 
-    return [$userName, $idusuario, $idempresa];
+    return [$userName, $idusuario, $idempresa , $userLogin];
 }
 
 private function createLog($logData, $request) {
@@ -303,8 +306,6 @@ private function createLog($logData, $request) {
                 'CADASTRO' => 'Coligada atualizada: ' . $coligada->NOME,
                 'VALORANTERIOR' => json_encode($coligadaAntesDaAtualizacao),
                 'VALORNOVO' => json_encode($coligadaDepoisDaAtualizacao),
-                'RECCREATEDBY' => $userName,
-                'RECCREATEDON' => now(),
                 'RECMODIFIEDBY' => $userName,
                 'RECMODIFIEDON' => now(),
                 'IDEMPRESA' => $idempresa,

@@ -127,6 +127,7 @@ protected function getEmpresaID($user)
 public function store(Request $request)
 {
     $userName = null;
+    $userLogin = null;
     $empresaNome = null;
     $idempresa = null;
     $idusuario = null;
@@ -134,7 +135,7 @@ public function store(Request $request)
     if ($request->is('api/*')) {
         list($userName, $idusuario, $idempresa) = $this->getUserInfoFromJWT();
     } else {
-        list($userName, $idusuario, $idempresa) = $this->getUserInfoFromSession();
+        list($userName, $userLogin, $idusuario, $idempresa) = $this->getUserInfoFromSession();
     }
 
     try {
@@ -146,7 +147,7 @@ public function store(Request $request)
         ]);
 
         $validatedData['RECCREATEDON'] = now();
-        $validatedData['RECCREATEDBY'] = $userName;
+        $validatedData['RECCREATEDBY'] = $userLogin;
 
         if ($request->is('api/*')) {
             $validatedData['IDEMPRESA'] = $validatedData['IDEMPRESA'];
@@ -160,7 +161,7 @@ public function store(Request $request)
             'CADASTRO' => 'Cliente criado: ' . $validatedData['NOME'],
             'VALORANTERIOR' => null,
             'VALORNOVO' => json_encode($validatedData),
-            'RECCREATEDBY' => $userName,
+            'RECCREATEDBY' => $userLogin,
             'RECCREATEDON' => now(),
             'IDUSUARIO' => $idusuario,
             'IDEMPRESA' => $idempresa,
@@ -191,6 +192,7 @@ private function getUserInfoFromJWT() {
 }
 
 private function getUserInfoFromSession() {
+    $userLogin = session('userLogin');
     $userName = session('userName');
     $idusuario = session('IDUSUARIO');
     $idempresa = session('IDEMPRESA');
@@ -293,10 +295,10 @@ public function create()
                 }
             }
     
-            list($userName, $idusuario, $idempresa) = $this->getUserInfoForUpdate($request);
+            list($userName, $userLogin, $idusuario, $idempresa) = $this->getUserInfoForUpdate($request);
     
             $validatedData['RECMODIFIEDON'] = now();
-            $validatedData['RECMODIFIEDBY'] = $userName;
+            $validatedData['RECMODIFIEDBY'] = $userLogin;
     
             $clienteAntesDaAtualizacao = $cliente->toArray();
     
@@ -309,9 +311,7 @@ public function create()
                 'CADASTRO' => 'Cliente atualizado: ' . $cliente->NOME,
                 'VALORANTERIOR' => json_encode($clienteAntesDaAtualizacao),
                 'VALORNOVO' => json_encode($clienteDepoisDaAtualizacao),
-                'RECCREATEDBY' => $userName,
-                'RECCREATEDON' => now(),
-                'RECMODIFIEDBY' => $userName,
+                'RECMODIFIEDBY' => $$userLogin,
                 'RECMODIFIEDON' => now(),
                 'IDEMPRESA' => $idempresa,
             ];
@@ -337,10 +337,10 @@ public function create()
         if ($request->is('api/*')) {
             list($userName, $idusuario, $idempresa) = $this->getUserInfoFromJWT();
         } else {
-            list($userName, $idusuario, $idempresa) = $this->getUserInfoFromSession();
+            list($userName, $userLogin, $idusuario, $idempresa) = $this->getUserInfoFromSession();
         }
     
-        return [$userName, $idusuario, $idempresa];
+        return [$userName, $userLogin, $idusuario, $idempresa];
     }
     
 

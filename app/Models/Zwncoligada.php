@@ -11,7 +11,8 @@ class Zwncoligada extends Model
 
     protected $table = 'zwncoligada';
     protected $primaryKey = 'IDCOLIGADA';
-    
+    public $incrementing = false; 
+
 
     protected $fillable = [
         'IDCLIENTE',
