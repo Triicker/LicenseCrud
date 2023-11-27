@@ -17,33 +17,50 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
     public function index(Request $request)
-    {
-        try {
-            $produtos = Zwnproduto::with('empresa')->get();
-    
-            if ($request->is('api/*') || $request->wantsJson()) {
-                $response = [
-                    'status' => 'success',
-                    'message' => 'Produtos recuperados com sucesso',
-                    'data' => $produtos,
-                ];
-                return response()->json($response);
-            } else {
-                return view('indexProduct', compact('produtos'));
-            }
-        } catch (\Exception $e) {
+{
+    try {
+        $userInfo = $this->getUserInfoFromSession();
+
+        if (!$userInfo->idempresa) {
+            $errorMessage = 'ID da empresa não encontrado na sessão.';
             if ($request->is('api/*') || $request->wantsJson()) {
                 $response = [
                     'status' => 'error',
-                    'message' => 'Erro ao recuperar produtos',
-                    'data' => $e->getMessage(),
+                    'message' => $errorMessage,
+                    'data' => null,
                 ];
                 return response()->json($response, 400);
             } else {
-                return back()->withErrors(['error' => 'Erro ao recuperar produtos: ' . $e->getMessage()]);
+                return back()->withErrors(['error' => $errorMessage]);
             }
         }
+
+        $produtos = Zwnproduto::where('idempresa', $userInfo->idempresa)->get();
+
+        if ($request->is('api/*') || $request->wantsJson()) {
+            $response = [
+                'status' => 'success',
+                'message' => 'Produtos recuperados com sucesso',
+                'data' => $produtos,
+            ];
+            return response()->json($response);
+        } else {
+            return view('indexProduct', compact('produtos'));
+        }
+    } catch (\Exception $e) {
+        if ($request->is('api/*') || $request->wantsJson()) {
+            $response = [
+                'status' => 'error',
+                'message' => 'Erro ao recuperar produtos',
+                'data' => $e->getMessage(),
+            ];
+            return response()->json($response, 400);
+        } else {
+            return back()->withErrors(['error' => 'Erro ao recuperar produtos: ' . $e->getMessage()]);
+        }
     }
+}
+
     
 
 

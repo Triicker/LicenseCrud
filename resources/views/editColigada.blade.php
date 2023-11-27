@@ -56,15 +56,11 @@
     </div>
     <div class="text-center">
         <button type="submit" class="btn-s btn-suc">Atualizar</button>
-        <a href="#" class="btn-ajust btn-edi" id="cancelButton">Cancelar</a>
+        <button type="button" class="btn-ajust btn-edi" data-bs-dismiss="modal">Cancelar</button>
     </div>
 </form>
 
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+oL6F5f5f5k5F5eLl5d5F5t5f5R5O5y5.5G5v5Q5" crossorigin="anonymous"></script>
-<script>
-    document.getElementById('cancelButton').addEventListener('click', function () {
-        location.reload(); 
-    });
-</script>
+

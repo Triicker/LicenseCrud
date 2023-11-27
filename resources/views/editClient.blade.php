@@ -41,7 +41,7 @@
         </div>
         <div class="text-center">
             <button type="submit" class="btn-s btn-suc">Atualizar</button>
-            <a href="{{ route('clientes.index') }}" class="btn-ajust btn-edi">Cancelar</a>
+            <button type="button" class="btn-ajust btn-edi" data-bs-dismiss="modal">Cancelar</button>
         </div>
     </form>
 </div>

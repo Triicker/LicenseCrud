@@ -139,7 +139,7 @@ public function store(Request $request)
         if ($request->is('api/*')) {
             list($userName, $idusuario, $idempresa) = $this->getUserInfoFromJWT();
         } else {
-            list($userName, $idusuario, $idempresa) = $this->getUserInfoFromSession();
+            list($userName, $userLogin, $idusuario, $idempresa) = $this->getUserInfoFromSession();
         }
 
         $validatedData = $request->validate([
