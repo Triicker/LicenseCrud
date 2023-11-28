@@ -26,4 +26,10 @@ class Zwnempresa extends Model
     ];
     public $timestamps = false; 
 
+    public function layout()
+{
+    return $this->hasOne(Zwnempresalayout::class, 'IDEMPRESA', 'IDEMPRESA');
+}
+
+
 }

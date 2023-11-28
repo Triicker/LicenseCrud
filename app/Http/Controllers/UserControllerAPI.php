@@ -179,8 +179,6 @@ public function update(Request $request, $IDUSUARIO)
                 'CADASTRO' => 'Usuário atualizado: ' . $usuario->USUARIO,
                 'VALORANTERIOR' => json_encode($dadosAntigos),
                 'VALORNOVO' => json_encode($dadosNovos),
-                'RECCREATEDBY' => $userName,
-                'RECCREATEDON' => now(),
                 'RECMODIFIEDBY' => $userName,
                 'RECMODIFIEDON' => now(),
             ];

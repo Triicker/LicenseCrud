@@ -7,37 +7,37 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ asset('css/layout_empresa1.css') }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon"/>
-    <title>@yield('titulo', 'Worknow')</title>
-
+    <title id="titulo">Worknow</title>
+    <link rel="icon" href="@yield('icone', asset('css/img_svg/w.ico'))" type="image/x-icon">
 
     <?php
 
-$IDEMPRESA = session('IDEMPRESA'); 
+$Nempresa = session('empresaNome');
+$IDEMPRESA = session('IDEMPRESA');
+$empresaStyle = session('layout');
+$empresaDoID = $empresaStyle->where('IDEMPRESA', $IDEMPRESA)->first();
 
-if ($IDEMPRESA === 1) {
-    $logoUrlFromDatabase = "/css/img_svg/icon-teste-worknow.png";
-    $cor_menu_superior = "#14efca ";
-    $cor_menu_lateral = "#14efca ";
-    $cor_hover_menu_lateral = "#7d65ec ";
-    $cor_fundo_logo_menu = "#ffffff";
-    $cor_fonte_menu_lateral = "#7d65ec ";
-    $cor_hover_menu_sup = "#7d65ec ";
-    $cor_fonte_icon_lateral = "#ffffff";
-    $cor_fonte_icon_sup = "#ffffff";
-} elseif ($IDEMPRESA === 2) {
-    $logoUrlFromDatabase = "/css/img_svg/icon-worknow-250px_40px.png"; 
-    $cor_menu_superior = "#7d65ec ";
-    $cor_menu_lateral = "#7d65ec ";
-    $cor_hover_menu_lateral = "#14efca";
-    $cor_fundo_logo_menu = "#ffffff";
-    $cor_fonte_menu_lateral = "#14efca";
-    $cor_hover_menu_sup = "#14efca";
-    $cor_fonte_icon_lateral = "#ffffff";
-    $cor_fonte_icon_sup = "#ffffff";
-} else {
-    $logoUrlFromDatabase = "/css/img_svg/icon-worknow-250px_40px.png"; 
+$defaultStyle = [
+    'logoUrlFromDatabase' => "/css/img_svg/icon-worknow-250px_40px.png",
+    'cor_menu_superior' => "#7d65ec",
+    'cor_menu_lateral' => "#7d65ec",
+    'cor_hover_menu_lateral' => "#14efca",
+    'cor_fundo_logo_menu' => "#ffffff",
+    'cor_fonte_menu_lateral' => "#14efca",
+    'cor_hover_menu_sup' => "#14efca",
+    'cor_fonte_icon_lateral' => "#ffffff",
+    'cor_fonte_icon_sup' => "#ffffff",
+];
 
-}
+$logoUrlFromDatabase = $empresaDoID->LOGOFUNDO ?? $defaultStyle['logoUrlFromDatabase'];
+$cor_menu_superior = $empresaDoID->MENUSUP ?? $defaultStyle['cor_menu_superior'];
+$cor_menu_lateral = $empresaDoID->MENULAT ?? $defaultStyle['cor_menu_lateral'];
+$cor_hover_menu_lateral = $empresaDoID->MENULATHOVER ?? $defaultStyle['cor_hover_menu_lateral'];
+$cor_fundo_logo_menu = $empresaDoID->MENURODFONTHOVER ?? $defaultStyle['cor_fundo_logo_menu'];
+$cor_fonte_menu_lateral = $empresaDoID->MENULATFONT ?? $defaultStyle['cor_fonte_menu_lateral'];
+$cor_hover_menu_sup = $empresaDoID->MENUSUPHOVER ?? $defaultStyle['cor_hover_menu_sup'];
+$cor_fonte_icon_lateral = $empresaDoID->MENUROD ?? $defaultStyle['cor_fonte_icon_lateral'];
+$cor_fonte_icon_sup = $empresaDoID->MENUSUPFONT ?? $defaultStyle['cor_fonte_icon_sup'];
 
 ?>
 
@@ -97,6 +97,8 @@ if ($IDEMPRESA === 1) {
     <button  type="button" hidden>{{ session('empresaNome') }}</button>
     <button  type="button" hidden>{{ session('IDEMPRESA') }}</button>
     <button  type="button" hidden>{{ session('IDUSUARIO') }}</button>
+    <button  type="button" hidden>{{ session('layout') }}</button>
+
 
         <form method="POST" action="{{ route('auth.logout') }}">
         @csrf
@@ -186,4 +188,5 @@ Logs</a>
     function removerClasseHover(element) {
         element.classList.remove('bg-dark');
     }
+        document.getElementById('titulo').innerText = '<?php echo $Nempresa ?? "Worknow"; ?>';
 </script>

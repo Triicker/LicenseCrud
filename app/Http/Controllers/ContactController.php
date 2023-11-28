@@ -156,7 +156,9 @@ public function store(Request $request)
         ]);
 
         $validatedData['RECCREATEDON'] = now();
-        $validatedData['RECCREATEDBY'] = $userName;
+        $validatedData['RECCREATEDBY'] = $userLogin;
+        $validatedData['RECMODIFIEDON'] = now();
+        $validatedData['RECMODIFIEDBY'] = $userLogin;
 
         $validatedData['IDCLIENTE'] = $request->is('api/*') ? $validatedData['IDCLIENTE'] : $request->input('CLIENTE');
 

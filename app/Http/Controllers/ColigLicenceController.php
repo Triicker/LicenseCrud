@@ -98,6 +98,8 @@ public function store(Request $request)
         $validatedData['IDCOLIGADA'] = $request->input('IDCOLIGADA');
         $validatedData['RECCREATEDON'] = now();
         $validatedData['RECCREATEDBY'] = $userName;
+        $validatedData['RECMODIFIEDON'] = now();
+        $validatedData['RECMODIFIEDBY'] = $userName;
 
         $coligadaLicenca = Zwncoliglicenca::create($validatedData);
 
@@ -108,6 +110,8 @@ public function store(Request $request)
             'VALORNOVO' => json_encode($validatedData),
             'RECCREATEDBY' => $userName,
             'RECCREATEDON' => now(),
+            'RECMODIFIEDBY' => $userName,
+            'RECMODIFIEDON' => now(),
         ];
 
         $logData['IDEMPRESA'] = $empresaID;
@@ -151,7 +155,7 @@ private function createApiResponse($message, $data = null, $statusCode = 200) {
 }
 
 private function createWebResponse($message) {
-    return redirect()->route('clientes.index')->with('success', $message);
+    return redirect()->route('coligada.index')->with('success', $message);
 }
 
 private function handleError($e, $request) {

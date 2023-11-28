@@ -100,6 +100,8 @@ public function store(Request $request)
             'VALORNOVO' => json_encode($validatedData),
             'RECCREATEDBY' => $userName,
             'RECCREATEDON' => now(),
+            'RECMODIFIEDBY' => $userName,
+            'RECMODIFIEDON' => now(),
         ];
 
         $logData['IDEMPRESA'] = $this->getEmpresaID($user);

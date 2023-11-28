@@ -18,7 +18,10 @@
     <form method="POST" action="{{ route('coligadas.update', ['IDCOLIGADA' => $coligada->IDCOLIGADA]) }}">
     @csrf
     @method('PATCH')
-    
+    <div class="mb-3">
+        <label for="IDCOLIGADA" class="form-label">ID</label>
+        <input type="text" class="form-control" id="IDCOLIGADA" name="IDCOLIGADA" value="{{ $coligada->IDCOLIGADA }}">
+    </div>
     <div class="mb-3">
         <label for="NOME" class="form-label">Nome</label>
         <input type="text" class="form-control" id="NOME" name="NOME" value="{{ $coligada->NOME }}">
@@ -41,6 +44,10 @@
             <option value="1" {{ $coligada->ATIVO ? 'selected' : '' }}>Sim</option>
             <option value="0" {{ !$coligada->ATIVO ? 'selected' : '' }}>Não</option>
         </select>
+    </div>
+    <div class="mb-3">
+        <label for="IDIMAGEM" class="form-label">ID Imagem</label>
+        <input type="text" class="form-control" id="IDIMAGEM" name="IDIMAGEM" value="{{ $coligada->IDIMAGEM }}">
     </div>
     <div class="mb-3">
         <label for="TELEFONE" class="form-label">Telefone</label>

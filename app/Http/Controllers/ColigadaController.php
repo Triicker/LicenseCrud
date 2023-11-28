@@ -158,6 +158,8 @@ public function store(Request $request)
 
         $validatedData['RECCREATEDON'] = now();
         $validatedData['RECCREATEDBY'] = $userLogin;
+        $validatedData['RECMODIFIEDON'] = now();
+        $validatedData['RECMODIFIEDBY'] = $userLogin;
 
         if ($request->is('api/*')) {
             $validatedData['IDCLIENTE'] = $validatedData['IDCLIENTE'];

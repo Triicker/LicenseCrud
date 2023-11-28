@@ -83,7 +83,7 @@
                             @method('POST')
 
                             <div class="mb-3">
-                        <label for="IDCOLIGADA" class="form-label">IDCOLIGADA</label>
+                        <label for="IDCOLIGADA" class="form-label">ID</label>
                         <input type="text" name="IDCOLIGADA" class="form-control" required>
                     </div>
 
@@ -103,8 +103,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="EMAIL" class="form-label">Email</label>
-                        <input type="text" name="EMAIL" class="form-control" required>
+                        <label for="IDIMAGEM" class="form-label">ID Imagem</label>
+                        <input type="text" name="IDIMAGEM" class="form-control" required>
                     </div>
 
                     <div class="mb-3">
@@ -113,8 +113,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="IDIMAGEM" class="form-label">ID Imagem</label>
-                        <input type="text" name="IDIMAGEM" class="form-control" required>
+                        <label for="EMAIL" class="form-label">Email</label>
+                        <input type="text" name="EMAIL" class="form-control" required>
                     </div>
 
                     <div class="mb-3">

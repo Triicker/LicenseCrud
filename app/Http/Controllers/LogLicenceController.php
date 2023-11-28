@@ -15,15 +15,22 @@ use Illuminate\Support\Facades\Auth;
 class LogLicenceController extends Controller
 {
     public function index()
-    {
-        $logs = Zwnloglicenca::with(['empresa', 'usuario'])->get();
-    
-        if (request()->is('api/*') || request()->wantsJson()) {
-            return response()->json(['logs' => $logs]);
-        } else {
-            return view('indexLog', compact('logs'));
-        }
+{
+    $logs = Zwnloglicenca::with(['empresa', 'usuario', 'cliente', 'produto'])
+        ->whereIn('IDLOGLIC', function ($query) {
+            $query->selectRaw('MAX(IDLOGLIC)')
+                ->from('zwnloglicenca')
+                ->groupBy('IDCLIENTE');
+        })
+        ->get();
+
+    if (request()->is('api/*') || request()->wantsJson()) {
+        return response()->json(['logs' => $logs]);
+    } else {
+        return view('indexLog', compact('logs'));
     }
+}
+
     public function logLicenca(Request $request)
     {
         try {

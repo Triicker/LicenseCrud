@@ -12,9 +12,11 @@
     <table id="logTable" class="table table-striped table-bordered text-center mt-5">
         <thead>
             <tr>
+                <th scope="col" class="align-middle">ID</th>
                 <th scope="col" class="align-middle">Data de consulta</th>
                 <th scope="col" class="align-middle">Cliente</th>
                 <th scope="col" class="align-middle">Produto</th>
+                <th scope="col" class="align-middle">Contexto</th>
                 <th scope="col" class="align-middle">QTD Alunos</th>
                 <th scope="col" class="align-middle">QTD Chamadas</th>
                 <th scope="col" class="align-middle">Versão Totvs</th>
@@ -26,9 +28,11 @@
         <tbody>
             @foreach($logs as $log)
             <tr>
+                <td class="align-middle">{{ $log->IDLOGLIC }}</td>
                 <td class="align-middle">{{ $log->RECCREATEDON }}</td>
                 <td class="align-middle">{{ $log->cliente->NOME }}</td>
-                <td class="align-middle">{{ $log->produto->NOME }}</td>
+                <td class="align-middle">{{ $log->produto->NOME ?? '' }}</td>
+                <td class="align-middle">{{ $log->IDCOLIGADA . '-' . $log->IDFILIAL . '-' . $log->IDTIPOCURSO ?? '' }}</td>
                 <td class="align-middle">{{ $log->QTDALUNOS }}</td>
                 <td class="align-middle">{{ $log->QTDCHAMADAS }}</td>
                 <td class="align-middle">{{ $log->VERSAOTOTVS }}</td>

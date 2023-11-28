@@ -135,6 +135,8 @@ public function store(Request $request)
             'VALORNOVO' => json_encode($validatedData),
             'RECCREATEDBY' => $user->userLogin,
             'RECCREATEDON' => now(),
+            'RECMODIFIEDBY' => $user->userLogin,
+            'RECMODIFIEDON' => now(),
             'IDEMPRESA' => $user->idempresa,
         ];
 

@@ -55,13 +55,13 @@
                         <input type="hidden" name="IDCLIENTE" value="{{ $cliente->IDCLIENTE }}">
                         <input type="hidden" name="IDCOLIGADA" value="{{ $coligada->IDCOLIGADA }}">
                         <div class="mb-3">
-    <label for="IDPRODUTO" class="form-label">Produto</label>
-    <select name="IDPRODUTO" class="form-select" required>
-        @foreach($produtos as $produtoOption)
-            <option value="{{ $produtoOption->IDPRODUTO }}">{{ $produtoOption->NOME }}</option>
-        @endforeach
-    </select>
-</div>
+                        <label for="IDPRODUTO" class="form-label">Produto</label>
+                        <select name="IDPRODUTO" class="form-select" required>
+                         @foreach($produtos as $produtoOption)
+                        <option value="{{ $produtoOption->IDPRODUTO }}">{{ $produtoOption->NOME }}</option>
+                          @endforeach
+                        </select>
+                        </div>
 
                         <div class="mb-3">
                             <label for="DTINICIO" class="form-label">Data de Início</label>

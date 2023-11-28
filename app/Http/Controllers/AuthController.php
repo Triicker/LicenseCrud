@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Zwnempresalayout;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Validator;
@@ -62,6 +63,8 @@ public function loginWeb(Request $request)
     $userName = $user->NOME; 
     $userLogin = $user->USUARIO; 
     $empresa = Zwnusuempresa::where('IDUSUARIO', $user->IDUSUARIO)->first();
+    $layout = Zwnempresalayout::all();
+
 
     if ($empresa) {
         $empresaNome = Zwnempresa::where('IDEMPRESA', $empresa->IDEMPRESA)->value('NOME');
@@ -69,7 +72,7 @@ public function loginWeb(Request $request)
         $empresaNome = 'Empresa não encontrada';
     }
 
-    session(['userName' => $userName, 'userLogin' => $userLogin, 'empresaNome' => $empresaNome, 'IDEMPRESA' => $empresa->IDEMPRESA, 'IDUSUARIO' => $user->IDUSUARIO]);
+    session(['userName' => $userName, 'layout' => $layout, 'userLogin' => $userLogin, 'empresaNome' => $empresaNome, 'IDEMPRESA' => $empresa->IDEMPRESA, 'IDUSUARIO' => $user->IDUSUARIO]);
 
     return redirect()->route('login');
 }
