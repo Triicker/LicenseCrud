@@ -131,15 +131,16 @@ public function store(Request $request)
 {
     try {
         $userName = null;
-        $userLogin = null;
         $empresaNome = null;
+        $userLogin = null;
+        
         $idempresa = null;
         $idusuario = null;
 
         if ($request->is('api/*')) {
             list($userName, $idusuario, $idempresa) = $this->getUserInfoFromJWT();
         } else {
-            list($userName, $userLogin, $idusuario, $idempresa) = $this->getUserInfoFromSession();
+            list($userLogin, $userName,  $idusuario, $idempresa) = $this->getUserInfoFromSession();
         }
 
         $validatedData = $request->validate([
@@ -177,11 +178,11 @@ public function store(Request $request)
             'VALORNOVO' => json_encode($validatedData),
             'RECCREATEDBY' => $userLogin,
             'RECCREATEDON' => now(),
+            'RECMODIFIEDON' => now(),
+            'RECMODIFIEDBY' => $userLogin,
             'IDEMPRESA' => $idempresa,
         ];
-
         $this->createLog($logData, $request);
-
         if ($request->is('api/*')) {
             $response = [
                 'status' => 'success',
@@ -226,7 +227,7 @@ private function getUserInfoFromSession() {
     $idusuario = session('IDUSUARIO');
     $idempresa = session('IDEMPRESA');
 
-    return [$userName, $idusuario, $idempresa , $userLogin];
+    return [ $userLogin, $userName, $idusuario, $idempresa];
 }
 
 private function createLog($logData, $request) {

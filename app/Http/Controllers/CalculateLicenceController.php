@@ -30,29 +30,27 @@ class CalculateLicenceController extends Controller
         } else {
             list($userName, $idusuario, $idempresa) = $this->getUserInfoFromSession();
         }
-
-        $IDCLIENTE = $requestData['IDCLIENTE'];
         $IDCOLIGADA = $requestData['IDCOLIGADA'];
-        $IDPRODUTO = $requestData['IDPRODUTO'];
         $IDFILIAL = $requestData['IDFILIAL'];
         $IDTIPOCURSO = $requestData['IDTIPOCURSO'];
-        $ATIVO = $requestData['ATIVO'];
         $CNPJ = $requestData['CNPJ'];
-        $USUARIO = $requestData['USUARIO'];
         $NOMEPRODUTO = $requestData['NOMEPRODUTO'];
         $QTDALUNOS = $requestData['QTDALUNOS'];
         $QTDCHAMADAS = $requestData['QTDCHAMADAS'];
         $VERSAOTOTVS = $requestData['VERSAOTOTVS'];
         $VERSAOWORKNOW = $requestData['VERSAOWORKNOW'];
 
-        $coliglicenca = Zwncoliglicenca::where('IDCLIENTE', $IDCLIENTE)
+        $coligada = Zwncoligada::where('CGC', $CNPJ)
             ->where('IDCOLIGADA', $IDCOLIGADA)
-            ->where('IDPRODUTO', $IDPRODUTO)
-            ->where('ATIVO', $ATIVO)
             ->first();
-
-        if ($coliglicenca) {
-            $produto = Zwnproduto::find($IDPRODUTO);
+            
+        if ($coligada) {
+          $produto = Zwnproduto::where('APELIDO', $NOMEPRODUTO)->first();
+            $coliglicenca = Zwncoliglicenca::where('IDCLIENTE', $coligada->IDCLIENTE)
+            ->where('IDCOLIGADA', $IDCOLIGADA)
+            ->where('IDPRODUTO', $produto->IDPRODUTO)
+            ->where('ATIVO', 1)
+            ->first();
 
             if (!$produto) {
                 $response = [
@@ -63,27 +61,20 @@ class CalculateLicenceController extends Controller
                 return response()->json($response, 404);
             }
 
-            $cliente = Zwncliente::find($IDCLIENTE);
-
+            $cliente = Zwncliente::find( $coligada->IDCLIENTE);
             $DTINICIO = $coliglicenca->DTINICIO;
             $DTFIM = $coliglicenca->DTFIM;
-
             $dataHoje = now();
-            $liberadoAte = $this->calcularDataLiberacao($dataHoje, $DTINICIO, $DTFIM, $ATIVO, $cliente);
-
-            
-
+            $liberadoAte = $this->calcularDataLiberacao($dataHoje, $DTINICIO, $DTFIM, 1, $cliente);
+    
             $log = new Zwnloglicenca();
-            $log->IDCLIENTE = $IDCLIENTE;
+            $log->IDCLIENTE =  $coligada->IDCLIENTE;
             $log->IDCOLIGADA = $IDCOLIGADA;
-            $log->IDPRODUTO = $IDPRODUTO;
+            $log->IDPRODUTO =  $produto->IDPRODUTO;
             $log->IDFILIAL = $IDFILIAL;
             $log->IDTIPOCURSO = $IDTIPOCURSO;
             $log->IDEMPRESA = $idempresa;
             $log->IDUSUARIO = $idusuario;
-            $log->CNPJ = $CNPJ;
-            $log->USUARIO = $USUARIO;
-            $log->NOMEPRODUTO = $NOMEPRODUTO;
             $log->QTDALUNOS = $QTDALUNOS;
             $log->QTDCHAMADAS = $QTDCHAMADAS;
             $log->VERSAOTOTVS = $VERSAOTOTVS;
@@ -93,7 +84,6 @@ class CalculateLicenceController extends Controller
             $log->RECCREATEDBY = $userName;
             $log->RECCREATEDON = now();
             
-
             $log->save();
 
 
@@ -107,7 +97,7 @@ class CalculateLicenceController extends Controller
         }
 
         $response = [
-            'status' => ($liberadoAte != '') ? 'success' : 'unauthorized',
+            'status' => ($liberadoAte != '') ? 'success' : 'error',
             'message' => ($liberadoAte != '') ? 'Cálculo de licença realizado com sucesso' : 'Licença expirada!',
             'data' => [
                 'LIBERADO' => ($liberadoAte != '') ? 1 : 0,

@@ -22,6 +22,7 @@
                 <th scope="col" class="align-middle">CGC</th>
                 <th scope="col" class="align-middle">Email</th>
                 <th scope="col" class="align-middle">Telefone</th>
+                <th scope="col" class="align-middle">Celular</th>
                 <th scope="col" class="align-middle">ID Imagem</th>
                 <th scope="col" class="align-middle">Apelido</th>
                 <th scope="col" class="align-middle">Ativo</th>
@@ -37,6 +38,7 @@
     <td class="align-middle">{{ $coligada->CGC }}</td>
     <td class="align-middle">{{ $coligada->EMAIL }}</td>
     <td class="align-middle">{{ $coligada->TELEFONE }}</td>
+    <td class="align-middle">{{ $coligada->CELULAR }}</td>
     <td class="align-middle">{{ $coligada->IDIMAGEM }}</td>
     <td class="align-middle">{{ $coligada->APELIDO }}</td>
     <td class="align-middle">{{ $coligada->ATIVO == 1 ? 'Sim' : 'Não' }}</td>
@@ -110,6 +112,11 @@
                     <div class="mb-3">
                         <label for="TELEFONE" class="form-label">Telefone</label>
                         <input type="text" name="TELEFONE" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="CELULAR" class="form-label">Celular</label>
+                        <input type="text" name="CELULAR" class="form-control" required>
                     </div>
 
                     <div class="mb-3">

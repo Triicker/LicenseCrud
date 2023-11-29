@@ -21,15 +21,16 @@
     
         <div class="mb-3">
             <label for="DTFIM" class="form-label">Data de Fim</label>
-            <input type="DATE" class="form-control" id="DTFIM" name="DTFIM" value="{{ \Carbon\Carbon::parse($licenca->DTFIM)->format('d/m/Y') }}">
+            <input type="DATE" class="form-control" id="DTFIM" name="DTFIM" value="{{ \Carbon\Carbon::parse($licenca->DTFIM)->format('Y-m-d') }}">
         </div>
         <div class="mb-3">
-            <label for="ATIVO" class="form-label">Ativo</label>
-            <select class="form-select" id="ATIVO" name="ATIVO">
-                <option value="1" {{ $licenca->ATIVO ? 'selected' : '' }}>Sim</option>
-                <option value="0" {{ !$licenca->ATIVO ? 'selected' : '' }}>Não</option>
-            </select>
-        </div>
+    <label for="ATIVO" class="form-label">Ativo</label>
+    <select class="form-select" id="ATIVO" name="ATIVO">
+        <option value="1" {{ $licenca->ATIVO == 1 ? 'selected' : '' }}>Sim</option>
+        <option value="0" {{ $licenca->ATIVO == 0 ? 'selected' : '' }}>Não</option>
+    </select>
+</div>
+
         <div class="text-center">
         <button type="submit" class="btn-s btn-suc">Atualizar</button>
         <button type="button" class="btn-ajust btn-edi" data-bs-dismiss="modal">Cancelar</button>

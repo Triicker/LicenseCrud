@@ -135,7 +135,7 @@ public function store(Request $request)
     if ($request->is('api/*')) {
         list($userName, $idusuario, $idempresa) = $this->getUserInfoFromJWT();
     } else {
-        list($userName, $userLogin, $idusuario, $idempresa) = $this->getUserInfoFromSession();
+        list($userName, $idusuario, $idempresa) = $this->getUserInfoFromSession();
     }
 
     try {
@@ -147,7 +147,7 @@ public function store(Request $request)
         ]);
 
         $validatedData['RECCREATEDON'] = now();
-        $validatedData['RECCREATEDBY'] = $userLogin;
+        $validatedData['RECCREATEDBY'] = $userName;
 
         if ($request->is('api/*')) {
             $validatedData['IDEMPRESA'] = $validatedData['IDEMPRESA'];
@@ -161,9 +161,9 @@ public function store(Request $request)
             'CADASTRO' => 'Cliente criado: ' . $validatedData['NOME'],
             'VALORANTERIOR' => null,
             'VALORNOVO' => json_encode($validatedData),
-            'RECCREATEDBY' => $userLogin,
+            'RECCREATEDBY' => $userName,
             'RECCREATEDON' => now(),
-            'RECMODIFIEDBY' => $userLogin,
+            'RECMODIFIEDBY' => $userName,
             'RECMODIFIEDON' => now(),
             'IDUSUARIO' => $idusuario,
             'IDEMPRESA' => $idempresa,

@@ -204,7 +204,6 @@ private function handleError($e, $request) {
 public function update(Request $request, $IDCOLIGADA)
 {
     $validatedData = $request->validate([
-        'DTINICIO' => 'date',
         'DTFIM' => 'date',
         'ATIVO' => 'boolean',
     ]);
@@ -236,6 +235,7 @@ public function update(Request $request, $IDCOLIGADA)
         $empresaID = session('IDEMPRESA');
         $user = $this->getUserInfoFromSession();
     }
+    $validatedData['ATIVO'] = $request->input('ATIVO') == 1;
 
     $validatedData['RECMODIFIEDON'] = now();
     $validatedData['RECMODIFIEDBY'] = $userName;

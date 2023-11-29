@@ -12,8 +12,6 @@ use App\Http\Controllers\ColigLicenceController;
 use App\Http\Controllers\LogCadastroController;
 use App\Http\Controllers\LogLicenceController;
 use App\Http\Controllers\CalculateLicenceController;
-
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +22,9 @@ Route::post('auth/logout', [AuthController::class, 'logout']);
 Route::post('auth/refresh', [AuthController::class, 'refresh']);
 Route::get('auth/me', [AuthController::class, 'me']);
 
+// Autorização rotas
+Route::middleware(['apiJWT'])->group(function () {
+
 // Logs
 Route::get('Zwnlogcadastro', [LogCadastroController::class, "index"]);
 Route::post('Zwnlogcadastro', [LogCadastroController::class, 'logCadastro']);
@@ -31,11 +32,7 @@ Route::post('Zwnlogcadastro', [LogCadastroController::class, 'logCadastro']);
 Route::get('Zwnloglicenca', [LogLicenceController::class, "index"]);
 Route::post('Zwnloglicenca', [LogLicenceController::class, 'logLicenca']);
 
-Route::get('Zwnempresalayout', [LogLicenceController::class, 'layout.edit']);
-
-
-// Autorização rotas
-Route::middleware(['apiJWT'])->group(function () {
+Route::get('Zwnempresalayout', [LogLicenceController::class, 'layout.edit']);    
 
 // LICENÇA 
 Route::post('Zwnloglicenca', [CalculateLicenceController::class, 'calcularLicenca']);

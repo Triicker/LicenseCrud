@@ -40,6 +40,11 @@ class Zwncoligada extends Model
     {
         return $this->belongsTo(Zwncoliglicenca::class, 'IDCOLIGADA', 'IDCOLIGADA');
     }
+    
+    public function Cnpj()
+    {
+        return $this->belongsTo(Zwnloglicenca::class, 'IDCOLIGADA', 'IDCOLIGADA');
+    }
 
     
 }

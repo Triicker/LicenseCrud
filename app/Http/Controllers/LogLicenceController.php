@@ -20,7 +20,7 @@ class LogLicenceController extends Controller
         ->whereIn('IDLOGLIC', function ($query) {
             $query->selectRaw('MAX(IDLOGLIC)')
                 ->from('zwnloglicenca')
-                ->groupBy('IDCLIENTE');
+                ->groupBy('IDCLIENTE', 'IDCOLIGADA', 'IDFILIAL', 'IDTIPOCURSO', 'IDPRODUTO');
         })
         ->get();
 

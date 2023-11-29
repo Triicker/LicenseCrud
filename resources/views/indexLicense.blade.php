@@ -70,7 +70,7 @@
 
                         <div class="mb-3">
                             <label for="DTFIM" class="form-label">Data de Fim</label>
-                            <input type="DATE" class="form-control" id="DTFIM" name="DTFIM" value="{{ \Carbon\Carbon::parse($licenca->DTFIM)->format('d/m/Y') }}" required>   
+                            <input type="DATE" class="form-control" id="DTFIM" name="DTFIM" value="{{ $licenca->DTFIM ? \Carbon\Carbon::parse($licenca->DTFIM)->format('d/m/Y') : '0000-00-00' }}">
                         </div>
 
                         <div class="mb-3">
