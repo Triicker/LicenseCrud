@@ -30,4 +30,9 @@ class Zwnproduto extends Model
         return $this->belongsTo(Zwnempresa::class, 'IDEMPRESA', 'IDEMPRESA');
     }
 
+    public function licença()
+    {
+        return $this->hasMany(Zwncoliglicenca::class, 'IDPRODUTO', 'IDPRODUTO');
+    }
+
 }

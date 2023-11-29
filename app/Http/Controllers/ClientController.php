@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Http\Controllers\LogCadastroController;
 use App\Models\Zwncliente;
+use App\Models\Zwnclicontato;
 use App\Models\Zwnempresa;
 use App\Models\Zwnlogcadastro;
 use App\Models\Zwnusuempresa;
@@ -347,7 +348,7 @@ public function create()
     
 
 
-public function delete($IDCLIENTE)
+    public function delete($IDCLIENTE)
 {
     try {
         $cliente = Zwncliente::find($IDCLIENTE);
@@ -362,6 +363,26 @@ public function delete($IDCLIENTE)
                 return response()->json($response, 404);
             } else {
                 abort(404);
+            }
+        }
+
+        $contatos = Zwnclicontato::where('IDCLIENTE', $cliente->IDCLIENTE)->count();
+
+        if ($contatos > 0) {
+            if (request()->is('api/*')) {
+                $response = [
+                    'status' => 'error',
+                    'message' => 'Não é possível excluir o cliente. Existem contatos associados.',
+                    'data' => null,
+                ];
+                return response()->json($response, 400);
+            } else {
+                $response = [
+                    'status' => 'error',
+                    'message' => 'Não é possível excluir o cliente. Existem contatos associados.',
+                    'data' => null,
+                ];
+                return response()->json($response, 400);
             }
         }
 
@@ -386,11 +407,9 @@ public function delete($IDCLIENTE)
             ];
             return response()->json($response, 400);
         } else {
-            return back()->withErrors(['error' => 'Erro ao excluir o cliente: ' . $e->getMessage()]);
         }
     }
 }
 
-    
 
 }

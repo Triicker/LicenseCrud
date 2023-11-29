@@ -203,6 +203,26 @@ public function update(Request $request, $IDEMPRESA)
                 return response()->json($response, 404);
             }
 
+            $empresas = Zwnusuempresa::where('IDEMPRESA', $empresa->IDEMPRESA)->count();
+
+    if ($empresas > 0) {
+        if (request()->is('api/*')) {
+            $response = [
+                'status' => 'error',
+                'message' => 'Não é possível excluir a Empresa. Existem usuários associados.',
+                'data' => null,
+            ];
+            return response()->json($response, 400);
+        } else {
+            $response = [
+                'status' => 'error',
+                'message' => 'Não é possível excluir a Empresa. Existem usuários associados.',
+                'data' => null,
+            ];
+            return response()->json($response, 400);
+        }
+    }
+
             $empresa->delete();
 
             $response = [

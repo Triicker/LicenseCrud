@@ -171,7 +171,7 @@ $(document).ready(function () {
                     window.location.reload();
                 },
                 error: function () {
-                    alert('Erro ao excluir o cliente.');
+                    alert('Não é possível excluir o cliente. Existem contatos associados.');
                 }
             });
         }

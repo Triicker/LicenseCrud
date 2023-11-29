@@ -31,4 +31,9 @@ class Zwncliente extends Model
     {
         return $this->belongsTo(Zwnempresa::class, 'IDEMPRESA', 'IDEMPRESA');
     }
+
+    public function contatos()
+    {
+        return $this->hasMany(Zwnclicontato::class, 'IDCLIENTE', 'IDCLIENTE');
+    }
 }

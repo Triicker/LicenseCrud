@@ -223,6 +223,26 @@ public function update(Request $request, $IDUSUARIO)
                 return response()->json($response, 404);
             }
 
+            $usuarios = Zwnusuempresa::where('IDUSUARIO', $usuario->IDUSUARIO)->count();
+
+    if ($usuarios > 0) {
+        if (request()->is('api/*')) {
+            $response = [
+                'status' => 'error',
+                'message' => 'Não é possível excluir o Usuário. Existem empresas associadas.',
+                'data' => null,
+            ];
+            return response()->json($response, 400);
+        } else {
+            $response = [
+                'status' => 'error',
+                'message' => 'Não é possível excluir o Usuário. Existem empresas associadas.',
+                'data' => null,
+            ];
+            return response()->json($response, 400);
+        }
+    }
+
             $usuario->delete();
 
             $response = [

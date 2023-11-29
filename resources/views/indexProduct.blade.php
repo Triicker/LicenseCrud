@@ -165,7 +165,7 @@ $(document).ready(function () {
                     window.location.reload();
                 },
                 error: function () {
-                    alert('Erro ao excluir o produto.');
+                    alert('Não é possível excluir o Produto. Existem licenças associadas.');
                 }
             });
         }

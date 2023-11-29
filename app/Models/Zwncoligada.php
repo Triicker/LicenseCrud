@@ -46,5 +46,10 @@ class Zwncoligada extends Model
         return $this->belongsTo(Zwnloglicenca::class, 'IDCOLIGADA', 'IDCOLIGADA');
     }
 
+    public function coligadas()
+    {
+        return $this->hasMany(Zwncoligada::class, 'IDCLIENTE', 'IDCLIENTE');
+    }
+
     
 }

@@ -86,7 +86,7 @@
 
                             <div class="mb-3">
                         <label for="IDCOLIGADA" class="form-label">ID</label>
-                        <input type="text" name="IDCOLIGADA" class="form-control" required>
+                        <input type="number" name="IDCOLIGADA" class="form-control" required>
                     </div>
 
                             <div class="mb-3">
@@ -218,7 +218,7 @@ $(document).ready(function () {
                     window.location.reload();
                 },
                 error: function () {
-                    alert('Erro ao excluir o Coligada.');
+                    alert('Não é possível excluir a coligada. Existem clientes associados.');
                 }
             });
         }

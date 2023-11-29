@@ -31,5 +31,9 @@ class Zwnempresa extends Model
     return $this->hasOne(Zwnempresalayout::class, 'IDEMPRESA', 'IDEMPRESA');
 }
 
+public function empresas()
+    {
+        return $this->hasMany(Zwnusuempresa::class, 'IDUSUARIO', 'IDUSUARIO');
+    }
 
 }

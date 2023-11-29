@@ -69,5 +69,10 @@ class Zwnusuario extends Authenticatable implements JWTSubject
     {
         return $this->SENHA; 
     }
+
+    public function usuarios()
+    {
+        return $this->hasMany(Zwnusuempresa::class, 'IDUSUARIO', 'IDUSUARIO');
+    }
     
 }

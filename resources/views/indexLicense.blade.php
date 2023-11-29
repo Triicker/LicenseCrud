@@ -156,7 +156,7 @@ $(document).ready(function () {
                     window.location.reload();
                 },
                 error: function () {
-                    alert('Erro ao excluir a Licenca.');
+                    alert('Não é possível excluir a Licença. Existem coligadas associadas.');
                 }
             });
         }

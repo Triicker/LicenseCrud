@@ -275,6 +275,26 @@ public function delete(Request $request, $IDCOLIGADA)
         }
     }
 
+    $coligadas = Zwncoliglicenca::where('IDCOLIGADA', $coligada->IDCOLIGADA)->count();
+
+    if ($coligadas > 0) {
+        if (request()->is('api/*')) {
+            $response = [
+                'status' => 'error',
+                'message' => 'Não é possível excluir a Licença. Existem coligadas associadas.',
+                'data' => null,
+            ];
+            return response()->json($response, 400);
+        } else {
+            $response = [
+                'status' => 'error',
+                'message' => 'Não é possível excluir a coligada. Existem coligadas associadas.',
+                'data' => null,
+            ];
+            return response()->json($response, 400);
+        }
+    }
+
     $coligada->delete();
 
     if ($request->is('api/*')) {

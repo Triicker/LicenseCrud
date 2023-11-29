@@ -162,11 +162,8 @@ public function store(Request $request)
         $validatedData['RECMODIFIEDON'] = now();
         $validatedData['RECMODIFIEDBY'] = $userLogin;
 
-        if ($request->is('api/*')) {
-            $validatedData['IDCLIENTE'] = $validatedData['IDCLIENTE'];
-        } else {
-            $validatedData['IDCLIENTE'] = $request->input('CLIENTE');
-        }
+        $validatedData['IDCLIENTE'] = $request->is('api/*') ? $validatedData['IDCLIENTE'] : $request->input('CLIENTE');
+
 
         $validatedData['IDCOLIGADA'] = $request->input('IDCOLIGADA');
 
@@ -191,9 +188,8 @@ public function store(Request $request)
             ];
             return response()->json($response, 201);
         } else {
-            return redirect()->route('coligadas.index', ['IDCOLIGADA' => $request->input('IDCOLIGADA')])
-
-                ->with('success', 'Coligada criada com sucesso.');
+            dd($request);
+            return redirect()->route('coligadas.index', ['IDCOLIGADA' => $request->input('IDCOLIGADA')])->with('success', 'Coligada criada com sucesso.');
         }
     } catch (\Exception $e) {
         if ($request->is('api/*')) {
@@ -368,6 +364,26 @@ public function delete(Request $request, $IDCOLIGADA)
                 return response()->json($response, 404);
             } else {
                 abort(404);
+            }
+        }
+
+         $coligadas = Zwncoligada::where('IDCLIENTE', $coligada->IDCLIENTE)->count();
+
+        if ($coligadas > 0) {
+            if (request()->is('api/*')) {
+                $response = [
+                    'status' => 'error',
+                    'message' => 'Não é possível excluir a coligada. Existem clientes associados.',
+                    'data' => null,
+                ];
+                return response()->json($response, 400);
+            } else {
+                $response = [
+                    'status' => 'error',
+                    'message' => 'Não é possível excluir a coligada. Existem clientes associados.',
+                    'data' => null,
+                ];
+                return response()->json($response, 400);
             }
         }
 

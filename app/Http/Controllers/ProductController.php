@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Http\Controllers\LogCadastroController;
 use App\Http\Controllers\CompanyControllerAPI;
+use App\Models\Zwncoliglicenca;
 use App\Models\Zwnusuempresa;
 use App\Models\Zwnempresa;
 use App\Models\Zwnlogcadastro;
@@ -300,6 +301,26 @@ public function delete($IDPRODUTO)
                 return response()->json($response, 404);
             } else {
                 abort(404);
+            }
+        }
+
+        $licença = Zwncoliglicenca::where('IDPRODUTO', $produto->IDPRODUTO)->count();
+
+        if ($licença > 0) {
+            if (request()->is('api/*')) {
+                $response = [
+                    'status' => 'error',
+                    'message' => 'Não é possível excluir o Produto. Existem licenças associadas.',
+                    'data' => null,
+                ];
+                return response()->json($response, 400);
+            } else {
+                $response = [
+                    'status' => 'error',
+                    'message' => 'Não é possível excluir o Produto. Existem licenças associadas.',
+                    'data' => null,
+                ];
+                return response()->json($response, 400);
             }
         }
 
