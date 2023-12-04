@@ -85,18 +85,19 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="TELEFONE" class="form-label">Telefone</label>
-                                            <input type="text" name="TELEFONE" class="form-control" required>
+                                             <label for="TELEFONE" class="form-label">Telefone</label>
+                                            <input type="text" name="TELEFONE" class="form-control" required oninput="formatarTelefone(this)">
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="CELULAR" class="form-label">Celular</label>
-                                            <input type="text" name="CELULAR" class="form-control" required>
+                                            <input type="text" name="CELULAR" class="form-control" required oninput="formatarCelular(this)">
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="EMAIL" class="form-label">Email</label>
-                                            <input type="text" name="EMAIL" class="form-control" required>
+                                            <input type="text" name="EMAIL" class="form-control" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+                                        <div class="invalid-feedback">Por favor, insira um endereço de e-mail válido.</div>
                                         </div>
 
                                         <div class="mb-3">
@@ -213,5 +214,15 @@ $(document).ready(function () {
 function goBack() {
     window.history.back();
 }
+function formatarTelefone(input) {
+        var cleaned = input.value.replace(/\D/g, '');
+        var formatted = cleaned.replace(/(\d{3})(\d{4})(\d{4})/, '($1) $2-$3');
+        input.value = formatted;
+    }
+    function formatarCelular(input) {
+        var cleaned = input.value.replace(/\D/g, '');
+        var formatted = cleaned.replace(/(\d{3})(\d{5})(\d{4})/, '($1) $2-$3');
+        input.value = formatted;
+    }
 </script>
 @endsection

@@ -21,6 +21,7 @@ class Zwncoligada extends Model
         'CGC',
         'EMAIL',
         'TELEFONE',
+        'CELULAR',
         'APELIDO',
         'IDIMAGEM',
         'ATIVO',

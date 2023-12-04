@@ -47,7 +47,7 @@
     </div>
     <div class="mb-3">
         <label for="IDIMAGEM" class="form-label">ID Imagem</label>
-        <input type="text" class="form-control" id="IDIMAGEM" name="IDIMAGEM" value="{{ $coligada->IDIMAGEM }}">
+        <input type="number" class="form-control" id="IDIMAGEM" name="IDIMAGEM" value="{{ $coligada->IDIMAGEM }}">
     </div>
     <div class="mb-3">
         <label for="TELEFONE" class="form-label">Telefone</label>
@@ -61,6 +61,10 @@
         <label for="EMAIL" class="form-label">Email</label>
         <input type="text" class="form-control" id="EMAIL" name="EMAIL" value="{{ $coligada->EMAIL }}">
     </div>
+    <div class="mb-3">
+            <label for="CLIENTE" class="form-label">Cliente</label>
+            <input type="text" class="form-control" id="CLIENTE" name="CLIENTE" value="{{ $coligada->cliente->NOME }}" disabled>
+        </div>
     <div class="text-center">
         <button type="submit" class="btn-s btn-suc">Atualizar</button>
         <button type="button" class="btn-ajust btn-edi" data-bs-dismiss="modal">Cancelar</button>

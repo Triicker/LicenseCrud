@@ -140,7 +140,7 @@ public function store(Request $request)
         if ($request->is('api/*')) {
             list($userName, $idusuario, $idempresa) = $this->getUserInfoFromJWT();
         } else {
-            list($userLogin, $userName,  $idusuario, $idempresa) = $this->getUserInfoFromSession();
+            list($userName, $userLogin,  $idusuario, $idempresa) = $this->getUserInfoFromSession();
         }
 
         $validatedData = $request->validate([
@@ -158,9 +158,9 @@ public function store(Request $request)
         ]);
 
         $validatedData['RECCREATEDON'] = now();
-        $validatedData['RECCREATEDBY'] = $userLogin;
+        $validatedData['RECCREATEDBY'] = $request->is('api/*') ? $userName : $userLogin;
         $validatedData['RECMODIFIEDON'] = now();
-        $validatedData['RECMODIFIEDBY'] = $userLogin;
+        $validatedData['RECMODIFIEDBY'] = $request->is('api/*') ? $userName : $userLogin;
 
         $validatedData['IDCLIENTE'] = $request->is('api/*') ? $validatedData['IDCLIENTE'] : $request->input('CLIENTE');
 
@@ -173,10 +173,10 @@ public function store(Request $request)
             'CADASTRO' => 'Coligada criada: ' . $request->input('IDCOLIGADA'),
             'VALORANTERIOR' => null,
             'VALORNOVO' => json_encode($validatedData),
-            'RECCREATEDBY' => $userLogin,
+            'RECCREATEDBY' => $request->is('api/*') ? $userName : $userLogin,
             'RECCREATEDON' => now(),
             'RECMODIFIEDON' => now(),
-            'RECMODIFIEDBY' => $userLogin,
+            'RECMODIFIEDBY' => $request->is('api/*') ? $userName : $userLogin,
             'IDEMPRESA' => $idempresa,
         ];
         $this->createLog($logData, $request);
@@ -218,12 +218,12 @@ private function getUserInfoFromJWT() {
 }
 
 private function getUserInfoFromSession() {
-    $userLogin = Session('userLogin');
     $userName = session('userName');
+    $userLogin = Session('userLogin');
     $idusuario = session('IDUSUARIO');
     $idempresa = session('IDEMPRESA');
 
-    return [ $userLogin, $userName, $idusuario, $idempresa];
+    return [$userName, $userLogin, $idusuario, $idempresa];
 }
 
 private function createLog($logData, $request) {
@@ -272,6 +272,7 @@ private function createLog($logData, $request) {
                 'NOME' => 'string|max:255',
                 'APELIDO' => 'string|max:255',
                 'TELEFONE' => 'string|max:15',
+                'CELULAR' => 'string|max:15',
                 'EMAIL' => 'string|max:60',
                 'ATIVO' => 'boolean',
                 'CLIENTE' => 'exists:zwnclientes,IDCLIENTE',
@@ -298,14 +299,14 @@ private function createLog($logData, $request) {
     
             $coligadaDepoisDaAtualizacao = $coligada->toArray();
     
-            list($userName, $idusuario, $idempresa) = $this->getUserInfoForUpdate($request);
+            list($userName, $userLogin, $idusuario, $idempresa) = $this->getUserInfoForUpdate($request);
     
             $logData = [
                 'IDUSUARIO' => $idusuario,
                 'CADASTRO' => 'Coligada atualizada: ' . $coligada->NOME,
                 'VALORANTERIOR' => json_encode($coligadaAntesDaAtualizacao),
                 'VALORNOVO' => json_encode($coligadaDepoisDaAtualizacao),
-                'RECMODIFIEDBY' => $userName,
+                'RECMODIFIEDBY' => $request->is('api/*') ? $userName : $userLogin,
                 'RECMODIFIEDON' => now(),
                 'IDEMPRESA' => $idempresa,
             ];
@@ -340,10 +341,10 @@ private function createLog($logData, $request) {
         if ($request->is('api/*')) {
             list($userName, $idusuario, $idempresa) = $this->getUserInfoFromJWT();
         } else {
-            list($userName, $idusuario, $idempresa) = $this->getUserInfoFromSession();
+            list($userName, $userLogin, $idusuario, $idempresa) = $this->getUserInfoFromSession();
         }
     
-        return [$userName, $idusuario, $idempresa];
+        return [$userName, $userLogin, $idusuario, $idempresa];
     }
     
 
@@ -373,14 +374,14 @@ public function delete(Request $request, $IDCOLIGADA)
             if (request()->is('api/*')) {
                 $response = [
                     'status' => 'error',
-                    'message' => 'Não é possível excluir a coligada. Existem clientes associados.',
+                    'message' => 'Não é possível excluir o cliente. Existem coligadas associadas.',
                     'data' => null,
                 ];
                 return response()->json($response, 400);
             } else {
                 $response = [
                     'status' => 'error',
-                    'message' => 'Não é possível excluir a coligada. Existem clientes associados.',
+                    'message' => 'Não é possível excluir o cliente. Existem coligadas associadas.',
                     'data' => null,
                 ];
                 return response()->json($response, 400);

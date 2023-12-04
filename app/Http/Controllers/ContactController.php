@@ -318,7 +318,7 @@ private function handleError($e, $request) {
             list($userName, $userLogin, $idusuario, $idempresa) = $this->getUserInfoForUpdate($request);
     
             $validatedData['RECMODIFIEDON'] = now();
-            $validatedData['RECMODIFIEDBY'] = $userLogin;
+            $validatedData['RECMODIFIEDBY'] = $request->is('api/*') ? $userName : $userLogin;
     
             $contatoAntesDaAtualizacao = $contato->toArray();
     
@@ -331,7 +331,7 @@ private function handleError($e, $request) {
                 'CADASTRO' => 'Contato atualizado: ' . $contato->NOME,
                 'VALORANTERIOR' => json_encode($contatoAntesDaAtualizacao),
                 'VALORNOVO' => json_encode($contatoDepoisDaAtualizacao),
-                'RECMODIFIEDBY' => $userLogin,
+                'RECMODIFIEDBY' => $request->is('api/*') ? $userName : $userLogin,
                 'RECMODIFIEDON' => now(),
                 'IDEMPRESA' => $idempresa,
             ];

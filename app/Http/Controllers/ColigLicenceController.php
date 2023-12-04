@@ -36,11 +36,12 @@ class ColigLicenceController extends Controller
         $cliente = $licencas->isNotEmpty() ? $licencas->first()->cliente : null;
         $produto = $licencas->isNotEmpty() ? $licencas->first()->produto : null;
         $coligada = $licencas->isNotEmpty() ? $licencas->first()->coligada : null;
+        
         if ($licencas->isEmpty()) {
             if ($request->is('api/*') || $request->wantsJson()) {
                 return response()->json(['message' => 'Nenhum resultado encontrado'], 404);
             } else {
-                return view('indexLicense', compact('licencas'))->with('message', 'Nenhum resultado encontrado');
+                return view('indexLicense', compact('licencas', 'cliente', 'produto', 'coligada', 'produtos'))->with('message', 'Nenhum resultado encontrado');
             }
         }
     
@@ -100,6 +101,13 @@ public function store(Request $request)
         $validatedData['RECCREATEDBY'] = $userName;
         $validatedData['RECMODIFIEDON'] = now();
         $validatedData['RECMODIFIEDBY'] = $userName;
+
+        $dtInicio = $request->input('DTINICIO');
+        $dtFim = $request->input('DTFIM');
+
+        if ($dtInicio > $dtFim) {
+        throw new \Exception('A data de início não pode ser maior que a data de fim.');
+        }
 
         $coligadaLicenca = Zwncoliglicenca::create($validatedData);
 
@@ -281,14 +289,14 @@ public function delete(Request $request, $IDCOLIGADA)
         if (request()->is('api/*')) {
             $response = [
                 'status' => 'error',
-                'message' => 'Não é possível excluir a Licença. Existem coligadas associadas.',
+                'message' => 'Não é possível excluir a Coligada. Existem Licenças associadas.',
                 'data' => null,
             ];
             return response()->json($response, 400);
         } else {
             $response = [
                 'status' => 'error',
-                'message' => 'Não é possível excluir a coligada. Existem coligadas associadas.',
+                'message' => 'Não é possível excluir a Coligada. Existem Licenças associadas.',
                 'data' => null,
             ];
             return response()->json($response, 400);
