@@ -85,18 +85,18 @@
                                         </div>
 
                                         <div class="mb-3">
-                                             <label for="TELEFONE" class="form-label">Telefone</label>
-                                            <input type="text" name="TELEFONE" class="form-control" required oninput="formatarTelefone(this)">
-                                        </div>
+    <label for="TELEFONE" class="form-label">Telefone</label>
+    <input type="tel" name="TELEFONE" class="form-control" id="telTelefone" maxlength="15" pattern="\(\d{2}\)\s*\d{5}-\d{4}" required oninput="mascaraTelefone(this)">
+</div>
 
-                                        <div class="mb-3">
-                                            <label for="CELULAR" class="form-label">Celular</label>
-                                            <input type="text" name="CELULAR" class="form-control" required oninput="formatarCelular(this)">
-                                        </div>
+<div class="mb-3">
+    <label for="CELULAR" class="form-label">Celular</label>
+    <input type="tel" name="CELULAR" class="form-control" id="telCelular" maxlength="15" pattern="\(\d{2}\)\s*\d{5}-\d{4}" required oninput="mascaraTelefone(this)">
+</div>
 
                                         <div class="mb-3">
                                             <label for="EMAIL" class="form-label">Email</label>
-                                            <input type="text" name="EMAIL" class="form-control" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+                                            <input type="email" name="EMAIL" class="form-control" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
                                         <div class="invalid-feedback">Por favor, insira um endereço de e-mail válido.</div>
                                         </div>
 
@@ -214,15 +214,23 @@ $(document).ready(function () {
 function goBack() {
     window.history.back();
 }
-function formatarTelefone(input) {
-        var cleaned = input.value.replace(/\D/g, '');
-        var formatted = cleaned.replace(/(\d{3})(\d{4})(\d{4})/, '($1) $2-$3');
-        input.value = formatted;
-    }
-    function formatarCelular(input) {
-        var cleaned = input.value.replace(/\D/g, '');
-        var formatted = cleaned.replace(/(\d{3})(\d{5})(\d{4})/, '($1) $2-$3');
-        input.value = formatted;
-    }
+const telTelefone = document.getElementById('telTelefone');
+const telCelular = document.getElementById('telCelular');
+
+telTelefone.addEventListener('input', function() {
+    mascaraTelefone(this);
+});
+
+telCelular.addEventListener('input', function() {
+    mascaraTelefone(this);
+});
+
+const mascaraTelefone = (input) => {
+    let valor = input.value.replace(/\D/g, "");
+    valor = valor.replace(/^(\d{2})(\d)/g, "($1) $2");
+    valor = valor.replace(/(\d)(\d{4})$/, "$1-$2");
+    input.value = valor;
+};
+
 </script>
 @endsection
