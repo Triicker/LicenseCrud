@@ -31,10 +31,9 @@
         <input type="text" class="form-control" id="NOMEFANTASIA" name="NOMEFANTASIA" value="{{ $coligada->NOMEFANTASIA }}">
     </div>
     <div class="mb-3">
-                        <label for="CGC" class="form-label">CGC</label>
-                        <input type="text" name="CGC" class="form-control" required pattern="[0-9]*" oninput="formatarCNPJ(this)">
-                    <div class="invalid-feedback">Por favor, insira apenas números.</div>
-                    </div>
+        <label for="CGC" class="form-label">CGC</label>
+        <input type="text" class="form-control" id="CGC" name="CGC" value="{{ $coligada->CGC }}">
+    </div>
     <div class="mb-3">
         <label for="APELIDO" class="form-label">Apelido</label>
         <input type="text" class="form-control" id="APELIDO" name="APELIDO" value="{{ $coligada->APELIDO }}">
@@ -51,21 +50,21 @@
         <input type="number" class="form-control" id="IDIMAGEM" name="IDIMAGEM" value="{{ $coligada->IDIMAGEM }}">
     </div>
     <div class="mb-3">
-    <label for="TELEFONE" class="form-label">Telefone</label>
-    <input type="tel" name="TELEFONE" class="form-control" id="telTelefone" maxlength="15" pattern="\(\d{2}\)\s*\d{5}-\d{4}" required oninput="mascaraTelefone(this)">
-</div>
-
-<div class="mb-3">
-    <label for="CELULAR" class="form-label">Celular</label>
-    <input type="tel" name="CELULAR" class="form-control" id="telCelular" maxlength="15" pattern="\(\d{2}\)\s*\d{5}-\d{4}" required oninput="mascaraTelefone(this)">
-</div>
-
-
-                    <div class="mb-3">
-                         <label for="EMAIL" class="form-label">Email</label>
-                         <input type="email" name="EMAIL" class="form-control" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
-                    <div class="invalid-feedback">Por favor, insira um endereço de e-mail válido.</div>
-                    </div>
+        <label for="TELEFONE" class="form-label">Telefone</label>
+        <input type="text" class="form-control" id="TELEFONE" name="TELEFONE" value="{{ $coligada->TELEFONE }}">
+    </div>
+    <div class="mb-3">
+                                             <label for="TELEFONE" class="form-label">Telefone</label>
+                                            <input type="tel" class="form-control" id="TELEFONE" name="TELEFONE" maxlength="15" pattern="\(\d{2}\)\s*\d{5}-\d{4}" required>
+                                        </div>
+    <div class="mb-3">
+        <label for="CELULAR" class="form-label">Celular</label>
+        <input type="text" class="form-control" id="CELULAR" name="CELULAR" value="{{ $coligada->CELULAR }}">
+    </div>
+    <div class="mb-3">
+        <label for="EMAIL" class="form-label">Email</label>
+        <input type="text" class="form-control" id="EMAIL" name="EMAIL" value="{{ $coligada->EMAIL }}">
+    </div>
     <div class="mb-3">
             <label for="CLIENTE" class="form-label">Cliente</label>
             <input type="text" class="form-control" id="CLIENTE" name="CLIENTE" value="{{ $coligada->cliente->NOME }}" disabled>
@@ -80,31 +79,3 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+oL6F5f5f5k5F5eLl5d5F5t5f5R5O5y5.5G5v5Q5" crossorigin="anonymous"></script>
 
-<script>
-function formatarCNPJ(input) {
-        var cleaned = input.value.replace(/\D/g, '');
-        if (cleaned.length > 14) {
-            cleaned = cleaned.slice(0, 14);
-        }
-        var formatted = cleaned.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
-        input.value = formatted;
-    }
-    const telTelefone = document.getElementById('telTelefone');
-const telCelular = document.getElementById('telCelular');
-
-telTelefone.addEventListener('input', function() {
-    mascaraTelefone(this);
-});
-
-telCelular.addEventListener('input', function() {
-    mascaraTelefone(this);
-});
-
-const mascaraTelefone = (input) => {
-    let valor = input.value.replace(/\D/g, "");
-    valor = valor.replace(/^(\d{2})(\d)/g, "($1) $2");
-    valor = valor.replace(/(\d)(\d{4})$/, "$1-$2");
-    input.value = valor;
-};
-
-</script>

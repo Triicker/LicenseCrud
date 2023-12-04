@@ -85,18 +85,18 @@
                                         </div>
 
                                         <div class="mb-3">
-    <label for="TELEFONE" class="form-label">Telefone</label>
-    <input type="tel" name="TELEFONE" class="form-control" id="telTelefone" maxlength="15" pattern="\(\d{2}\)\s*\d{5}-\d{4}" required oninput="mascaraTelefone(this)">
-</div>
+                                             <label for="TELEFONE" class="form-label">Telefone</label>
+                                            <input type="tel" class="form-control" id="TELEFONE" name="TELEFONE" maxlength="15" pattern="\(\d{2}\)\s*\d{5}-\d{4}" required>
+                                        </div>
 
-<div class="mb-3">
-    <label for="CELULAR" class="form-label">Celular</label>
-    <input type="tel" name="CELULAR" class="form-control" id="telCelular" maxlength="15" pattern="\(\d{2}\)\s*\d{5}-\d{4}" required oninput="mascaraTelefone(this)">
-</div>
+                                        <div class="mb-3">
+                                            <label for="CELULAR" class="form-label">Celular</label>
+                                            <input type="cel" class="form-control" id="CELULAR" name="CELULAR" maxlength="15" pattern="\(\d{2}\)\s*\d{5}-\d{4}" required>
+                                        </div>
 
                                         <div class="mb-3">
                                             <label for="EMAIL" class="form-label">Email</label>
-                                            <input type="email" name="EMAIL" class="form-control" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+                                            <input type="text" name="EMAIL" class="form-control" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
                                         <div class="invalid-feedback">Por favor, insira um endereço de e-mail válido.</div>
                                         </div>
 
@@ -214,23 +214,27 @@ $(document).ready(function () {
 function goBack() {
     window.history.back();
 }
-const telTelefone = document.getElementById('telTelefone');
-const telCelular = document.getElementById('telCelular');
+const tel = document.getElementById('TELEFONE') 
 
-telTelefone.addEventListener('input', function() {
-    mascaraTelefone(this);
-});
+tel.addEventListener('keypress', (e) => mascaraTelefone(e.target.value)) 
+tel.addEventListener('change', (e) => mascaraTelefone(e.target.value)) 
 
-telCelular.addEventListener('input', function() {
-    mascaraTelefone(this);
-});
+const mascaraTelefone = (valor) => {
+    valor = valor.replace(/\D/g, "")
+    valor = valor.replace(/^(\d{2})(\d)/g, "($1) $2")
+    valor = valor.replace(/(\d)(\d{4})$/, "$1-$2")
+    tel.value = valor
+}
+const cel = document.getElementById('CELULAR') 
 
-const mascaraTelefone = (input) => {
-    let valor = input.value.replace(/\D/g, "");
-    valor = valor.replace(/^(\d{2})(\d)/g, "($1) $2");
-    valor = valor.replace(/(\d)(\d{4})$/, "$1-$2");
-    input.value = valor;
-};
+cel.addEventListener('keypress', (e) => mascaraCelular(e.target.value))
+cel.addEventListener('change', (e) => mascaraCelular(e.target.value)) 
 
+const mascaraCelular = (valor) => {
+    valor = valor.replace(/\D/g, "")
+    valor = valor.replace(/^(\d{2})(\d)/g, "($1) $2")
+    valor = valor.replace(/(\d)(\d{4})$/, "$1-$2")
+    cel.value = valor
+}
 </script>
 @endsection

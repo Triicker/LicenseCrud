@@ -28,17 +28,17 @@
             <label for="APELIDO" class="form-label">Apelido</label>
             <input type="text" class="form-control" id="APELIDO" name="APELIDO" value="{{ $contato->APELIDO }}">
         </div>
-        <label for="TELEFONE" class="form-label">Telefone</label>
-    <input type="text" name="TELEFONE" class="form-control" id="telTelefone" maxlength="15" pattern="\(\d{2}\)\s*\d{5}-\d{4}" required oninput="mascaraTelefone(this)">
-</div>
-
-<div class="mb-3">
-    <label for="CELULAR" class="form-label">Celular</label>
-    <input type="text" name="CELULAR" class="form-control" id="telCelular" maxlength="15" pattern="\(\d{2}\)\s*\d{5}-\d{4}" required oninput="mascaraTelefone(this)">
-</div>
+        <div class="mb-3">
+            <label for="TELEFONE" class="form-label">Telefone</label>
+            <input type="text" class="form-control" id="TELEFONE" name="TELEFONE" value="{{ $contato->TELEFONE }}">
+        </div>
+        <div class="mb-3">
+            <label for="CELULAR" class="form-label">Celular</label>
+            <input type="text" class="form-control" id="CELULAR" name="CELULAR" value="{{ $contato->CELULAR }}">
+        </div>
         <div class="mb-3">
             <label for="EMAIL" class="form-label">Email</label>
-            <input type="email" class="form-control" id="EMAIL" name="EMAIL" value="{{ $contato->EMAIL }}">
+            <input type="text" class="form-control" id="EMAIL" name="EMAIL" value="{{ $contato->EMAIL }}">
         </div>
         <div class="mb-3">
             <label for="CLIENTE" class="form-label">Cliente</label>
@@ -61,25 +61,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+oL6F5f5f5k5F5eLl5d5F5t5f5R5O5y5.5G5v5Q5" crossorigin="anonymous"></script>
 </body>
 </html>
-<script>
-const telTelefone = document.getElementById('telTelefone');
-const telCelular = document.getElementById('telCelular');
 
-telTelefone.addEventListener('input', function() {
-    mascaraTelefone(this);
-});
-
-telCelular.addEventListener('input', function() {
-    mascaraTelefone(this);
-});
-
-const mascaraTelefone = (input) => {
-    let valor = input.value.replace(/\D/g, "");
-    valor = valor.replace(/^(\d{2})(\d)/g, "($1) $2");
-    valor = valor.replace(/(\d)(\d{4})$/, "$1-$2");
-    input.value = valor;
-};
-
-</script>
 
 
