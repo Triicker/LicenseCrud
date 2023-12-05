@@ -53,10 +53,7 @@
         <label for="TELEFONE" class="form-label">Telefone</label>
         <input type="text" class="form-control" id="TELEFONE" name="TELEFONE" value="{{ $coligada->TELEFONE }}">
     </div>
-    <div class="mb-3">
-                                             <label for="TELEFONE" class="form-label">Telefone</label>
-                                            <input type="tel" class="form-control" id="TELEFONE" name="TELEFONE" maxlength="15" pattern="\(\d{2}\)\s*\d{5}-\d{4}" required>
-                                        </div>
+    
     <div class="mb-3">
         <label for="CELULAR" class="form-label">Celular</label>
         <input type="text" class="form-control" id="CELULAR" name="CELULAR" value="{{ $coligada->CELULAR }}">
