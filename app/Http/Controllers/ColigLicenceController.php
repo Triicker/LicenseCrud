@@ -244,7 +244,6 @@ public function update(Request $request, $IDCOLIGADA)
         $user = $this->getUserInfoFromSession();
     }
     $validatedData['ATIVO'] = $request->input('ATIVO') == 1;
-
     $validatedData['RECMODIFIEDON'] = now();
     $validatedData['RECMODIFIEDBY'] = $userName;
 

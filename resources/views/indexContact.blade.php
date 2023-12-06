@@ -86,7 +86,7 @@
 
                                         <div class="mb-3">
                                              <label for="TELEFONE" class="form-label">Telefone</label>
-                                            <input type="tel" class="form-control" id="TELEFONE" name="TELEFONE" maxlength="15" pattern="\(\d{2}\)\s*\d{5}-\d{4}" required>
+                                            <input type="tel" class="form-control" id="TELEFONE" name="TELEFONE" maxlength="14" pattern="\(\d{2}\)\s*\d{5}-\d{4}" required>
                                         </div>
 
                                         <div class="mb-3">
@@ -96,8 +96,7 @@
 
                                         <div class="mb-3">
                                             <label for="EMAIL" class="form-label">Email</label>
-                                            <input type="text" name="EMAIL" class="form-control" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
-                                        <div class="invalid-feedback">Por favor, insira um endereço de e-mail válido.</div>
+                                            <input type="email" name="EMAIL" class="form-control" required>
                                         </div>
 
                                         <div class="mb-3">

@@ -123,6 +123,14 @@ public function store(Request $request)
             'ATIVO' => 'required|boolean',
         ]);
 
+        $existingProduct = Zwnproduto::where('NOME', $validatedData['NOME'])
+            ->where('IDEMPRESA', $user->idempresa)
+            ->exists();
+
+        if ($existingProduct) {
+            return back()->withErrors(['error' => 'Já existe um produto com esse nome']);
+        }
+
         $validatedData['RECCREATEDON'] = now();
         $validatedData['RECCREATEDBY'] = $user->userLogin;
         $validatedData['IDEMPRESA'] = $user->idempresa;
@@ -144,14 +152,15 @@ public function store(Request $request)
         $this->createLog($logData);
 
         if ($request->is('api/*')) {
-            return $this->createApiResponse('Produto criado com sucesso', $produto, 201);
+            return response()->json(['message' => 'Produto criado com sucesso', 'data' => $produto], 201);
         } else {
-            return $this->createWebResponse('Produto criado com sucesso!');
+            return response()->json(['message' => 'Produto criado com sucesso!']);
         }
     } catch (\Exception $e) {
         return $this->handleError($e, $request);
     }
 }
+
 
 
 
@@ -222,11 +231,6 @@ public function edit($IDPRODUTO)
 public function update(Request $request, $IDPRODUTO)
 {
     try {
-        $validatedData = $request->validate([
-            'NOME' => 'string|max:255',
-            'APELIDO' => 'string|max:255',
-            'ATIVO' => 'boolean',
-        ]);
 
         $produto = Zwnproduto::find($IDPRODUTO);
 
@@ -243,6 +247,28 @@ public function update(Request $request, $IDPRODUTO)
             }
         }
 
+        $dtfimMenorQueHoje = Zwncoliglicenca::where('IDPRODUTO', $produto->IDPRODUTO)
+            ->whereDate('DTFIM', '<', now())
+            ->exists();
+
+            if (!$dtfimMenorQueHoje) {
+                if ($request->is('api/*')) {
+                    $response = [
+                        'status' => 'error',
+                        'message' => 'Não é possível alterar o campo ATIVO. Pois há licença vigente.',
+                        'data' => null,
+                    ];
+                    return response()->json($response, 400);
+                } else {
+                    return back()->withErrors(['error' => 'Não é possível alterar o campo ATIVO. Pois há licença vigente']);
+                }
+            }
+        $validatedData = $request->validate([
+            'NOME' => 'string|max:255',
+            'APELIDO' => 'string|max:255',
+            'ATIVO' => 'boolean',
+        ]);
+        
         $userLogin = null;
 
         if ($request->is('api/*')) {

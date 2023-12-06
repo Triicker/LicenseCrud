@@ -101,8 +101,7 @@
 
                     <div class="mb-3">
                         <label for="CGC" class="form-label">CGC</label>
-                        <input type="text" name="CGC" class="form-control" required pattern="[0-9]*" oninput="formatarCNPJ(this)">
-                    <div class="invalid-feedback">Por favor, insira apenas números.</div>
+                        <input id="CGC" name="CGC" class="form-control rounded-form" type="text" maxlength="18"/>
                     </div>
 
                     <div class="mb-3">
@@ -111,14 +110,14 @@
                     </div>
 
                     <div class="mb-3">
-                                             <label for="TELEFONE" class="form-label">Telefone</label>
-                                            <input type="tel" class="form-control" id="TELEFONE" name="TELEFONE" maxlength="15" pattern="\(\d{2}\)\s*\d{5}-\d{4}" required>
-                                        </div>
+                        <label for="TELEFONE" class="form-label">Telefone</label>
+                        <input type="tel" class="form-control" id="TELEFONE" name="TELEFONE" maxlength="15" pattern="\(\d{2}\)\s*\d{5}-\d{4}" required>
+                    </div>
 
-                                        <div class="mb-3">
-                                            <label for="CELULAR" class="form-label">Celular</label>
-                                            <input type="cel" class="form-control" id="CELULAR" name="CELULAR" maxlength="15" pattern="\(\d{2}\)\s*\d{5}-\d{4}" required>
-                                        </div>
+                    <div class="mb-3">
+                        <label for="CELULAR" class="form-label">Celular</label>
+                        <input type="cel" class="form-control" id="CELULAR" name="CELULAR" maxlength="15" pattern="\(\d{2}\)\s*\d{5}-\d{4}" required>
+                    </div>
 
                     <div class="mb-3">
                          <label for="EMAIL" class="form-label">Email</label>
@@ -243,14 +242,10 @@ $(document).ready(function () {
 function goBack() {
     window.history.back();
 }
-function formatarCNPJ(input) {
-        var cleaned = input.value.replace(/\D/g, '');
-        if (cleaned.length > 14) {
-            cleaned = cleaned.slice(0, 14);
-        }
-        var formatted = cleaned.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
-        input.value = formatted;
-    }
+document.getElementById('CGC').addEventListener('input', function (e) {
+      var x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,3})(\d{0,3})(\d{0,4})(\d{0,2})/);
+      e.target.value = !x[2] ? x[1] : x[1] + '.' + x[2] + '.' + x[3] + '/' + x[4] + (x[5] ? '-' + x[5] : '');
+    });
     const tel = document.getElementById('TELEFONE') 
 
 tel.addEventListener('keypress', (e) => mascaraTelefone(e.target.value)) 

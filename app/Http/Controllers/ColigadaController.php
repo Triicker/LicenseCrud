@@ -188,7 +188,6 @@ public function store(Request $request)
             ];
             return response()->json($response, 201);
         } else {
-            dd($request);
             return redirect()->route('coligadas.index', ['IDCOLIGADA' => $request->input('IDCOLIGADA')])->with('success', 'Coligada criada com sucesso.');
         }
     } catch (\Exception $e) {
