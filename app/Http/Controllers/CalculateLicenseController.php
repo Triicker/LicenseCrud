@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Http\Controllers\LogLicenceController;
+use App\Http\Controllers\LogLicenseController;
+use App\Http\Controllers\LogLicenseItemController;
+use App\Models\Zwnloglicencaitem;
 use App\Models\Zwncoliglicenca;
 use App\Models\Zwncliente;
 use App\Models\Zwnproduto;
@@ -13,7 +15,7 @@ use JWTAuth;
 
 use Illuminate\Http\Request;
 
-class CalculateLicenceController extends Controller
+class CalculateLicenseController extends Controller
 {
     public function calcularLicenca(Request $request)
 {
@@ -35,8 +37,6 @@ class CalculateLicenceController extends Controller
         $IDTIPOCURSO = $requestData['IDTIPOCURSO'];
         $CNPJ = $requestData['CNPJ'];
         $NOMEPRODUTO = $requestData['NOMEPRODUTO'];
-        $QTDALUNOS = $requestData['QTDALUNOS'];
-        $QTDCHAMADAS = $requestData['QTDCHAMADAS'];
         $VERSAOTOTVS = $requestData['VERSAOTOTVS'];
         $VERSAOWORKNOW = $requestData['VERSAOWORKNOW'];
 
@@ -75,17 +75,27 @@ class CalculateLicenceController extends Controller
             $log->IDTIPOCURSO = $IDTIPOCURSO;
             $log->IDEMPRESA = $idempresa;
             $log->IDUSUARIO = $idusuario;
-            $log->QTDALUNOS = $QTDALUNOS;
-            $log->QTDCHAMADAS = $QTDCHAMADAS;
             $log->VERSAOTOTVS = $VERSAOTOTVS;
             $log->VERSAOWORKNOW = $VERSAOWORKNOW;
             $log->LIBERADO = !empty($liberadoAte) ? 1 : 0;
             $log->LIBERADOATE = $liberadoAte;
             $log->RECCREATEDBY = $userName;
             $log->RECCREATEDON = now();
-            
             $log->save();
 
+            $idLogLic = $log->IDLOGLIC;
+
+            foreach ($request['ITEM'] as $item) {
+                $logItm = new Zwnloglicencaitem();
+                $logItm->IDLOGLIC = $idLogLic;
+                $logItm->INFO = $item["INFO"];
+                $logItm->VALOR = $item["VALOR"];
+                $logItm->RECCREATEDBY = $userName;
+                $logItm->RECCREATEDON = now();
+                $logItm->RECMODIFIEDON = now();
+                $logItm->RECMODIFIEDBY = $userName;
+                $logItm->save();
+            }
 
         } else {
             $response = [

@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use JWTAuth;
 
-class ColigLicenceController extends Controller
+class ColigLicenseController extends Controller
 {
     public function index(Request $request, $IDCOLIGADA = null, $IDPRODUTO = null, $IDCLIENTE = null)
     {
@@ -204,7 +204,7 @@ private function handleError($e, $request) {
     if (request()->is('api/*')) {
         return response()->json(['licenca' => $licenca, 'clientes' => $clientes]);
     } else {
-        return view('editLicence', compact('licenca', 'clientes'));
+        return view('editLicense', compact('licenca', 'clientes'));
     }
 }
 

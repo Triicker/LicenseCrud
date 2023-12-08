@@ -21,8 +21,6 @@ class Zwnloglicenca extends Model
         'IDUSUARIO',
         'IDCLIENTE',
         'IDPRODUTO',
-        'QTDALUNOS',
-        'QTDCHAMADAS',
         'VERSAOTOTVS',
         'VERSAOWORKNOW',
         'LIBERADO',
@@ -58,4 +56,5 @@ class Zwnloglicenca extends Model
     {
         return $this->belongsTo(Zwnproduto::class, 'IDPRODUTO', 'IDPRODUTO');
     }
+    
 }

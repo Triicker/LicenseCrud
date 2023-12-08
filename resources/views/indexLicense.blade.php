@@ -100,7 +100,7 @@
 </div>
 
 @foreach($licencas as $licenca)
-    @include('editLicenceModal', ['licenca' => $licenca])
+    @include('editLicenseModal', ['licenca' => $licenca])
 @endforeach
 
 <script>

@@ -8,10 +8,11 @@ use App\Http\Controllers\UserCompanyControllerAPI;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ColigadaController;
-use App\Http\Controllers\ColigLicenceController;
+use App\Http\Controllers\ColigLicenseController;
 use App\Http\Controllers\LogCadastroController;
-use App\Http\Controllers\LogLicenceController;
-use App\Http\Controllers\CalculateLicenceController;
+use App\Http\Controllers\LogLicenseController;
+use App\Http\Controllers\LogLicenseItemController;
+use App\Http\Controllers\CalculateLicenseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -29,13 +30,16 @@ Route::middleware(['apiJWT'])->group(function () {
 Route::get('Zwnlogcadastro', [LogCadastroController::class, "index"]);
 Route::post('Zwnlogcadastro', [LogCadastroController::class, 'logCadastro']);
 
-Route::get('Zwnloglicenca', [LogLicenceController::class, "index"]);
-Route::post('Zwnloglicenca', [LogLicenceController::class, 'logLicenca']);
+Route::get('Zwnloglicencaitem', [LogLicenseItemController::class, "index"]);
+Route::post('Zwnloglicencaitem', [LogLicenseItemController::class, 'logLicencaItem']);
 
-Route::get('Zwnempresalayout', [LogLicenceController::class, 'layout.edit']);    
+
+Route::get('Zwnloglicenca', [LogLicenseController::class, "index"]);
+Route::post('Zwnloglicenca', [LogLicenseController::class, 'logLicenca']);
+Route::get('Zwnempresalayout', [LogLicenseController::class, 'layout.edit']);    
 
 // LICENÇA 
-Route::post('Zwnloglicenca', [CalculateLicenceController::class, 'calcularLicenca']);
+Route::post('Zwnloglicenca', [CalculateLicenseController::class, 'calcularLicenca']);
 
 // Usuarios 
 Route::get('Zwnusuarios', [UserControllerAPI::class, "index"]);
@@ -83,13 +87,13 @@ Route::patch('Zwncoligada/{IDCOLIGADA}', [ColigadaController::class, "update"]);
 Route::delete('Zwncoligada/{IDCOLIGADA}', [ColigadaController::class, "delete"]);
 
 // Licencas coligadas 
-Route::get('Zwncoliglicenca', [ColigLicenceController::class, "index"]);
-Route::get('Zwncoliglicenca/coligada/{IDCOLIGADA}', [ColigLicenceController::class, "index"]);
-Route::get('Zwncoliglicenca/produto/{IDPRODUTO}', [ColigLicenceController::class, "index"]);
-Route::get('Zwncoliglicenca/cliente/{IDCLIENTE}', [ColigLicenceController::class, "index"]);
-Route::post('Zwncoliglicenca', [ColigLicenceController::class, "store"]);
-Route::patch('Zwncoliglicenca/{IDCOLIGADA}', [ColigLicenceController::class, "update"]);
-Route::delete('Zwncoliglicenca/{IDCOLIGADA}', [ColigLicenceController::class, "delete"]);
+Route::get('Zwncoliglicenca', [ColigLicenseController::class, "index"]);
+Route::get('Zwncoliglicenca/coligada/{IDCOLIGADA}', [ColigLicenseController::class, "index"]);
+Route::get('Zwncoliglicenca/produto/{IDPRODUTO}', [ColigLicenseController::class, "index"]);
+Route::get('Zwncoliglicenca/cliente/{IDCLIENTE}', [ColigLicenseController::class, "index"]);
+Route::post('Zwncoliglicenca', [ColigLicenseController::class, "store"]);
+Route::patch('Zwncoliglicenca/{IDCOLIGADA}', [ColigLicenseController::class, "update"]);
+Route::delete('Zwncoliglicenca/{IDCOLIGADA}', [ColigLicenseController::class, "delete"]);
 
 // Usuarios Empresa 
 Route::get('Zwnusuempresas', [UserCompanyControllerAPI::class, "index"]);

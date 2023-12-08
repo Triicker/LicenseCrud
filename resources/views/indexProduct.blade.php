@@ -135,72 +135,14 @@ $(document).ready(function () {
             }
         }
     });
-    $('#productTable').on('click', '.btn-edit', function () {
-        var produtoId = $(this).data('produto-id');
-        $.ajax({
-            type: 'GET',
-            url: "{{ route('produtos.edit', ['IDPRODUTO' => '__IDPRODUTO__']) }}".replace('__IDPRODUTO__', produtoId),
-            success: function (data) {
-                $('#editModalContent').html(data);
-            },
-            error: function () {
-                alert('Erro ao carregar os detalhes do produto.');
-            }
-        });
-    });
+
     $('.btn-edit').click(function () {
         var produtoId = $(this).data('produto-id');
-        $.ajax({
-            type: 'GET',
-            url: "{{ route('produtos.edit', ['IDPRODUTO' => '__IDPRODUTO__']) }}".replace('__IDPRODUTO__', produtoId),
-            success: function (data) {
-                $('#editModalContent').html(data);
-            },
-            error: function () {
-                alert('Erro ao carregar os detalhes do produto.');
-            }
-        });
-    });
-
-    $('#editModal').on('show.bs.modal', function (event) {
-        var produtoId = $(event.relatedTarget).data('produto-id');
-        $.ajax({
-            type: 'GET',
-            url: "{{ route('produtos.edit', ['IDPRODUTO' => '__IDPRODUTO__']) }}".replace('__IDPRODUTO__', produtoId),
-            success: function (data) {
-                $('#editModalContent').html(data);
-            },
-            error: function () {
-                alert('Erro ao carregar os detalhes do produto.');
-            }
-        });
-    });
-
-    $('#productTable').on('click', '.btn-excluir', function (e) {
-        e.preventDefault();
-
-        var produtoId = $(this).data('produto-id');
-        if (confirm('Tem certeza de que deseja excluir este produto?')) {
-            $.ajax({
-                type: 'POST',
-                url: "{{ route('produtos.delete-web', ['IDPRODUTO' => '__IDPRODUTO__']) }}".replace('__IDPRODUTO__', produtoId),
-                data: {
-                    "_token": "{{ csrf_token() }}"
-                },
-                success: function (result) {
-                    alert('Produto excluído com sucesso.');
-                    window.location.reload();
-                },
-                error: function () {
-                    alert('Não é possível excluir o Produto. Existem licenças associadas.');
-                }
-            });
-        }
+        $('#editModal_' + produtoId).modal('show');
     });
 
     $('.btn-excluir').click(function (e) {
         e.preventDefault();
-
         var produtoId = $(this).data('produto-id');
         if (confirm('Tem certeza de que deseja excluir este produto?')) {
             $.ajax({
@@ -219,22 +161,16 @@ $(document).ready(function () {
             });
         }
     });
+
     $('.create-btn').click(function () {
-        $.ajax({
-            type: 'GET',
-            url: "{{ route('produtos.create') }}",
-            success: function (data) {
-                $('#createModalContent').html(data);
-            },
-            error: function () {
-                alert('Erro ao carregar o formulário de criação.');
-            }
-        });
+        $('#createModal').modal('show');
     });
-function goBack() {
-    window.history.back();
-}
+
+    function goBack() {
+        window.history.back();
+    }
 });
 </script>
+
 
 @endsection

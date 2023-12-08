@@ -62,8 +62,6 @@ class ProductController extends Controller
     }
 }
 
-    
-
 
 public function indexId($IDPRODUTO)
 {
@@ -131,6 +129,14 @@ public function store(Request $request)
             return back()->withErrors(['error' => 'Já existe um produto com esse nome']);
         }
 
+        $existingApelido = Zwnproduto::where('APELIDO', $validatedData['APELIDO'])
+            ->where('IDEMPRESA', $user->idempresa)
+            ->exists();
+
+        if ($existingApelido) {
+            return back()->withErrors(['error' => 'Já existe um produto com esse apelido']);
+        }
+
         $validatedData['RECCREATEDON'] = now();
         $validatedData['RECCREATEDBY'] = $user->userLogin;
         $validatedData['IDEMPRESA'] = $user->idempresa;
@@ -154,15 +160,12 @@ public function store(Request $request)
         if ($request->is('api/*')) {
             return response()->json(['message' => 'Produto criado com sucesso', 'data' => $produto], 201);
         } else {
-            return response()->json(['message' => 'Produto criado com sucesso!']);
+            return $this->createWebResponse('Produto criado com sucesso!');
         }
     } catch (\Exception $e) {
         return $this->handleError($e, $request);
     }
 }
-
-
-
 
 private function getUserInfoFromSession()
 {
@@ -247,9 +250,7 @@ public function update(Request $request, $IDPRODUTO)
             }
         }
 
-        $dtfimMenorQueHoje = Zwncoliglicenca::where('IDPRODUTO', $produto->IDPRODUTO)
-            ->whereDate('DTFIM', '<', now())
-            ->exists();
+        $dtfimMenorQueHoje = Zwncoliglicenca::where('IDPRODUTO', $produto->IDPRODUTO)->whereDate('DTFIM', '<', now())->exists();
 
             if (!$dtfimMenorQueHoje) {
                 if ($request->is('api/*')) {

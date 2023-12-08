@@ -17,12 +17,11 @@
                 <th scope="col" class="align-middle">Cliente</th>
                 <th scope="col" class="align-middle">Produto</th>
                 <th scope="col" class="align-middle">Contexto</th>
-                <th scope="col" class="align-middle">QTD Alunos</th>
-                <th scope="col" class="align-middle">QTD Chamadas</th>
                 <th scope="col" class="align-middle">Versão Totvs</th>
                 <th scope="col" class="align-middle">Versão Worknow</th>
                 <th scope="col" class="align-middle">Liberado</th>
                 <th scope="col" class="align-middle">Liberado até</th>
+                <th scope="col" class="align-middle">#</th>
             </tr>
         </thead>
         <tbody>
@@ -33,17 +32,95 @@
                 <td class="align-middle">{{ $log->cliente->NOME }}</td>
                 <td class="align-middle">{{ $log->produto->NOME ?? '' }}</td>
                 <td class="align-middle">{{ $log->IDCOLIGADA . '-' . $log->IDFILIAL . '-' . $log->IDTIPOCURSO ?? '' }}</td>
-                <td class="align-middle">{{ $log->QTDALUNOS }}</td>
-                <td class="align-middle">{{ $log->QTDCHAMADAS }}</td>
                 <td class="align-middle">{{ $log->VERSAOTOTVS }}</td>
                 <td class="align-middle">{{ $log->VERSAOWORKNOW }}</td>
                 <td class="align-middle">{{ $log->LIBERADO == 1 ? 'Sim' : 'Não' }}</td>
                 <td class="align-middle">{{ $log->LIBERADOATE }}</td>
+                <th class="dropdown">
+                            <div id="idRow" data-toggle="dropdown">
+                                <u style="cursor:pointer;">View details</u>
+                            </div>
+                            <div class="dropdown-menu" aria-labelledby="idRow">
+                                <table class="table-sm">
+                                    <thead id="headerSubTable">
+                                        <tr class="text-white-75 text-center">
+                                            <th scope="col">
+                                              <h5>Info</h5>
+                                            </th>
+                                            <th scope="col">
+                                              <h5>Valor</h5>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($logItens as $logItem)
+                                            @if($logItem->IDLOGLIC == $log->IDLOGLIC)
+                                                <tr>
+                                                    <td>{{ $logItem->INFO }}</td>
+                                                    <td align="center">{{ $logItem->VALOR }}</td>
+                                                </tr>
+                                            @endif
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </th>
             </tr>
             @endforeach
         </tbody>
     </table>
 </div>
+<div class="row justify-content-center">
+        <div class="col-sm-10">
+            <table class="table table-dark margin-nav table-striped">
+                <thead  id="headerSuperTable">
+                    <tr>
+                        <th scope="col">Categories</th>
+                        <th scope="col"></th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Fruits</th>
+                        <th class="dropdown">
+                            <div id="idRow" data-toggle="dropdown">
+                                <u style="cursor:pointer;">View details</u>
+                            </div>
+                            <div class="dropdown-menu" aria-labelledby="idRow">
+                                <table class="table-sm">
+                                    <thead id="headerSubTable">
+                                        <tr class="text-white-75 text-center">
+                                            <th scope="col">
+                                              <h5>Product</h5>
+                                            </th>
+                                            <th scope="col">
+                                              <h5>Quantity</h5>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Apple</td>
+                                            <td align="center">4</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Banana</td>
+                                            <td align="center">2</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </th>
+                        <th>
+                            <button type="submit" class="btn btn-primary">Edit</button>
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </th>
+                    </tr>                 
+                </tbody>
+            </table>
+        </div>
+    </div>
 <script>
 $(document).ready(function () {
     var dataTable = $('#logTable').DataTable({

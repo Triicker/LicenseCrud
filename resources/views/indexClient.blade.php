@@ -20,7 +20,6 @@
                 <th scope="col" class="align-middle">Nome</th>
                 <th scope="col" class="align-middle">Apelido</th>
                 <th scope="col" class="align-middle">Ativo</th>
-                <th scope="col" class="align-middle">Empresa</th>
                 <th scope="col" class="align-middle">Ações</th>
             </tr>
         </thead>
@@ -31,7 +30,6 @@
     <td class="align-middle">{{ $cliente->NOME }}</td>
     <td class="align-middle">{{ $cliente->APELIDO }}</td>
     <td class="align-middle">{{ $cliente->ATIVO == 1 ? 'Sim' : 'Não' }}</td>
-    <td class="align-middle">{{ $cliente->empresa->NOME }}</td>
     <td class="align-middle">
     <a class="btn-c btn-col" href="{{ route('contatos.cliente', ['IDCLIENTE' => $cliente->IDCLIENTE]) }}">Contato</a>
     <a class="btn-c btn-col" href="{{ route('coligadas.cliente', ['IDCLIENTE' => $cliente->IDCLIENTE]) }}">Coligada</a>
