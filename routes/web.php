@@ -53,7 +53,7 @@ Route::delete('/coligadas/{IDCOLIGADA}', [ColigadaController::class, 'delete'])-
 Route::post('/coligadas/{IDCOLIGADA}/delete', [ColigadaController::class, 'delete'])->name('coligadas.delete-web');
 // license
 Route::get('/licencas', [ColigLicenseController::class, 'index'])->name('licencas.index');
-Route::get('/licencas/coligada/{IDCOLIGADA}', [ColigLicenseController::class, 'index'])->name('licencas.coligada');
+Route::get('/licencas/coligada/{IDCOLIGADA}/cliente/{IDCLIENTE?}/produto/{IDPRODUTO?}', [ColigLicenseController::class, 'index'])->name('licencas.coligada');
 Route::post('/licencas', [ColigLicenseController::class, 'store'])->name('licencas.store');
 Route::get('/licencas/create', [ColigLicenseController::class, 'create'])->name('licencas.create');
 Route::get('/licencas/{IDCOLIGADA}/edit', [ColigLicenseController::class, 'edit'])->name('licencas.edit');

@@ -16,9 +16,9 @@ use JWTAuth;
 
 class ColigLicenseController extends Controller
 {
-    public function index(Request $request, $IDCOLIGADA = null, $IDPRODUTO = null, $IDCLIENTE = null)
+    public function index(Request $request, $IDCOLIGADA = null,  $IDCLIENTE = null, $IDPRODUTO = null)
     {
-        $query = Zwncoliglicenca::with(['coligada', 'produto', 'cliente']);
+        $query = Zwncoliglicenca::with(['coligada','cliente', 'produto']);
         $produtos = Zwnproduto::all();
 
         if ($IDCOLIGADA !== null) {

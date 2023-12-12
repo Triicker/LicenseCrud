@@ -88,7 +88,7 @@ Route::delete('Zwncoligada/{IDCOLIGADA}', [ColigadaController::class, "delete"])
 
 // Licencas coligadas 
 Route::get('Zwncoliglicenca', [ColigLicenseController::class, "index"]);
-Route::get('Zwncoliglicenca/coligada/{IDCOLIGADA}', [ColigLicenseController::class, "index"]);
+Route::get('Zwncoliglicenca/coligada/{IDCOLIGADA}/cliente/{IDCLIENTE}', [ColigLicenseController::class, "index"]);
 Route::get('Zwncoliglicenca/produto/{IDPRODUTO}', [ColigLicenseController::class, "index"]);
 Route::get('Zwncoliglicenca/cliente/{IDCLIENTE}', [ColigLicenseController::class, "index"]);
 Route::post('Zwncoliglicenca', [ColigLicenseController::class, "store"]);

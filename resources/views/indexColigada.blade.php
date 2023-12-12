@@ -43,7 +43,7 @@
     <td class="align-middle">{{ $coligada->APELIDO }}</td>
     <td class="align-middle">{{ $coligada->ATIVO == 1 ? 'Sim' : 'Não' }}</td>
     <td class="align-middle">
-    <a class="btn-c btn-col" href="{{ route('licencas.coligada', ['IDCOLIGADA' => $coligada->IDCOLIGADA]) }}" >Licenças</a>
+    <a class="btn-c btn-col" href="{{ route('licencas.coligada', ['IDCOLIGADA' => $coligada->IDCOLIGADA, 'IDCLIENTE' => $coligada->IDCLIENTE, 'IDPRODUTO' => $coligada->IDPRODUTO]) }}" >Licenças</a>
     <button class="btn-ajust btn-edit" data-coligada-id="{{ $coligada->IDCOLIGADA }}" data-bs-toggle="modal" data-bs-target="#editModal">Editar</button>
     <a href="#" class="btn-e btn-excluir" data-coligada-id="{{ $coligada->IDCOLIGADA }}">Excluir</a>
 
