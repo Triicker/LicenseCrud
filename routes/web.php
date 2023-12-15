@@ -10,6 +10,8 @@ use App\Http\Controllers\ColigadaController;
 use App\Http\Controllers\ColigLicenseController;
 use App\Http\Controllers\LogCadastroController;
 use App\Http\Controllers\LogLicenseController;
+use App\Http\Controllers\LayoutController;
+
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/login', function () {return view('login');})->name('login');

@@ -139,22 +139,22 @@ $(document).ready(function () {
             }
         }
     });
-    $('.btn-edit').click(function () {
+    $('#clienteTable').on('click', '.btn-edit', function () {
         var clienteId = $(this).data('cliente-id');
         $.ajax({
             type: 'GET',
             url: "{{ route('clientes.edit', ['IDCLIENTE' => '__IDCLIENTE__']) }}".replace('__IDCLIENTE__', clienteId),
             success: function (data) {
                 $('#editModalContent').html(data);
-            }, 
+            },
             error: function () {
                 alert('Erro ao carregar os detalhes do cliente.');
             }
         });
     });
 
-    $('.btn-excluir').click(function (e) {
-        e.preventDefault(); 
+    $('#clienteTable').on('click', '.btn-excluir', function (e) {
+        e.preventDefault();
 
         var clienteId = $(this).data('cliente-id');
         if (confirm('Tem certeza de que deseja excluir este cliente?')) {

@@ -7,6 +7,8 @@ use App\Models\Zwnclicontato;
 use App\Models\Zwnempresa;
 use App\Models\Zwnlogcadastro;
 use App\Models\Zwnusuempresa;
+use App\Models\Zwncoligada;
+
 use Illuminate\Support\Facades\Auth;
 use JWTAuth;
 
@@ -384,6 +386,27 @@ public function create()
                 return response()->json($response, 400);
             }
         }
+
+        $coligadas = Zwncoligada::where('IDCLIENTE', $cliente->IDCLIENTE)->count();
+
+        if ($coligadas > 0) {
+            if (request()->is('api/*')) {
+                $response = [
+                    'status' => 'error',
+                    'message' => 'Não é possível excluir o cliente. Existem coligadas associadas.',
+                    'data' => null,
+                ];
+                return response()->json($response, 400);
+            } else {
+                $response = [
+                    'status' => 'error',
+                    'message' => 'Não é possível excluir o cliente. Existem coligadas associadas.',
+                    'data' => null,
+                ];
+                return response()->json($response, 400);
+            }
+        }
+
 
         $cliente->delete();
 

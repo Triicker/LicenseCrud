@@ -5,6 +5,8 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
 <div class="container">
     <h1 class="text-center mg-top-title">Lista de Contatos</h1>
     <button onclick="goBack()" class="btn-ajust btn-edit">Voltar</button>
@@ -86,12 +88,13 @@
 
                                         <div class="mb-3">
                                              <label for="TELEFONE" class="form-label">Telefone</label>
-                                            <input type="tel" class="form-control" id="TELEFONE" name="TELEFONE" maxlength="14" pattern="\(\d{2}\)\s*\d{5}-\d{4}" required>
+                                            <input type="text" class="form-control" id="TELEFONE" name="TELEFONE" data-mask="(00) 0000-0000">
+
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="CELULAR" class="form-label">Celular</label>
-                                            <input type="cel" class="form-control" id="CELULAR" name="CELULAR" maxlength="15" pattern="\(\d{2}\)\s*\d{5}-\d{4}" required>
+                                            <input type="cel" class="form-control" id="CELULAR" name="CELULAR" maxlength="15" pattern="\(\d{2}\)\s*\d{5}-\d{4}">
                                         </div>
 
                                         <div class="mb-3">
@@ -160,7 +163,7 @@ $(document).ready(function () {
             }
         }
     });
-    $('.btn-edit').click(function () {
+    $('#contactTable').on('click', '.btn-edit', function () {
         var contatoId = $(this).data('contato-id');
         $.ajax({
             type: 'GET',
@@ -174,8 +177,8 @@ $(document).ready(function () {
         });
     });
 
-    $('.btn-excluir').click(function (e) {
-        e.preventDefault(); 
+    $('#contactTable').on('click', '.btn-excluir', function (e) {
+        e.preventDefault();
 
         var contatoId = $(this).data('contato-id');
         if (confirm('Tem certeza de que deseja excluir este contato?')) {
@@ -213,17 +216,9 @@ $(document).ready(function () {
 function goBack() {
     window.history.back();
 }
-const tel = document.getElementById('TELEFONE') 
-
-tel.addEventListener('keypress', (e) => mascaraTelefone(e.target.value)) 
-tel.addEventListener('change', (e) => mascaraTelefone(e.target.value)) 
-
-const mascaraTelefone = (valor) => {
-    valor = valor.replace(/\D/g, "")
-    valor = valor.replace(/^(\d{2})(\d)/g, "($1) $2")
-    valor = valor.replace(/(\d)(\d{4})$/, "$1-$2")
-    tel.value = valor
-}
+$(document).ready(function(){
+         $('#TELEFONE').mask('(00) 0000-0000');
+      });
 const cel = document.getElementById('CELULAR') 
 
 cel.addEventListener('keypress', (e) => mascaraCelular(e.target.value))

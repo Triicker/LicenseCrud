@@ -270,8 +270,8 @@ private function createLog($logData, $request) {
             $validatedData = $request->validate([
                 'NOME' => 'string|max:255',
                 'APELIDO' => 'string|max:255',
-                'TELEFONE' => 'string|max:15',
-                'CELULAR' => 'string|max:15',
+                'TELEFONE' => 'integer|max:15',
+                'CELULAR' => 'integer|max:15',
                 'EMAIL' => 'string|max:60',
                 'ATIVO' => 'boolean',
                 'CLIENTE' => 'exists:zwnclientes,IDCLIENTE',

@@ -125,42 +125,42 @@ $(document).ready(function () {
             }
         }
     });
-   $('.btn-edit').click(function () {
+    $('#licenseTable').on('click', '.btn-edit', function () {
     var licencaId = $(this).data('licenca-id');
     $.ajax({
         type: 'GET',
         url: "{{ route('licencas.edit', ['IDCOLIGADA' => '__IDCOLIGADA__']) }}".replace('__IDCOLIGADA__', licencaId),
         success: function (data) {
             $('#editModalContent').html(data);
-        }, 
+        },
         error: function () {
             alert('Erro ao carregar os detalhes da licença.');
         }
     });
 });
 
+$('#licenseTable').on('click', '.btn-excluir', function (e) {
+    e.preventDefault();
 
-    $('.btn-excluir').click(function (e) {
-        e.preventDefault(); 
+    var licencaId = $(this).data('licenca-id');
+    if (confirm('Tem certeza de que deseja excluir este Licença?')) {
+        $.ajax({
+            type: 'POST',
+            url: "{{ route('licencas.delete-web', ['IDCOLIGADA' => '__IDCOLIGADA__']) }}".replace('__IDCOLIGADA__', licencaId),
+            data: {
+                "_token": "{{ csrf_token() }}"
+            },
+            success: function (result) {
+                alert('Licença excluída com sucesso.');
+                window.location.reload();
+            },
+            error: function () {
+                alert('Não é possível excluir a Licença. Existem coligadas associadas.');
+            }
+        });
+    }
+});
 
-        var licencaId = $(this).data('licenca-id');
-        if (confirm('Tem certeza de que deseja excluir este Licenca?')) {
-            $.ajax({
-                type: 'POST',
-                url: "{{ route('licencas.delete-web', ['IDCOLIGADA' => '__IDCOLIGADA__']) }}".replace('__IDCOLIGADA__', licencaId),
-                data: {
-                    "_token": "{{ csrf_token() }}"
-                },
-                success: function (result) {
-                    alert('Licenca excluído com sucesso.');
-                    window.location.reload();
-                },
-                error: function () {
-                    alert('Não é possível excluir a Licença. Existem coligadas associadas.');
-                }
-            });
-        }
-    });
 });
 $(document).ready(function () {
     $('.create-btn').click(function () {

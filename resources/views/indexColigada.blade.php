@@ -189,7 +189,7 @@ $(document).ready(function () {
             }
         }
     });
-    $('.btn-edit').click(function () {
+    $('#coligadaTable').on('click', '.btn-edit', function () {
         var coligadaId = $(this).data('coligada-id');
         $.ajax({
             type: 'GET',
@@ -203,7 +203,7 @@ $(document).ready(function () {
         });
     });
 
-    $('.btn-excluir').click(function (e) {
+    $('#coligadaTable').on('click', '.btn-excluir', function (e) {
         e.preventDefault();
 
         var coligadaId = $(this).data('coligada-id');
