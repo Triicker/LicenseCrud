@@ -32,7 +32,7 @@
     </div>
     <div class="mb-3">
         <label for="CGC" class="form-label">CGC</label>
-        <input type="text" class="form-control" id="CGC" name="CGC" value="{{ $coligada->CGC }}">
+        <input type="text" class="form-control" id="CGC" name="CGC" data-mask="00.000.000/0000-00" value="{{ $coligada->CGC }}">
     </div>
     <div class="mb-3">
         <label for="APELIDO" class="form-label">Apelido</label>
@@ -51,12 +51,12 @@
     </div>
     <div class="mb-3">
         <label for="TELEFONE" class="form-label">Telefone</label>
-        <input type="text" class="form-control" id="TELEFONE" name="TELEFONE" value="{{ $coligada->TELEFONE }}">
+        <input type="text" class="form-control" id="TELEFONE" name="TELEFONE" data-mask="(00) 0000-0000"  value="{{ $coligada->TELEFONE }}">
     </div>
     
     <div class="mb-3">
         <label for="CELULAR" class="form-label">Celular</label>
-        <input type="text" class="form-control" id="CELULAR" name="CELULAR" value="{{ $coligada->CELULAR }}">
+        <input type="text" class="form-control" id="CELULAR" name="CELULAR" data-mask="(00) 0000-0000" value="{{ $coligada->CELULAR }}">
     </div>
     <div class="mb-3">
         <label for="EMAIL" class="form-label">Email</label>
@@ -74,5 +74,22 @@
 
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oLlV3vfrU9ziD73ZuJic5ZpVuRUwENuAEl9l5R1g1RI=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+oL6F5f5f5k5F5eLl5d5F5t5f5R5O5y5.5G5v5Q5" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#form-coligada').submit(function(){
+            $('#TELEFONE').unmask();
+            $('#CELULAR').unmask();
+        });
 
+        $('#TELEFONE').mask('(00) 0000-0000');
+        $('#CELULAR').mask('(00) 0000-0000');
+        $('#CGC').mask('00.000.000/0000-00');
+    });
+</script>
+
+
+</body>
+</html>

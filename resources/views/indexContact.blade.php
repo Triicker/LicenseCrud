@@ -6,6 +6,21 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+@if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
 <div class="container">
     <h1 class="text-center mg-top-title">Lista de Contatos</h1>
@@ -88,13 +103,12 @@
 
                                         <div class="mb-3">
                                              <label for="TELEFONE" class="form-label">Telefone</label>
-                                            <input type="text" class="form-control" id="TELEFONE" name="TELEFONE" data-mask="(00) 0000-0000">
-
+                                             <input type="text" class="form-control" id="TELEFONE" name="TELEFONE" data-mask="(00) 0000-0000">
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="CELULAR" class="form-label">Celular</label>
-                                            <input type="cel" class="form-control" id="CELULAR" name="CELULAR" maxlength="15" pattern="\(\d{2}\)\s*\d{5}-\d{4}">
+                                            <input type="text" class="form-control" id="CELULAR" name="CELULAR" data-mask="(00) 0000-0000">
                                         </div>
 
                                         <div class="mb-3">
@@ -219,16 +233,17 @@ function goBack() {
 $(document).ready(function(){
          $('#TELEFONE').mask('(00) 0000-0000');
       });
-const cel = document.getElementById('CELULAR') 
+      $(document).ready(function(){
+         $('#CELULAR').mask('(00) 0000-0000');
+      });
+      $(document).ready(function() {
+    setTimeout(function() {
+        $('.alert-success').fadeOut();
+    }, 3000);
 
-cel.addEventListener('keypress', (e) => mascaraCelular(e.target.value))
-cel.addEventListener('change', (e) => mascaraCelular(e.target.value)) 
-
-const mascaraCelular = (valor) => {
-    valor = valor.replace(/\D/g, "")
-    valor = valor.replace(/^(\d{2})(\d)/g, "($1) $2")
-    valor = valor.replace(/(\d)(\d{4})$/, "$1-$2")
-    cel.value = valor
-}
+    setTimeout(function() {
+        $('.alert-danger').fadeOut();
+    }, 3000);
+});
 </script>
 @endsection

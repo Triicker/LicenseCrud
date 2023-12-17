@@ -234,7 +234,6 @@ public function edit($IDPRODUTO)
 public function update(Request $request, $IDPRODUTO)
 {
     try {
-
         $produto = Zwnproduto::find($IDPRODUTO);
 
         if (!$produto) {
@@ -250,26 +249,30 @@ public function update(Request $request, $IDPRODUTO)
             }
         }
 
-        $dtfimMenorQueHoje = Zwncoliglicenca::where('IDPRODUTO', $produto->IDPRODUTO)->whereDate('DTFIM', '<', now())->exists();
+        $dtfimMenorQueHoje = Zwncoliglicenca::where('IDPRODUTO', $produto->IDPRODUTO)
+            ->whereDate('DTFIM', '>=', now())
+            ->exists();
 
-            if (!$dtfimMenorQueHoje) {
-                if ($request->is('api/*')) {
-                    $response = [
-                        'status' => 'error',
-                        'message' => 'Não é possível alterar o campo ATIVO. Pois há licença vigente.',
-                        'data' => null,
-                    ];
-                    return response()->json($response, 400);
-                } else {
-                    return back()->withErrors(['error' => 'Não é possível alterar o campo ATIVO. Pois há licença vigente']);
-                }
-            }
         $validatedData = $request->validate([
             'NOME' => 'string|max:255',
             'APELIDO' => 'string|max:255',
-            'ATIVO' => 'boolean',
         ]);
-        
+
+        if ($request->filled('ATIVO') && $dtfimMenorQueHoje) {
+            if ($request->is('api/*')) {
+                $response = [
+                    'status' => 'error',
+                    'message' => 'Não é possível alterar o campo ATIVO. Pois há licença vigente.',
+                    'data' => null,
+                ];
+                return response()->json($response, 400);
+            } else {
+                return back()->withErrors(['error' => 'Não é possível alterar o campo ATIVO. Pois há licença vigente']);
+            }
+        } elseif ($request->filled('ATIVO')) {
+            $validatedData['ATIVO'] = $request->input('ATIVO');
+        }
+
         $userLogin = null;
 
         if ($request->is('api/*')) {
@@ -311,6 +314,7 @@ public function update(Request $request, $IDPRODUTO)
         }
     }
 }
+
 
 
 public function delete($IDPRODUTO)

@@ -5,6 +5,21 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+@if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 <div class="container">
     <h1 class="text-center mg-top-title">Lista de Coligadas</h1>
     <button onclick="goBack()" class="btn-ajust btn-edit">Voltar</button>
@@ -84,10 +99,7 @@
                             @csrf
                             @method('POST')
 
-                            <div class="mb-3">
-                        <label for="IDCOLIGADA" class="form-label">ID</label>
-                        <input type="number" name="IDCOLIGADA" class="form-control" required>
-                    </div>
+                            
 
                             <div class="mb-3">
                         <label for="NOME" class="form-label">Nome</label>
@@ -111,12 +123,12 @@
 
                     <div class="mb-3">
                         <label for="TELEFONE" class="form-label">Telefone</label>
-                        <input type="tel" class="form-control" id="TELEFONE" name="TELEFONE" maxlength="15" pattern="\(\d{2}\)\s*\d{5}-\d{4}" required>
+                        <input type="text" class="form-control" id="TELEFONE" name="TELEFONE" data-mask="(00) 0000-0000">
                     </div>
 
                     <div class="mb-3">
                         <label for="CELULAR" class="form-label">Celular</label>
-                        <input type="cel" class="form-control" id="CELULAR" name="CELULAR" maxlength="15" pattern="\(\d{2}\)\s*\d{5}-\d{4}" required>
+                        <input type="text" class="form-control" id="CELULAR" name="CELULAR" data-mask="(00) 0000-0000">
                     </div>
 
                     <div class="mb-3">
@@ -166,7 +178,9 @@
 @foreach($data['coligadas'] as $coligada)
     @include('editColigadaModal', ['coligada' => $coligada])
 @endforeach
-
+<script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oLlV3vfrU9ziD73ZuJic5ZpVuRUwENuAEl9l5R1g1RI=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+oL6F5f5f5k5F5eLl5d5F5t5f5R5O5y5.5G5v5Q5" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 <script>
 $(document).ready(function () {
     var dataTable = $('#coligadaTable').DataTable({
@@ -246,28 +260,21 @@ document.getElementById('CGC').addEventListener('input', function (e) {
       var x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,3})(\d{0,3})(\d{0,4})(\d{0,2})/);
       e.target.value = !x[2] ? x[1] : x[1] + '.' + x[2] + '.' + x[3] + '/' + x[4] + (x[5] ? '-' + x[5] : '');
     });
-    const tel = document.getElementById('TELEFONE') 
+    $(document).ready(function(){
+         $('#TELEFONE').mask('(00) 0000-0000');
+      });
+      $(document).ready(function(){
+         $('#CELULAR').mask('(00) 0000-0000');
+      });
+$(document).ready(function() {
+    setTimeout(function() {
+        $('.alert-success').fadeOut();
+    }, 3000);
 
-tel.addEventListener('keypress', (e) => mascaraTelefone(e.target.value)) 
-tel.addEventListener('change', (e) => mascaraTelefone(e.target.value)) 
-
-const mascaraTelefone = (valor) => {
-    valor = valor.replace(/\D/g, "")
-    valor = valor.replace(/^(\d{2})(\d)/g, "($1) $2")
-    valor = valor.replace(/(\d)(\d{4})$/, "$1-$2")
-    tel.value = valor
-}
-const cel = document.getElementById('CELULAR') 
-
-cel.addEventListener('keypress', (e) => mascaraCelular(e.target.value))
-cel.addEventListener('change', (e) => mascaraCelular(e.target.value)) 
-
-const mascaraCelular = (valor) => {
-    valor = valor.replace(/\D/g, "")
-    valor = valor.replace(/^(\d{2})(\d)/g, "($1) $2")
-    valor = valor.replace(/(\d)(\d{4})$/, "$1-$2")
-    cel.value = valor
-}
+    setTimeout(function() {
+        $('.alert-danger').fadeOut();
+    }, 3000);
+});
 </script>
 
 @endsection

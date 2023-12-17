@@ -133,21 +133,20 @@ public function store(Request $request)
         $userName = null;
         $empresaNome = null;
         $userLogin = null;
-        
+
         $idempresa = null;
         $idusuario = null;
 
         if ($request->is('api/*')) {
             list($userName, $idusuario, $idempresa) = $this->getUserInfoFromJWT();
         } else {
-            list($userName, $userLogin,  $idusuario, $idempresa) = $this->getUserInfoFromSession();
+            list($userName, $userLogin, $idusuario, $idempresa) = $this->getUserInfoFromSession();
         }
 
         $validatedData = $request->validate([
-            'IDCOLIGADA' => 'integer',
             'NOME' => 'string|max:255',
             'APELIDO' => 'string|max:255',
-            'IDCLIENTE' => 'integer',
+            'IDCLIENTE' => 'integer', 
             'IDIMAGEM' => 'integer|max:11',
             'NOMEFANTASIA' => 'string|max:255',
             'CGC' => 'string|max:255',
@@ -156,7 +155,6 @@ public function store(Request $request)
             'EMAIL' => 'string|max:60',
             'ATIVO' => 'boolean',
         ]);
-
         $validatedData['RECCREATEDON'] = now();
         $validatedData['RECCREATEDBY'] = $request->is('api/*') ? $userName : $userLogin;
         $validatedData['RECMODIFIEDON'] = now();
@@ -164,13 +162,10 @@ public function store(Request $request)
 
         $validatedData['IDCLIENTE'] = $request->is('api/*') ? $validatedData['IDCLIENTE'] : $request->input('CLIENTE');
 
-
-        $validatedData['IDCOLIGADA'] = $request->input('IDCOLIGADA');
-
-
+        $newColigada = Zwncoligada::create($validatedData);
         $logData = [
             'IDUSUARIO' => $idusuario,
-            'CADASTRO' => 'Coligada criada: ' . $request->input('IDCOLIGADA'),
+            'CADASTRO' => 'Coligada criada: ' . $validatedData['NOME'], 
             'VALORANTERIOR' => null,
             'VALORNOVO' => json_encode($validatedData),
             'RECCREATEDBY' => $request->is('api/*') ? $userName : $userLogin,
@@ -180,15 +175,16 @@ public function store(Request $request)
             'IDEMPRESA' => $idempresa,
         ];
         $this->createLog($logData, $request);
+
         if ($request->is('api/*')) {
             $response = [
                 'status' => 'success',
                 'message' => 'Coligada criada com sucesso',
-                'data' => ['id' => $request->input('IDCOLIGADA')],
+                'data' => ['id' => $newColigada->id], 
             ];
             return response()->json($response, 201);
         } else {
-            return redirect()->route('coligadas.index', ['IDCOLIGADA' => $request->input('IDCOLIGADA')])->with('success', 'Coligada criada com sucesso.');
+            return redirect()->route('coligadas.cliente', ['IDCLIENTE' => $validatedData['IDCLIENTE']])->with('success', 'Coligada criada com sucesso.');            
         }
     } catch (\Exception $e) {
         if ($request->is('api/*')) {
@@ -203,6 +199,7 @@ public function store(Request $request)
         }
     }
 }
+
 
 private function getUserInfoFromJWT() {
     $token = JWTAuth::getToken();
@@ -269,16 +266,19 @@ private function createLog($logData, $request) {
         try {
             $validatedData = $request->validate([
                 'NOME' => 'string|max:255',
+                'NOMEFANTASIA' => 'string|max:255',
                 'APELIDO' => 'string|max:255',
-                'TELEFONE' => 'integer|max:15',
-                'CELULAR' => 'integer|max:15',
+                'CGC' => 'string|max:255',
+                'IDIMAGEM' => 'integer|max:11',
+                'TELEFONE' => 'string|max:15',
+                'CELULAR' => 'string|max:15',
                 'EMAIL' => 'string|max:60',
                 'ATIVO' => 'boolean',
                 'CLIENTE' => 'exists:zwnclientes,IDCLIENTE',
             ]);
     
             $coligada = Zwncoligada::find($IDCOLIGADA);
-    
+            
             if (!$coligada) {
                 if ($request->is('api/*')) {
                     $response = [
@@ -320,7 +320,7 @@ private function createLog($logData, $request) {
                 ];
                 return response()->json($response);
             } else {
-                return redirect()->route('coligadas.cliente', ['IDCOLIGADA' => $IDCOLIGADA])->with('success', 'Coligada atualizada com sucesso');
+                return redirect()->route('coligadas.cliente', ['IDCLIENTE' => $coligada->cliente->IDCLIENTE])->with('success', 'Coligada atualizada com sucesso');
             }
         } catch (\Exception $e) {
             if ($request->is('api/*')) {

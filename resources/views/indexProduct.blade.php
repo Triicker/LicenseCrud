@@ -5,6 +5,21 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+@if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 <div class="container">
     <h1 class="text-center mg-top-title">Lista de Produtos</h1>
     <button onclick="goBack()" class="btn-ajust btn-edit">Voltar</button>
@@ -151,7 +166,6 @@ $(document).ready(function () {
 });
 
 
-
 $('#productTable').on('click', '.btn-excluir', function (e) {
     e.preventDefault();
 
@@ -174,7 +188,6 @@ $('#productTable').on('click', '.btn-excluir', function (e) {
     }
 });
 
-
     $('.create-btn').click(function () {
         $('#createModal').modal('show');
     });
@@ -182,6 +195,15 @@ $('#productTable').on('click', '.btn-excluir', function (e) {
     function goBack() {
         window.history.back();
     }
+});
+$(document).ready(function() {
+    setTimeout(function() {
+        $('.alert-success').fadeOut();
+    }, 3000);
+
+    setTimeout(function() {
+        $('.alert-danger').fadeOut();
+    }, 3000);
 });
 </script>
 
