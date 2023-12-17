@@ -17,6 +17,7 @@ class Zwncoligada extends Model
 
     protected $fillable = [
         'IDCLIENTE',
+        'ID',
         'NOME',
         'NOMEFANTASIA',
         'CGC',

@@ -145,6 +145,7 @@ public function store(Request $request)
 
         $validatedData = $request->validate([
             'NOME' => 'string|max:255',
+            'ID' => 'integer',
             'APELIDO' => 'string|max:255',
             'IDCLIENTE' => 'integer', 
             'IDIMAGEM' => 'integer|max:11',

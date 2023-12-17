@@ -47,7 +47,7 @@
         <tbody>
         @foreach($data['coligadas'] as $coligada)
 <tr>
-    <td class="align-middle">{{ $coligada->IDCOLIGADA }}</td>
+    <td class="align-middle">{{ $coligada->ID }}</td>
     <td class="align-middle">{{ $coligada->NOME }}</td>
     <td class="align-middle">{{ $coligada->NOMEFANTASIA }}</td>
     <td class="align-middle">{{ $coligada->CGC }}</td>
@@ -100,6 +100,10 @@
                             @method('POST')
 
                             
+                            <div class="mb-3">
+                        <label for="ID" class="form-label">ID</label>
+                        <input type="number" name="ID" class="form-control" required>
+                    </div>
 
                             <div class="mb-3">
                         <label for="NOME" class="form-label">Nome</label>
