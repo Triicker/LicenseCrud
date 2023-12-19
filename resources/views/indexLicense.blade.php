@@ -161,29 +161,36 @@ $(document).ready(function () {
     });
 });
 
-$('#licenseTable').on('click', '.btn-excluir', function (e) {
-    e.preventDefault();
 
-    var licencaId = $(this).data('licenca-id');   
+$('.btn-excluir').click(function (e) {
+    e.preventDefault(); 
+
+    var licencaId = $(this).data('licenca-id');
     var clientId = $(this).data('cliente-id');
     var produtoId = $(this).data('produto-id');
-    if (confirm('Tem certeza de que deseja excluir este Licença?')) {
+
+    if (confirm('Tem certeza de que deseja excluir este Licenca?')) {
         $.ajax({
-            type: 'POST',
-            url: '/licencas/coligada/'+licencaId+'/cliente/'+clientId+'/produto/'+produtoId+'/edit',
+            type: 'POST',  // Use DELETE method for delete operation
+            url: "{{ route('licencas.delete-web', ['IDCOLIGADA' => '__IDCOLIGADA__', 'IDCLIENTE' => '__IDCLIENTE__', 'IDPRODUTO' => '__IDPRODUTO__']) }}"
+                .replace('__IDCOLIGADA__', licencaId)
+                .replace('__IDCLIENTE__', clientId)
+                .replace('__IDPRODUTO__', produtoId),
             data: {
                 "_token": "{{ csrf_token() }}"
             },
             success: function (result) {
-                alert('Licença excluída com sucesso.');
+                alert('Licença da coligada excluída com sucesso.');
                 window.location.reload();
             },
             error: function () {
-                alert('Não é possível excluir a Licença');
+                alert('Não é possível excluir a Licença.');
             }
         });
     }
 });
+
+
 
 });
 $(document).ready(function () {

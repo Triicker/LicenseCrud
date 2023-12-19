@@ -291,8 +291,8 @@ public function update(Request $request, $IDCOLIGADA, $IDCLIENTE, $IDPRODUTO)
 
 public function delete(Request $request, $IDCOLIGADA, $IDCLIENTE, $IDPRODUTO)
 {
-    $coligada = Zwncoliglicenca::where('IDCLIENTE', $IDCLIENTE)
-    ->where('IDCOLIGADA', $IDCOLIGADA)
+    $coligada = Zwncoliglicenca::where('IDCOLIGADA', $IDCOLIGADA)
+    ->where('IDCLIENTE', $IDCLIENTE)
     ->where('IDPRODUTO', $IDPRODUTO)
     ->first();
 
