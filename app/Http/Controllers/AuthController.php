@@ -60,22 +60,27 @@ public function loginWeb(Request $request)
     }
 
     $user = Auth::user();
-    $userName = $user->NOME; 
-    $userLogin = $user->USUARIO; 
-    $empresa = Zwnusuempresa::where('IDUSUARIO', $user->IDUSUARIO)->first();
-    $layout = Zwnempresalayout::all();
 
+    if ($user) {
+        $userName = $user->NOME; 
+        $userLogin = $user->USUARIO; 
+        $empresa = Zwnusuempresa::where('IDUSUARIO', $user->IDUSUARIO)->first();
+        $layout = Zwnempresalayout::all();
 
-    if ($empresa) {
-        $empresaNome = Zwnempresa::where('IDEMPRESA', $empresa->IDEMPRESA)->value('NOME');
+        if ($empresa) {
+            $empresaNome = Zwnempresa::where('IDEMPRESA', $empresa->IDEMPRESA)->value('NOME');
+        } else {
+            $empresaNome = 'Empresa não encontrada';
+        }
+
+        session(['userName' => $userName, 'layout' => $layout, 'userLogin' => $userLogin, 'empresaNome' => $empresaNome, 'IDEMPRESA' => $empresa->IDEMPRESA, 'IDUSUARIO' => $user->IDUSUARIO]);
+
+        return redirect()->route('login');
     } else {
-        $empresaNome = 'Empresa não encontrada';
+        return redirect()->route('index')->with(['session_expired' => true]);
     }
-
-    session(['userName' => $userName, 'layout' => $layout, 'userLogin' => $userLogin, 'empresaNome' => $empresaNome, 'IDEMPRESA' => $empresa->IDEMPRESA, 'IDUSUARIO' => $user->IDUSUARIO]);
-
-    return redirect()->route('login');
 }
+
 
 
 

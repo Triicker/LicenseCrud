@@ -172,8 +172,8 @@ body{
     padding: 9.6px !important;
     min-height: 50px !important;
     position: fixed !important;
+    z-index: 3;
 }
-
 
 .btn-sup svg{
     width: 30px !important;
@@ -372,7 +372,13 @@ body{
     width: 250px !important;
 }
 
-
+.alert {
+    position: absolute; /* Use 'absolute' para remover os alertas do fluxo normal e poder centralizá-los */
+    top: 10%; /* Posicione os alertas no meio vertical */
+    left: 50%; /* Posicione os alertas no meio horizontal */
+    transform: translate(-50%, -50%); /* Centralize os alertas usando transform */
+    z-index: 4; /* Ajuste conforme necessário */
+}
 
 
 .sidebar .list-group-item {

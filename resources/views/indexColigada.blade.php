@@ -137,7 +137,7 @@
 
                     <div class="mb-3">
                          <label for="EMAIL" class="form-label">Email</label>
-                         <input type="text" name="EMAIL" class="form-control" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+                         <input type="text" name="EMAIL" class="form-control"  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
                     <div class="invalid-feedback">Por favor, insira um endereço de e-mail válido.</div>
                     </div>
 

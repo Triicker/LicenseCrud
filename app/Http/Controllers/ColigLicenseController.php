@@ -36,19 +36,24 @@ class ColigLicenseController extends Controller
         $cliente = $licencas->isNotEmpty() ? $licencas->first()->cliente : null;
         $produto = $licencas->isNotEmpty() ? $licencas->first()->produto : null;
         $coligada = $licencas->isNotEmpty() ? $licencas->first()->coligada : null;
-        
+        $client = Zwncliente::all();
+        $clientes = $client->find($IDCLIENTE);
+
+        $coligad = Zwncoligada::all();
+        $coligadas = $coligad->find($IDCOLIGADA);
+
         if ($licencas->isEmpty()) {
             if ($request->is('api/*') || $request->wantsJson()) {
                 return response()->json(['message' => 'Nenhum resultado encontrado'], 404);
             } else {
-                return view('indexLicense', compact('licencas', 'cliente', 'produto', 'coligada', 'produtos'))->with('message', 'Nenhum resultado encontrado');
+                return view('indexLicense', compact('licencas', 'cliente', 'produto', 'coligada', 'produtos', 'clientes', 'coligadas'))->with('message', 'Nenhum resultado encontrado');
             }
         }
     
         if ($request->is('api/*') || $request->wantsJson()) {
             return response()->json(['licencas' => $licencas]);
         } else {
-            return view('indexLicense', compact('licencas', 'cliente', 'produto', 'coligada', 'produtos'));
+            return view('indexLicense', compact('licencas', 'cliente', 'produto', 'coligada', 'produtos', 'clientes', 'coligadas'));
         }
     }
 
@@ -86,29 +91,34 @@ public function store(Request $request)
 
     try {
         $validatedData = $request->validate([
-            'IDFILIAL' => 'integer',
-            'DTINICIO' => 'date',
-            'DTFIM' => 'date',
+            'IDFILIAL' => 'nullable|integer',
+            'DTINICIO' => 'nullable|date',
+            'DTFIM' => 'nullable|date',
             'ATIVO' => 'boolean',
             'IDPRODUTO' => 'integer',
+            'IDCLIENTE' => 'integer',
+            'IDCOLIGADA' => 'integer',
         ]);
 
+        $validatedData['DTFIM'] = $validatedData['DTFIM'] ?? '00/00/0000';
         $validatedData['IDFILIAL'] = 1;
-        $validatedData['IDCLIENTE'] = $request->input('IDCLIENTE');
-        $validatedData['IDPRODUTO'] = $request->input('IDPRODUTO');
-        $validatedData['IDCOLIGADA'] = $request->input('IDCOLIGADA');
         $validatedData['RECCREATEDON'] = now();
         $validatedData['RECCREATEDBY'] = $userName;
         $validatedData['RECMODIFIEDON'] = now();
         $validatedData['RECMODIFIEDBY'] = $userName;
+        $validatedData['IDCLIENTE'] = $request->input('IDCLIENTE');
+        $validatedData['IDCOLIGADA'] = $request->input('IDCOLIGADA');
+        
 
-        $dtInicio = $request->input('DTINICIO');
-        $dtFim = $request->input('DTFIM');
+        $validatedData['DTFIM'] = ($validatedData['DTFIM'] == '00/00/0000') ? null : $validatedData['DTFIM'];
 
-        if ($dtInicio > $dtFim) {
-        throw new \Exception('A data de início não pode ser maior que a data de fim.');
+        if ($validatedData['DTFIM'] != '00/00/0000') {
+            $dtInicio = $validatedData['DTINICIO'];
+            $dtFim = $validatedData['DTFIM'];
+            if ($dtInicio > $dtFim) {
+                throw new \Exception('A data de início não pode ser maior que a data de fim.');
+            }
         }
-
         $coligadaLicenca = Zwncoliglicenca::create($validatedData);
 
         $logData = [
@@ -163,8 +173,9 @@ private function createApiResponse($message, $data = null, $statusCode = 200) {
 }
 
 private function createWebResponse($message) {
-    return redirect()->route('coligada.index')->with('success', $message);
+    return redirect()->route('licencas.cliente')->with('success', $message);
 }
+
 
 private function handleError($e, $request) {
     if ($request->is('api/*')) {
@@ -179,7 +190,7 @@ private function handleError($e, $request) {
         $clientes = Zwncliente::all();
         $coligadas = Zwncoligada::all();
         $produtos = Zwnproduto::all();
-
+        
         if (request()->is('api/*')) {
             return response()->json(['clientes' => $clientes, 'coligadas' => $coligadas, 'produtos' => $produtos]);
         } else {
@@ -187,19 +198,21 @@ private function handleError($e, $request) {
         }
     }
 
-    public function edit($IDCOLIGADA)
+    public function edit($IDCOLIGADA, $IDCLIENTE, $IDPRODUTO)
 {
-    $licenca = Zwncoliglicenca::find($IDCOLIGADA);
-
+    $licenca = Zwncoliglicenca::where('IDCLIENTE', $IDCLIENTE)
+    ->where('IDCOLIGADA', $IDCOLIGADA)
+    ->where('IDPRODUTO', $IDPRODUTO)
+    ->first();
     if (!$licenca) {
         if (request()->is('api/*')) {
-            return response()->json(['error' => 'Licença da coligada não encontrada'], 404);
+            return response()->json(['error' => 'Licença da coligada não encontrada'], 403);
         } else {
-            abort(404);
+            abort(403);
         }
     }
 
-    $clientes = Zwncliente::all();
+    $clientes = Zwncliente::find($IDCLIENTE);
 
     if (request()->is('api/*')) {
         return response()->json(['licenca' => $licenca, 'clientes' => $clientes]);
@@ -209,14 +222,17 @@ private function handleError($e, $request) {
 }
 
 
-public function update(Request $request, $IDCOLIGADA)
+public function update(Request $request, $IDCOLIGADA, $IDCLIENTE, $IDPRODUTO)
 {
     $validatedData = $request->validate([
         'DTFIM' => 'date',
         'ATIVO' => 'boolean',
     ]);
 
-    $coligada = Zwncoliglicenca::find($IDCOLIGADA);
+    $coligada = Zwncoliglicenca::where('IDCOLIGADA', $IDCOLIGADA)
+    ->where('IDCLIENTE', $IDCLIENTE)
+    ->where('IDPRODUTO', $IDPRODUTO)
+    ->first();
 
     if (!$coligada) {
         if ($request->is('api/*')) {
@@ -247,7 +263,10 @@ public function update(Request $request, $IDCOLIGADA)
     $validatedData['RECMODIFIEDON'] = now();
     $validatedData['RECMODIFIEDBY'] = $userName;
 
-    $coligada->update($validatedData);
+    
+    $coligada::where('IDCOLIGADA', $IDCOLIGADA)
+    ->where('IDCLIENTE', $IDCLIENTE)
+    ->where('IDPRODUTO', $IDPRODUTO)->update($validatedData);
 
     $logData = [
         'IDUSUARIO' => $user->IDUSUARIO,
@@ -265,14 +284,17 @@ public function update(Request $request, $IDCOLIGADA)
     if ($request->is('api/*')) {
         return response()->json(['message' => 'Licença da coligada atualizada com sucesso']);
     } else {
-        return redirect()->route('licencas.coligada', ['IDCOLIGADA' => $IDCOLIGADA])->with('success', 'Licença da coligada atualizada com sucesso');
+        return redirect()->route('licencas.coligada', ['IDCOLIGADA' => $IDCOLIGADA, 'IDCLIENTE' => $IDCLIENTE])->with('success', 'Licença da coligada atualizada com sucesso');
     }
 }
 
 
-public function delete(Request $request, $IDCOLIGADA)
+public function delete(Request $request, $IDCOLIGADA, $IDCLIENTE, $IDPRODUTO)
 {
-    $coligada = Zwncoliglicenca::find($IDCOLIGADA);
+    $coligada = Zwncoliglicenca::where('IDCLIENTE', $IDCLIENTE)
+    ->where('IDCOLIGADA', $IDCOLIGADA)
+    ->where('IDPRODUTO', $IDPRODUTO)
+    ->first();
 
     if (!$coligada) {
         if ($request->is('api/*')) {
@@ -282,32 +304,14 @@ public function delete(Request $request, $IDCOLIGADA)
         }
     }
 
-    $coligadas = Zwncoliglicenca::where('IDCOLIGADA', $coligada->IDCOLIGADA)->count();
-
-    if ($coligadas > 0) {
-        if (request()->is('api/*')) {
-            $response = [
-                'status' => 'error',
-                'message' => 'Não é possível excluir a Coligada. Existem Licenças associadas.',
-                'data' => null,
-            ];
-            return response()->json($response, 400);
-        } else {
-            $response = [
-                'status' => 'error',
-                'message' => 'Não é possível excluir a Coligada. Existem Licenças associadas.',
-                'data' => null,
-            ];
-            return response()->json($response, 400);
-        }
-    }
-
-    $coligada->delete();
+    $coligada::where('IDCOLIGADA', $IDCOLIGADA)
+    ->where('IDCLIENTE', $IDCLIENTE)
+    ->where('IDPRODUTO', $IDPRODUTO)->delete();
 
     if ($request->is('api/*')) {
         return response()->json(['message' => 'Licença da coligada excluída com sucesso']);
     } else {
-        return redirect()->route('coligadas.index')->with('success', 'Coligada excluída com sucesso');
+        return redirect()->route('coligadas.index')->with('success', 'Licença da Coligada excluída com sucesso');
     }
 }
 

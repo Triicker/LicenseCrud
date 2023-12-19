@@ -275,6 +275,11 @@ input[type=password]:placeholder {
 </style>
 <div class="wrapper fadeInDown">
   <div id="formContent">
+  @if(session('session_expired'))
+    <div class="alert alert-danger">
+        Sua sessão expirou. Por favor, faça login novamente.
+    </div>
+@endif
 @if(session('error'))
     <div class="alert alert-danger">
         {{ session('error') }}

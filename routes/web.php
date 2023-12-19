@@ -58,10 +58,10 @@ Route::get('/licencas', [ColigLicenseController::class, 'index'])->name('licenca
 Route::get('/licencas/coligada/{IDCOLIGADA}/cliente/{IDCLIENTE?}/produto/{IDPRODUTO?}', [ColigLicenseController::class, 'index'])->name('licencas.coligada');
 Route::post('/licencas', [ColigLicenseController::class, 'store'])->name('licencas.store');
 Route::get('/licencas/create', [ColigLicenseController::class, 'create'])->name('licencas.create');
-Route::get('/licencas/{IDCOLIGADA}/edit', [ColigLicenseController::class, 'edit'])->name('licencas.edit');
-Route::put('/licencas/{IDCOLIGADA}', [ColigLicenseController::class, 'update'])->name('licencas.update');
+Route::get('/licencas/coligada/{IDCOLIGADA}/cliente/{IDCLIENTE}/produto/{IDPRODUTO}/edit', [ColigLicenseController::class, 'edit'])->name('licencas.edit');
+Route::put('/licencas/{IDCOLIGADA}/cliente/{IDCLIENTE}/produto/{IDPRODUTO}', [ColigLicenseController::class, 'update'])->name('licencas.update');
 Route::delete('/licencas/{IDCOLIGADA}', [ColigLicenseController::class, 'delete'])->name('licencas.delete');
-Route::post('/licencas/{IDCOLIGADA}/delete', [ColigLicenseController::class, 'delete'])->name('licencas.delete-web');
+Route::post('/licencas/{IDCOLIGADA}/cliente/{IDCLIENTE}/produto/{IDPRODUTO}/delete', [ColigLicenseController::class, 'delete'])->name('licencas.delete-web');
 // logs
 Route::get('/logs', [LogLicenseController::class, 'index'])->name('logs.index');
 

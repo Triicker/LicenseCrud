@@ -5,10 +5,25 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+@if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 <div class="container">
     <h1 class="text-center mg-top-title">Lista de Licenças</h1>
     <button onclick="goBack()" class="btn-ajust btn-edit">Voltar</button>
-    <p>Nome do cliente: {{ $cliente ? $cliente->NOME : 'N/A' }}</p>
+    <p>Nome do cliente: {{ $clientes ? $clientes->NOME : 'N/A' }}</p>
 
     <div class="d-flex justify-content-end">
     <button class="btn-btn btn-principal mg-bottom" data-bs-toggle="modal" data-bs-target="#createModal">Nova Licença</button>
@@ -31,8 +46,8 @@
         <td class="align-middle">{{ \Carbon\Carbon::parse($licenca->DTFIM)->format('d/m/Y') }}</td>
         <td class="align-middle">{{ $licenca->ATIVO == 1 ? 'Sim' : 'Não' }}</td>
         <td class="align-middle">
-            <button class="btn-ajust btn-edit" data-licenca-id="{{ $licenca->IDCOLIGADA }}" data-bs-toggle="modal" data-bs-target="#editModal">Editar</button>
-            <a href="#" class="btn-e btn-excluir" data-licenca-id="{{ $licenca->IDCOLIGADA }}">Excluir</a>
+            <button class="btn-ajust btn-edit" data-coligada-id="{{ $licenca->IDCOLIGADA }}" data-cliente-id="{{ $licenca->IDCLIENTE }}" data-produto-id="{{ $licenca->IDPRODUTO }}" data-bs-toggle="modal" data-bs-target="#editModal">Editar</button>
+            <a href="#" class="btn-e btn-excluir" data-licenca-id="{{ $licenca->IDCOLIGADA }}" data-cliente-id="{{ $licenca->IDCLIENTE }}" data-produto-id="{{ $licenca->IDPRODUTO }}" >Excluir</a>
         </td>
       </tr>
       @endforeach
@@ -52,8 +67,7 @@
                         @csrf
                         @method('POST')
             
-                        <input type="hidden" name="IDCLIENTE" value="{{ $cliente->IDCLIENTE }}">
-                        <input type="hidden" name="IDCOLIGADA" value="{{ $coligada->IDCOLIGADA }}">
+                      
                         <div class="mb-3">
                         <label for="IDPRODUTO" class="form-label">Produto</label>
                         <select name="IDPRODUTO" class="form-select" required>
@@ -63,15 +77,21 @@
                         </select>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="DTINICIO" class="form-label">Data de Início</label>
-                            <input type="DATE" class="form-control" id="DTINICIO" name="DTINICIO" value="{{ \Carbon\Carbon::parse($licenca->DTINICIO)->format('d/m/Y') }}" required>   
-                        </div>
+                        <input type="hidden" name="IDCLIENTE" value="{{ $clientes ? $clientes->IDCLIENTE : '' }}">
+                        <input type="hidden" name="IDCOLIGADA" value="{{ $coligadas ? $coligadas->IDCOLIGADA : '' }}">
+
 
                         <div class="mb-3">
-                            <label for="DTFIM" class="form-label">Data de Fim</label>
-                            <input type="DATE" class="form-control" id="DTFIM" name="DTFIM" value="{{ $licenca->DTFIM ? \Carbon\Carbon::parse($licenca->DTFIM)->format('d/m/Y') : '0000-00-00' }}">
-                        </div>
+    <label for="DTINICIO" class="form-label">Data de Início</label>
+    <input type="DATE" class="form-control" id="DTINICIO" name="DTINICIO" value="{{ isset($licenca) ? \Carbon\Carbon::parse($licenca->DTINICIO)->format('d/m/Y') : '' }}" required>   
+</div>
+
+<div class="mb-3">
+    <label for="DTFIM" class="form-label">Data de Fim</label>
+    <input type="DATE" class="form-control" id="DTFIM" name="DTFIM" value="{{ isset($licenca) && isset($licenca->DTFIM) ? \Carbon\Carbon::parse($licenca->DTFIM)->format('Y-m-d') : '' }}">
+</div>
+
+
 
                         <div class="mb-3">
                             <label for="ATIVO" class="form-label">Ativo</label>
@@ -126,10 +146,12 @@ $(document).ready(function () {
         }
     });
     $('#licenseTable').on('click', '.btn-edit', function () {
-    var licencaId = $(this).data('licenca-id');
+    var licencaId = $(this).data('coligada-id');
+    var clientId = $(this).data('cliente-id');
+    var produtoId = $(this).data('produto-id');
     $.ajax({
         type: 'GET',
-        url: "{{ route('licencas.edit', ['IDCOLIGADA' => '__IDCOLIGADA__']) }}".replace('__IDCOLIGADA__', licencaId),
+        url: '/licencas/coligada/'+licencaId+'/cliente/'+clientId+'/produto/'+produtoId+'/edit',
         success: function (data) {
             $('#editModalContent').html(data);
         },
@@ -142,11 +164,13 @@ $(document).ready(function () {
 $('#licenseTable').on('click', '.btn-excluir', function (e) {
     e.preventDefault();
 
-    var licencaId = $(this).data('licenca-id');
+    var licencaId = $(this).data('licenca-id');   
+    var clientId = $(this).data('cliente-id');
+    var produtoId = $(this).data('produto-id');
     if (confirm('Tem certeza de que deseja excluir este Licença?')) {
         $.ajax({
             type: 'POST',
-            url: "{{ route('licencas.delete-web', ['IDCOLIGADA' => '__IDCOLIGADA__']) }}".replace('__IDCOLIGADA__', licencaId),
+            url: '/licencas/coligada/'+licencaId+'/cliente/'+clientId+'/produto/'+produtoId+'/edit',
             data: {
                 "_token": "{{ csrf_token() }}"
             },
@@ -155,7 +179,7 @@ $('#licenseTable').on('click', '.btn-excluir', function (e) {
                 window.location.reload();
             },
             error: function () {
-                alert('Não é possível excluir a Licença. Existem coligadas associadas.');
+                alert('Não é possível excluir a Licença');
             }
         });
     }
@@ -175,6 +199,15 @@ $(document).ready(function () {
             }
         });
     });
+});
+$(document).ready(function() {
+    setTimeout(function() {
+        $('.alert-success').fadeOut();
+    }, 3000);
+
+    setTimeout(function() {
+        $('.alert-danger').fadeOut();
+    }, 3000);
 });
 function goBack() {
     window.history.back();

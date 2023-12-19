@@ -192,9 +192,7 @@ $('#productTable').on('click', '.btn-excluir', function (e) {
         $('#createModal').modal('show');
     });
 
-    function goBack() {
-        window.history.back();
-    }
+   
 });
 $(document).ready(function() {
     setTimeout(function() {
@@ -205,6 +203,9 @@ $(document).ready(function() {
         $('.alert-danger').fadeOut();
     }, 3000);
 });
+function goBack() {
+    window.history.back();
+}
 </script>
 
 

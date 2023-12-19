@@ -15,12 +15,12 @@
 
 <div class="container">
 
-    <form method="POST" action="{{ route('coligadas.update', ['IDCOLIGADA' => $coligada->IDCOLIGADA]) }}">
+    <form method="POST" action="{{ route('coligadas.update', ['IDCOLIGADA' => $coligada->IDCOLIGADA, ]) }}">
     @csrf
     @method('PATCH')
     <div class="mb-3">
-        <label for="IDCOLIGADA" class="form-label">ID</label>
-        <input type="text" class="form-control" id="IDCOLIGADA" name="IDCOLIGADA" value="{{ $coligada->IDCOLIGADA }}">
+        <label for="ID" class="form-label">ID</label>
+        <input type="text" class="form-control" id="ID" name="ID" value="{{ $coligada->ID }}">
     </div>
     <div class="mb-3">
         <label for="NOME" class="form-label">Nome</label>

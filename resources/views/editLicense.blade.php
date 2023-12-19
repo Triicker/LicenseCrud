@@ -15,7 +15,7 @@
 
 <div class="container">
 
-    <form method="POST" action="{{ route('licencas.update', ['IDCOLIGADA' => $licenca->IDCOLIGADA]) }}">
+    <form method="POST" action="{{ route('licencas.update',['IDCOLIGADA' => $licenca->IDCOLIGADA, 'IDCLIENTE' =>  $licenca->IDCLIENTE, 'IDPRODUTO' =>  $licenca->IDPRODUTO]) }}">
         @csrf
         @method('PUT')
     

@@ -148,14 +148,15 @@ public function store(Request $request)
             'ID' => 'integer',
             'APELIDO' => 'string|max:255',
             'IDCLIENTE' => 'integer', 
-            'IDIMAGEM' => 'integer|max:11',
+            'IDIMAGEM' => 'nullable|integer|max:11', 
             'NOMEFANTASIA' => 'string|max:255',
             'CGC' => 'string|max:255',
-            'TELEFONE' => 'string|max:15',
-            'CELULAR' => 'string|max:15',
-            'EMAIL' => 'string|max:60',
+            'TELEFONE' => 'nullable|string|max:15', 
+            'CELULAR' => 'nullable|string|max:15', 
+            'EMAIL' => 'nullable|string|max:60',
             'ATIVO' => 'boolean',
         ]);
+        
         $validatedData['RECCREATEDON'] = now();
         $validatedData['RECCREATEDBY'] = $request->is('api/*') ? $userName : $userLogin;
         $validatedData['RECMODIFIEDON'] = now();
@@ -270,10 +271,10 @@ private function createLog($logData, $request) {
                 'NOMEFANTASIA' => 'string|max:255',
                 'APELIDO' => 'string|max:255',
                 'CGC' => 'string|max:255',
-                'IDIMAGEM' => 'integer|max:11',
-                'TELEFONE' => 'string|max:15',
-                'CELULAR' => 'string|max:15',
-                'EMAIL' => 'string|max:60',
+                'IDIMAGEM' => 'nullable|integer|max:11',
+                'TELEFONE' => 'nullable|string|max:15',
+                'CELULAR' => 'nullable|string|max:15',
+                'EMAIL' => 'nullable|string|max:60',
                 'ATIVO' => 'boolean',
                 'CLIENTE' => 'exists:zwnclientes,IDCLIENTE',
             ]);
@@ -368,25 +369,25 @@ public function delete(Request $request, $IDCOLIGADA)
             }
         }
 
-         $coligadas = Zwncoligada::where('IDCLIENTE', $coligada->IDCLIENTE)->count();
+        $coligadas = Zwncoliglicenca::where('IDCOLIGADA', $coligada->IDCOLIGADA)->count();
 
         if ($coligadas > 0) {
-            if (request()->is('api/*')) {
-                $response = [
-                    'status' => 'error',
-                    'message' => 'Não é possível excluir o cliente. Existem coligadas associadas.',
-                    'data' => null,
-                ];
-                return response()->json($response, 400);
-            } else {
-                $response = [
-                    'status' => 'error',
-                    'message' => 'Não é possível excluir o cliente. Existem coligadas associadas.',
-                    'data' => null,
-                ];
-                return response()->json($response, 400);
-            }
+        if (request()->is('api/*')) {
+            $response = [
+                'status' => 'error',
+                'message' => 'Não é possível excluir a Coligada. Existem Licenças associadas.',
+                'data' => null,
+            ];
+            return response()->json($response, 400);
+        } else {
+            $response = [
+                'status' => 'error',
+                'message' => 'Não é possível excluir a Coligada. Existem Licenças associadas.',
+                'data' => null,
+            ];
+            return response()->json($response, 400);
         }
+    }
 
         $coligada->delete();
 
