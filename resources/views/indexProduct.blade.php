@@ -182,7 +182,7 @@ $('#productTable').on('click', '.btn-excluir', function (e) {
                 window.location.reload();
             },
             error: function () {
-                alert('Erro ao excluir o produto.');
+                alert('Erro ao excluir o produto associado a uma licença!');
             }
         });
     }

@@ -171,7 +171,7 @@ $('.btn-excluir').click(function (e) {
 
     if (confirm('Tem certeza de que deseja excluir este Licenca?')) {
         $.ajax({
-            type: 'POST',  // Use DELETE method for delete operation
+            type: 'POST',  
             url: "{{ route('licencas.delete-web', ['IDCOLIGADA' => '__IDCOLIGADA__', 'IDCLIENTE' => '__IDCLIENTE__', 'IDPRODUTO' => '__IDPRODUTO__']) }}"
                 .replace('__IDCOLIGADA__', licencaId)
                 .replace('__IDCLIENTE__', clientId)

@@ -388,7 +388,6 @@ public function delete(Request $request, $IDCOLIGADA)
             return response()->json($response, 400);
         }
     }
-
         $coligada->delete();
 
         if ($request->is('api/*')) {

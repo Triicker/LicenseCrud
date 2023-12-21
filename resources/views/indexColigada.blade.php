@@ -237,7 +237,7 @@ $(document).ready(function () {
                     window.location.reload();
                 },
                 error: function () {
-                    alert('Não é possível excluir a coligada. Existem clientes associados.');
+                    alert('Não é possível excluir a coligada. Existem Licenças associadas.');
                 }
             });
         }
