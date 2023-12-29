@@ -1,16 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Http\Controllers\LogCadastroController;
 use App\Models\Zwnclicontato;
-use App\Models\Zwnempresa;
 use App\Models\Zwncliente;
 use App\Models\Zwnusuempresa;
 use App\Models\Zwnlogcadastro;
 use JWTAuth;
-
 use Illuminate\Http\Request;
-
 
 class ContactController extends Controller
 {
@@ -51,11 +47,10 @@ class ContactController extends Controller
     }
 }
 
-
 public function indexId($IDCONTATO)
 {
     try {
-        $contato = Zwnclicontato::find($IDCONTATO);
+        $contato = Zwnclicontato::where('IDCONTATO', $IDCONTATO);
 
         if (!$contato) {
             $response = [
@@ -82,13 +77,11 @@ public function indexId($IDCONTATO)
     }
 }
 
-
 public function indexClient($IDCLIENTE, Request $request) 
 {
     try {
         $contatos = Zwnclicontato::where('IDCLIENTE', $IDCLIENTE)->with('cliente')->get();
         $clientes = Zwncliente::all();
-
         $cliente = $clientes->find($IDCLIENTE);
 
         if ($request->is('api/*') || $request->wantsJson()) {
@@ -99,7 +92,7 @@ public function indexClient($IDCLIENTE, Request $request)
             ];
             return response()->json($response);
         } else {
-            $data = ['contatos' => $contatos, 'clientes' => $clientes, 'cliente' => $cliente];
+            $data = ['contatos' => $contatos, 'cliente' => $cliente];
             return view('indexContact', compact('data'));
         }
     } catch (\Exception $e) {
@@ -116,8 +109,6 @@ public function indexClient($IDCLIENTE, Request $request)
     }
 }
 
-
-
 protected function getEmpresaID($user)
 {
     $empresa = Zwnusuempresa::where('IDUSUARIO', $user->IDUSUARIO)->first();
@@ -128,7 +119,6 @@ protected function getEmpresaID($user)
 
     return null; 
 }
-
     
 public function store(Request $request)
 {
@@ -148,9 +138,9 @@ public function store(Request $request)
         $validatedData = $request->validate([
             'NOME' => 'required|string|max:255',
             'APELIDO' => 'required|string|max:255',
-            'TELEFONE' => 'required|string|max:15',
-            'CELULAR' => 'required|string|max:15',
-            'EMAIL' => 'required|string|max:60',
+            'TELEFONE' => 'nullable|string|max:15',
+            'CELULAR' => 'nullable|string|max:15',
+            'EMAIL' => 'nullable|string|max:60',
             'ATIVO' => 'required|boolean',
             'IDCLIENTE' => 'integer',
         ]);
@@ -162,6 +152,10 @@ public function store(Request $request)
 
         $validatedData['IDCLIENTE'] = $request->is('api/*') ? $validatedData['IDCLIENTE'] : $request->input('CLIENTE');
 
+        if ($validatedData['TELEFONE'] == null && $validatedData['CELULAR'] == null && $validatedData['EMAIL'] == null) {
+            throw new \Exception('Telefone OU Celular OU Email precisam ser cadastrados.');
+        }
+
         $newContact = Zwnclicontato::create($validatedData);
 
         $logData = [
@@ -171,6 +165,8 @@ public function store(Request $request)
             'VALORNOVO' => json_encode($validatedData),
             'RECCREATEDBY' => $userLogin,
             'RECCREATEDON' => now(),
+            'RECMODIFIEDBY' => $userLogin,
+            'RECMODIFIEDON' => now(),
             'IDEMPRESA' => $idempresa,
         ];
 
@@ -184,7 +180,7 @@ public function store(Request $request)
             ];
             return response()->json($response, 201);
         } else {
-            return redirect()->route('contatos.cliente', ['IDCLIENTE' => $newContact->IDCLIENTE])->with('success', 'Contato criado com sucesso.');
+            return redirect()->route('clientes.contatos', ['IDCLIENTE' => $newContact->IDCLIENTE])->with('success', 'Contato criado com sucesso.');
         }
     } catch (\Exception $e) {
         if ($request->is('api/*')) {
@@ -237,7 +233,7 @@ private function createApiResponse($data, $statusCode) {
 }
 
 private function createWebResponse($message) {
-    return redirect()->route('contatos.cliente')->with('success', $message);
+    return redirect()->route('clientes.contatos')->with('success', $message);
 }
 
 private function handleError($e, $request) {
@@ -265,9 +261,11 @@ private function handleError($e, $request) {
         }
     }
     
-    public function edit($IDCONTATO)
+    public function edit($IDCLIENTE, $IDCONTATO)
     {
-        $contato = Zwnclicontato::find($IDCONTATO);
+        $contato = Zwnclicontato::where('IDCLIENTE', $IDCLIENTE)
+        ->where('IDCONTATO', $IDCONTATO)
+        ->first();
 
         if (!$contato) {
             if (request()->is('api/*')) {
@@ -277,31 +275,37 @@ private function handleError($e, $request) {
             }
         }
 
-        $clientes = Zwncliente::all();
+        $cliente = Zwncliente::where('IDCLIENTE', $IDCLIENTE);
 
         if (request()->is('api/*')) {
-            return response()->json(['contato' => $contato, 'clientes' => $clientes]);
+            return response()->json(['contato' => $contato, 'cliente' => $cliente]);
         } else {
-            return view('editContact', compact('contato', 'clientes'));
+            return view('editContact', compact('contato', 'cliente'));
         }
     }
 
     
-    public function update(Request $request, $IDCONTATO)
+    public function update(Request $request, $IDCLIENTE, $IDCONTATO)
     {
         try {
             $validatedData = $request->validate([
-                'NOME' => 'string|max:255',
-                'APELIDO' => 'string|max:255',
-                'TELEFONE' => 'string|max:15',
-                'CELULAR' => 'string|max:15',
-                'EMAIL' => 'string|max:60',
-                'ATIVO' => 'boolean',
+                'NOME' => 'required|string|max:255',
+                'APELIDO' => 'required|string|max:255',
+                'TELEFONE' => 'nullable|string|max:15',
+                'CELULAR' => 'nullable|string|max:15',
+                'EMAIL' => 'nullable|string|max:60',
+                'ATIVO' => 'required|boolean',
                 'CLIENTE' => 'exists:zwnclientes,IDCLIENTE',
             ]);
     
-            $contato = Zwnclicontato::find($IDCONTATO);
+            if ($validatedData['TELEFONE'] == null && $validatedData['CELULAR'] == null && $validatedData['EMAIL'] == null) {
+                throw new \Exception('Telefone OU Celular OU Email precisam ser cadastrados.');
+            }
     
+            $contato = Zwnclicontato::where('IDCLIENTE', $IDCLIENTE)
+            ->where('IDCONTATO', $IDCONTATO)
+            ->first();
+
             if (!$contato) {
                 if ($request->is('api/*')) {
                     $response = [
@@ -319,11 +323,8 @@ private function handleError($e, $request) {
     
             $validatedData['RECMODIFIEDON'] = now();
             $validatedData['RECMODIFIEDBY'] = $request->is('api/*') ? $userName : $userLogin;
-    
             $contatoAntesDaAtualizacao = $contato->toArray();
-    
             $contato->update($validatedData);
-    
             $contatoDepoisDaAtualizacao = $contato->toArray();
     
             $logData = [
@@ -346,7 +347,7 @@ private function handleError($e, $request) {
                 ];
                 return response()->json($response);
             } else {
-                return redirect()->route('contatos.cliente', ['IDCLIENTE' => $contato->IDCLIENTE])->with('success', 'Contato atualizado com sucesso');
+                return redirect()->route('clientes.contatos', ['IDCLIENTE' => $contato->IDCLIENTE])->with('success', 'Contato atualizado com sucesso');
             }
         } catch (\Exception $e) {
             if ($request->is('api/*')) {
@@ -372,51 +373,52 @@ private function handleError($e, $request) {
         return [$userName, $userLogin, $idusuario, $idempresa];
     }
     
+    public function delete(Request $request, $IDCLIENTE, $IDCONTATO)
+    {
+        try {
+            $contato = Zwnclicontato::where('IDCLIENTE', $IDCLIENTE)
+            ->where('IDCONTATO', $IDCONTATO)
+            ->first();
 
-public function delete(Request $request, $IDCONTATO)
-{
-    try {
-        $contato = Zwnclicontato::find($IDCONTATO);
+            if (!$contato) {
+                if ($request->is('api/*')) {
+                    $response = [
+                        'status' => 'error',
+                        'message' => 'Contato não encontrado',
+                        'data' => null,
+                    ];
+                    return response()->json($response, 404);
+                } else {
+                    abort(404);
+                }
+            }
+            
+            $contato::where('IDCLIENTE', $IDCLIENTE)
+            ->where('IDCONTATO', $IDCONTATO)
+            ->delete();
+            
 
-        if (!$contato) {
+            if ($request->is('api/*')) {
+                $response = [
+                    'status' => 'success',
+                    'message' => 'Contato excluído com sucesso',
+                    'data' => null, 
+                ];
+                return response()->json($response);
+            } else {
+                return redirect()->route('clientes.contatos', ['IDCLIENTE' => $contato->IDCLIENTE])->with('success', 'Contato excluído com sucesso');
+            }
+        } catch (\Exception $e) {
             if ($request->is('api/*')) {
                 $response = [
                     'status' => 'error',
-                    'message' => 'Contato não encontrado',
-                    'data' => null,
+                    'message' => 'Erro ao excluir o contato',
+                    'data' => $e->getMessage(),
                 ];
-                return response()->json($response, 404);
+                return response()->json($response, 400);
             } else {
-                abort(404);
+                return back()->withErrors(['error' => 'Erro ao excluir o contato: ' . $e->getMessage()]);
             }
         }
-
-        $contato->delete();
-
-        if ($request->is('api/*')) {
-            $response = [
-                'status' => 'success',
-                'message' => 'Contato excluído com sucesso',
-                'data' => null, 
-            ];
-            return response()->json($response);
-        } else {
-            return redirect()->route('contatos.index')->with('success', 'Contato excluído com sucesso');
-        }
-    } catch (\Exception $e) {
-        if ($request->is('api/*')) {
-            $response = [
-                'status' => 'error',
-                'message' => 'Erro ao excluir o contato',
-                'data' => $e->getMessage(),
-            ];
-            return response()->json($response, 400);
-        } else {
-            return back()->withErrors(['error' => 'Erro ao excluir o contato: ' . $e->getMessage()]);
-        }
     }
-}
-
-    
- 
 }

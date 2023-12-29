@@ -10,14 +10,14 @@ class Zwncoligada extends Model
     use HasFactory;
 
     protected $table = 'zwncoligada';
-    protected $primaryKey = 'IDCOLIGADA';
+    protected $primaryKey = 'IDCOLIGADA,IDCLIENTE';
 
     public $incrementing = true;
 
 
     protected $fillable = [
+        'IDCOLIGADA',
         'IDCLIENTE',
-        'ID',
         'NOME',
         'NOMEFANTASIA',
         'CGC',

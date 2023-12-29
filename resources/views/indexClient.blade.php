@@ -22,7 +22,6 @@
 @endif
 <div class="container">
     <h1 class="text-center mg-top-title">Lista de Clientes</h1>
-    <button onclick="goBack()" class="btn-ajust btn-edit">Voltar</button>
 
     <div class="d-flex justify-content-end">
     <button class="btn-btn btn-principal mg-bottom" data-bs-toggle="modal" data-bs-target="#createModal">Novo Cliente</button>
@@ -39,21 +38,21 @@
         </thead>
         <tbody>
         @foreach($data['clientes'] as $cliente)
-<tr>
+<tr class="cliente-row" data-cliente-id="{{ $cliente->IDCLIENTE }}">
     <td class="align-middle">{{ $cliente->IDCLIENTE }}</td>
-    <td class="align-middle">{{ $cliente->NOME }}</td>
-    <td class="align-middle">{{ $cliente->APELIDO }}</td>
-    <td class="align-middle">{{ $cliente->ATIVO == 1 ? 'Sim' : 'Não' }}</td>
+    <td class="align-middle nome-coluna">{{ $cliente->NOME }}</td>
+    <td class="align-middle apelido-coluna">{{ $cliente->APELIDO }}</td>
+    <td class="align-middle ativo-coluna">{{ $cliente->ATIVO == 1 ? 'Sim' : 'Não' }}</td>
     <td class="align-middle">
-    <a class="btn-c btn-col" href="{{ route('contatos.cliente', ['IDCLIENTE' => $cliente->IDCLIENTE]) }}">Contato</a>
-    <a class="btn-c btn-col" href="{{ route('coligadas.cliente', ['IDCLIENTE' => $cliente->IDCLIENTE]) }}">Coligada</a>
+    <a class="btn-c btn-col" href="{{ route('clientes.contatos', ['IDCLIENTE' => $cliente->IDCLIENTE]) }}">Contato</a>
+    <a class="btn-c btn-col" href="{{ route('clientes.coligadas', ['IDCLIENTE' => $cliente->IDCLIENTE]) }}">Coligada</a>
     <button class="btn-ajust btn-edit" data-cliente-id="{{ $cliente->IDCLIENTE }}" data-bs-toggle="modal" data-bs-target="#editModal">Editar</button>
     <a href="#" class="btn-e btn-excluir" data-cliente-id="{{ $cliente->IDCLIENTE }}">Excluir</a>
     </td>
 </tr>
 @endforeach
         </tbody>
-    </table>
+</table>
 </div>
 
 <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
@@ -128,7 +127,7 @@
 </div>
 
 @foreach($data['clientes'] as $cliente)
-    @include('editUserModal', ['cliente' => $cliente, 'empresas' => $data['empresas']])
+    @include('editClientModal', ['cliente' => $cliente, 'empresas' => $data['empresas']])
 @endforeach
 
 <script>
@@ -153,24 +152,70 @@ $(document).ready(function () {
             }
         }
     });
+    $(document).ready(function () {
     $('#clienteTable').on('click', '.btn-edit', function () {
         var clienteId = $(this).data('cliente-id');
+        var $rowToUpdate = $('.cliente-row[data-cliente-id="' + clienteId + '"]');
+    
         $.ajax({
             type: 'GET',
             url: "{{ route('clientes.edit', ['IDCLIENTE' => '__IDCLIENTE__']) }}".replace('__IDCLIENTE__', clienteId),
             success: function (data) {
                 $('#editModalContent').html(data);
+                $('#editModalContent').find('form').submit(function (e) {
+                    e.preventDefault(); 
+                    var form = $(this);
+
+                    $.ajax({
+                        type: form.attr('method'),
+                        url: form.attr('action'),
+                        data: form.serialize(),
+                        success: function (result) {
+                            alert('Cliente atualizado com sucesso.');                        
+                            document.getElementById('editModal').style.display = 'none';
+                            console.log(form.serialize());
+                            var formData = form.serializeArray();
+                            $.each(formData, function(index, field){
+                            if (field.name === 'NOME') {
+                            $rowToUpdate.find('.nome-coluna').text(field.value);
+                            } else if (field.name === 'APELIDO') {
+                            $rowToUpdate.find('.apelido-coluna').text(field.value);
+                            } else if (field.name === 'ATIVO') {
+                            var ativo = field.value;
+                            if(ativo === 0)
+                            {
+                            $rowToUpdate.find('.ativo-coluna').text("Não"); 
+                            }
+                            else
+                            {
+                            $rowToUpdate.find('.ativo-coluna').text("Sim");
+                            }
+                            }
+                            });
+                            $rowToUpdate.find('.nome-coluna').text(form.attr('NOME'));
+    
+                            $('.modal-backdrop').remove();
+                        },
+                        error: function (xhr, status, error) {
+                            var errorResponse = JSON.parse(xhr.responseText);
+                            alert('Erro ao atualizar o cliente. Detalhes do erro: ' + errorResponse.message);
+                        }
+                    });
+                });
             },
             error: function () {
                 alert('Erro ao carregar os detalhes do cliente.');
             }
         });
     });
+});
 
+    
     $('#clienteTable').on('click', '.btn-excluir', function (e) {
         e.preventDefault();
-
         var clienteId = $(this).data('cliente-id');
+        var $rowToRemove = $(this).closest('tr'); 
+
         if (confirm('Tem certeza de que deseja excluir este cliente?')) {
             $.ajax({
                 type: 'POST',
@@ -180,11 +225,14 @@ $(document).ready(function () {
                 },
                 success: function (result) {
                     alert('Cliente excluído com sucesso.');
-                    window.location.reload();
+                    $rowToRemove.fadeOut(400, function() {
+                    $rowToRemove.remove(); 
+                });
                 },
-                error: function () {
-                    alert('Não é possível excluir o cliente. Existem contatos associados.');
-                }
+                error: function (xhr, status, error) {
+                var errorResponse = JSON.parse(xhr.responseText);
+                alert('Erro ao excluir o cliente. Detalhes do erro: ' + errorResponse.message);
+        }
             });
         }
     });
@@ -215,5 +263,6 @@ $(document).ready(function() {
         $('.alert-danger').fadeOut();
     }, 3000);
 });
+
 </script>
 @endsection

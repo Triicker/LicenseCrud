@@ -24,7 +24,7 @@
 
 <div class="container">
     <h1 class="text-center mg-top-title">Lista de Contatos</h1>
-    <button onclick="goBack()" class="btn-ajust btn-edit">Voltar</button>
+    <a href="{{ route('clientes.index') }}" class="btn-ajust btn-edit">Voltar</a> 
     <p>Nome do cliente: @isset($data['cliente']->NOME) {{ $data['cliente']->NOME }} @endisset</p>
     <div class="d-flex justify-content-end">
     <button class="btn-btn btn-principal mg-bottom" data-bs-toggle="modal" data-bs-target="#createModal">Novo Contato</button>
@@ -45,17 +45,17 @@
         <tbody>
             @foreach($data['contatos'] as $contato)
 
-                <tr>
+                <tr class="cliente-row" data-cliente-id="{{ $contato->IDCLIENTE }}-{{ $contato->IDCONTATO }}">
                     <td class="align-middle">{{ $contato->IDCONTATO }}</td>
-                    <td class="align-middle">{{ $contato->NOME }}</td>
-                    <td class="align-middle">{{ $contato->APELIDO }}</td>
-                    <td class="align-middle">{{ $contato->TELEFONE }}</td>
-                    <td class="align-middle">{{ $contato->CELULAR }}</td>
-                    <td class="align-middle">{{ $contato->EMAIL }}</td>
-                    <td class="align-middle">{{ $contato->ATIVO == 1 ? 'Sim' : 'Não' }}</td>
+                    <td class="align-middle nome-coluna">{{ $contato->NOME }}</td>
+                    <td class="align-middle apelido-coluna">{{ $contato->APELIDO }}</td>
+                    <td class="align-middle telefone-coluna">{{ $contato->TELEFONE }}</td>
+                    <td class="align-middle celular-coluna">{{ $contato->CELULAR }}</td>
+                    <td class="align-middle email-coluna">{{ $contato->EMAIL }}</td>
+                    <td class="align-middle ativo-coluna">{{ $contato->ATIVO == 1 ? 'Sim' : 'Não' }}</td>
                     <td class="align-middle">
-                        <button class="btn-ajust btn-edit" data-contato-id="{{ $contato->IDCONTATO }}" data-bs-toggle="modal" data-bs-target="#editModal">Editar</button>
-                        <a href="#" class="btn-e btn-excluir" data-contato-id="{{ $contato->IDCONTATO }}">Excluir</a>          
+                        <button class="btn-ajust btn-edit" data-cliente-id="{{ $contato->IDCLIENTE }}" data-contato-id="{{ $contato->IDCONTATO }}" data-bs-toggle="modal" data-bs-target="#editModal">Editar</button>
+                        <a href="#" class="btn-e btn-excluir" data-cliente-id="{{ $contato->IDCLIENTE }}" data-contato-id="{{ $contato->IDCONTATO }}">Excluir</a>          
                     </td>
                 </tr>
             @endforeach
@@ -87,7 +87,7 @@
                                         </div>
                                     @endif
 
-                                    <form method="POST" action="{{ route('contatos.store') }}">
+                                    <form method="POST" action="{{ route('clientes.contatos.store', ['IDCLIENTE' => '$IDCLIENTE']) }}">
                                         @csrf
                                         @method('POST')
 
@@ -103,17 +103,17 @@
 
                                         <div class="mb-3">
                                              <label for="TELEFONE" class="form-label">Telefone</label>
-                                             <input type="text" class="form-control" id="TELEFONE" name="TELEFONE" data-mask="(00) 0000-0000">
+                                             <input type="tel" class="form-control" id="TELEFONE" name="TELEFONE" data-mask="(00) 0000-0000">
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="CELULAR" class="form-label">Celular</label>
-                                            <input type="text" class="form-control" id="CELULAR" name="CELULAR" data-mask="(00) 0000-0000">
+                                            <input type="tel" class="form-control" id="CELULAR" name="CELULAR" data-mask="(00) 00000-0000">
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="EMAIL" class="form-label">Email</label>
-                                            <input type="email" name="EMAIL" class="form-control" required>
+                                            <input type="email" name="EMAIL" class="form-control">
                                         </div>
 
                                         <div class="mb-3">
@@ -152,8 +152,11 @@
     </div>
 </div>
 @foreach($data['contatos'] as $contato)
-    @include('editContactModal', ['contato' => $contato, 'clientes' => $data['clientes']])
+    @include('editContactModal', ['contato' => $contato, 'cliente' => $data['cliente']])
 @endforeach
+<script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oLlV3vfrU9ziD73ZuJic5ZpVuRUwENuAEl9l5R1g1RI=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+oL6F5f5f5k5F5eLl5d5F5t5f5R5O5y5.5G5v5Q5" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 
 <script>
 $(document).ready(function () {
@@ -178,33 +181,91 @@ $(document).ready(function () {
         }
     });
     $('#contactTable').on('click', '.btn-edit', function () {
+        var clienteId = $(this).data('cliente-id');
         var contatoId = $(this).data('contato-id');
+        var $rowToUpdate = $('.cliente-row[data-cliente-id="' + clienteId + '-' + contatoId + '"]');
+
         $.ajax({
             type: 'GET',
-            url: "{{ route('contatos.edit', ['IDCONTATO' => '__IDCONTATO__']) }}".replace('__IDCONTATO__', contatoId),
+            url: "{{ route('clientes.contatos.edit', ['IDCLIENTE' => '__IDCLIENTE__', 'IDCONTATO' => '__IDCONTATO__']) }}"
+                .replace('__IDCLIENTE__', clienteId)
+                .replace('__IDCONTATO__', contatoId),
             success: function (data) {
                 $('#editModalContent').html(data);
+                $('#editModalContent').find('form').submit(function (e) {
+                    e.preventDefault(); 
+                    var form = $(this);
+
+                $.ajax({
+                        type: form.attr('method'),
+                        url: form.attr('action'),
+                        data: form.serialize(),
+                        success: function (result) {
+                            alert('Contato atualizado com sucesso.');                        
+                            document.getElementById('editModal').style.display = 'none';
+                            console.log(form.serialize());
+                            var formData = form.serializeArray();
+                            $.each(formData, function(index, field){
+                            if (field.name === 'NOME') {
+                            $rowToUpdate.find('.nome-coluna').text(field.value);
+                            } else if (field.name === 'APELIDO') {
+                            $rowToUpdate.find('.apelido-coluna').text(field.value);
+                            } else if (field.name === 'TELEFONE') {
+                            $rowToUpdate.find('.telefone-coluna').text(field.value);
+                            } else if (field.name === 'CELULAR') {
+                            $rowToUpdate.find('.celular-coluna').text(field.value);
+                            } else if (field.name === 'EMAIL') {
+                            $rowToUpdate.find('.email-coluna').text(field.value);                            
+                            } else if (field.name === 'ATIVO') {
+                            var ativo = field.value;
+                            if(ativo === 0)
+                            {
+                            $rowToUpdate.find('.ativo-coluna').text("Não"); 
+                            }
+                            else
+                            {
+                            $rowToUpdate.find('.ativo-coluna').text("Sim");
+                            }
+                            }
+                            });
+                            $rowToUpdate.find('.nome-coluna').text(form.attr('NOME'));
+    
+                            $('.modal-backdrop').remove();
+                        },
+                        error: function (xhr, status, error) {
+                            var errorResponse = JSON.parse(xhr.responseText);
+                            alert('Erro ao atualizar o contato. Detalhes do erro: ' + errorResponse.message);
+                        }
+                    });
+                });
             },
             error: function () {
                 alert('Erro ao carregar os detalhes do contato.');
             }
         });
     });
+    
 
     $('#contactTable').on('click', '.btn-excluir', function (e) {
         e.preventDefault();
-
+        var clienteId = $(this).data('cliente-id');
         var contatoId = $(this).data('contato-id');
+        var $rowToRemove = $(this).closest('tr'); 
+
         if (confirm('Tem certeza de que deseja excluir este contato?')) {
             $.ajax({
                 type: 'POST',
-                url: "{{ route('contatos.delete-web', ['IDCONTATO' => '__IDCONTATO__']) }}".replace('__IDCONTATO__', contatoId),
+                url: "{{ route('clientes.contatos.delete-web', ['IDCLIENTE' => '__IDCLIENTE__', 'IDCONTATO' => '__IDCONTATO__']) }}"
+                    .replace('__IDCLIENTE__', clienteId)
+                    .replace('__IDCONTATO__', contatoId),
                 data: {
                     "_token": "{{ csrf_token() }}"
                 },
                 success: function (result) {
                     alert('Contato excluído com sucesso.');
-                    window.location.reload();
+                    $rowToRemove.fadeOut(400, function() {
+                    $rowToRemove.remove(); 
+                });
                 },
                 error: function () {
                     alert('Erro ao excluir o contato.');
@@ -215,9 +276,10 @@ $(document).ready(function () {
 });
 $(document).ready(function () {
     $('.create-btn').click(function () {
+        var clienteId = $data['clientes->IDCLIENTE'];
         $.ajax({
             type: 'GET',
-            url: "{{ route('contatos.create') }}", 
+            url: "{{ route('clientes.contatos.create', ['IDCLIENTE' => '" + clienteId + "']) }}",
             success: function (data) {
                 $('#createModalContent').html(data);
             },
@@ -227,14 +289,11 @@ $(document).ready(function () {
         });
     });
 });
-function goBack() {
-    window.history.back();
-}
 $(document).ready(function(){
          $('#TELEFONE').mask('(00) 0000-0000');
       });
       $(document).ready(function(){
-         $('#CELULAR').mask('(00) 0000-0000');
+         $('#CELULAR').mask('(00) 00000-0000');
       });
       $(document).ready(function() {
     setTimeout(function() {

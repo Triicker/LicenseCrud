@@ -11,7 +11,7 @@ class Zwncoliglicenca extends Model
 
     protected $table = 'zwncoliglicenca'; 
 
-    protected $primaryKey = 'IDCOLIGADA';
+    protected $primaryKey = 'IDCLIENTE,IDCOLIGADA,IDPRODUTO,DTINICIO';
 
     protected $fillable = [
         'IDCOLIGADA',

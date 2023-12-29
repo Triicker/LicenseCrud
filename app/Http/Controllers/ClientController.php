@@ -1,19 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Http\Controllers\LogCadastroController;
 use App\Models\Zwncliente;
 use App\Models\Zwnclicontato;
 use App\Models\Zwnempresa;
 use App\Models\Zwnlogcadastro;
 use App\Models\Zwnusuempresa;
 use App\Models\Zwncoligada;
-
-use Illuminate\Support\Facades\Auth;
 use JWTAuth;
-
 use Illuminate\Http\Request;
-
 
 class ClientController extends Controller
 {
@@ -58,7 +53,7 @@ class ClientController extends Controller
 public function indexId($IDCLIENTE)
 {
     try {
-        $cliente = Zwncliente::find($IDCLIENTE);
+        $cliente = Zwncliente::where('IDCLIENTE', $IDCLIENTE);
 
         if (!$cliente) {
             $response = [
@@ -150,6 +145,8 @@ public function store(Request $request)
 
         $validatedData['RECCREATEDON'] = now();
         $validatedData['RECCREATEDBY'] = $request->is('api/*') ? $userName : $userLogin;
+        $validatedData['RECMODIFIEDON'] = now();
+        $validatedData['RECMODIFIEDBY'] = $request->is('api/*') ? $userName : $userLogin;
 
         if ($request->is('api/*')) {
             $validatedData['IDEMPRESA'] = $validatedData['IDEMPRESA'];
@@ -242,7 +239,8 @@ public function create()
     list($userName, $userLogin, $idusuario, $idempresa) = $this->getUserInfoFromSession();
 
     $empresas = Zwnempresa::all();
-    $empresaSelecionada = Zwnempresa::find($idempresa);
+    $empresaSelecionada = Zwnempresa::where('IDEMPRESA', $idempresa);
+    
 
     if (request()->is('api/*')) {
         return response()->json(['empresas' => $empresas, 'empresaSelecionada' => $empresaSelecionada]);
@@ -252,10 +250,9 @@ public function create()
 }
 
 
-
     public function edit($IDCLIENTE)
     {
-        $cliente = Zwncliente::find($IDCLIENTE);
+        $cliente = Zwncliente::findOrFail($IDCLIENTE);
 
         if (!$cliente) {
             if (request()->is('api/*')) {
@@ -284,7 +281,7 @@ public function create()
                 'ATIVO' => 'boolean',
             ]);
     
-            $cliente = Zwncliente::find($IDCLIENTE);
+            $cliente = Zwncliente::findOrFail($IDCLIENTE);
     
             if (!$cliente) {
                 if ($request->is('api/*')) {
@@ -350,9 +347,9 @@ public function create()
 
 
     public function delete($IDCLIENTE)
-{
+    {
     try {
-        $cliente = Zwncliente::find($IDCLIENTE);
+        $cliente = Zwncliente::findOrFail($IDCLIENTE);
 
         if (!$cliente) {
             if (request()->is('api/*')) {

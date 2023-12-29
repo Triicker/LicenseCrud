@@ -22,7 +22,6 @@
 @endif
 <div class="container">
     <h1 class="text-center mg-top-title">Lista de Produtos</h1>
-    <button onclick="goBack()" class="btn-ajust btn-edit">Voltar</button>
     <div class="d-flex justify-content-end">
     <button class="btn-btn btn-principal mg-bottom" data-bs-toggle="modal" data-bs-target="#createModal">Novo Produto</button>
 </div>
@@ -38,11 +37,11 @@
         </thead>
         <tbody>
         @foreach($produtos as $produto)
-<tr>
+<tr class="produto-row" data-produto-id="{{ $produto->IDPRODUTO }}">
     <td class="align-middle">{{ $produto->IDPRODUTO }}</td>
-    <td class="align-middle">{{ $produto->NOME }}</td>
-    <td class="align-middle">{{ $produto->APELIDO }}</td>
-    <td class="align-middle">{{ $produto->ATIVO == 1 ? 'Sim' : 'Não' }}</td>
+    <td class="align-middle nome-coluna">{{ $produto->NOME }}</td>
+    <td class="align-middle apelido-coluna">{{ $produto->APELIDO }}</td>
+    <td class="align-middle ativo-coluna">{{ $produto->ATIVO == 1 ? 'Sim' : 'Não' }}</td>
     <td class="align-middle">
     <button class="btn-ajust btn-edit" data-produto-id="{{ $produto->IDPRODUTO }}" data-bs-toggle="modal" data-bs-target="#editModal">Editar</button>
     <a href="#" class="btn-e btn-excluir" data-produto-id="{{ $produto->IDPRODUTO }}">Excluir</a>
@@ -70,7 +69,6 @@
             <div class="col-md-16">
                 <div class="row">
                     <div class="text-center">
-                        <h1>Criar Produtos</h1>
                     </div>
                     <div class="card-body">
                         @if ($errors->any())
@@ -153,23 +151,65 @@ $(document).ready(function () {
 
     $('#productTable').on('click', '.btn-edit', function () {
     var produtoId = $(this).data('produto-id');
+    var $rowToUpdate = $('.produto-row[data-produto-id="' + produtoId + '"]');
+
     $.ajax({
         type: 'GET',
         url: "{{ route('produtos.edit', ['IDPRODUTO' => '__IDPRODUTO__']) }}".replace('__IDPRODUTO__', produtoId),
         success: function (data) {
            $('#editModalContent').html(data);
-        },
-        error: function () {
-            alert('Erro ao carregar os detalhes do produto.');
-        }
+           $('#editModalContent').find('form').submit(function (e) {
+                    e.preventDefault(); 
+                    var form = $(this);
+                    $.ajax({
+                        type: form.attr('method'),
+                        url: form.attr('action'),
+                        data: form.serialize(),
+                        success: function (result) {
+                            alert('Produto atualizado com sucesso.');                        
+                            document.getElementById('editModal').style.display = 'none';
+                            console.log(form.serialize());
+                            var formData = form.serializeArray();
+                            $.each(formData, function(index, field){
+                            if (field.name === 'NOME') {
+                            $rowToUpdate.find('.nome-coluna').text(field.value);
+                            } else if (field.name === 'APELIDO') {
+                            $rowToUpdate.find('.apelido-coluna').text(field.value);
+                            } else if (field.name === 'ATIVO') {
+                            var ativo = field.value;
+                            if(ativo === 0)
+                            {
+                            $rowToUpdate.find('.ativo-coluna').text("Não"); 
+                            }
+                            else
+                            {
+                            $rowToUpdate.find('.ativo-coluna').text("Sim");
+                            }
+                            }
+                            });
+                            $rowToUpdate.find('.nome-coluna').text(form.attr('NOME'));
+    
+                            $('.modal-backdrop').remove();
+                        },
+                        error: function (xhr, status, error) {
+                            var errorResponse = JSON.parse(xhr.responseText);
+                            alert('Erro ao atualizar o produto. Detalhes do erro: ' + errorResponse.message);
+                        }
+                    });
+                });
+            },
+            error: function () {
+                alert('Erro ao carregar os detalhes do produto.');
+            }
+        });
     });
-});
 
 
 $('#productTable').on('click', '.btn-excluir', function (e) {
     e.preventDefault();
-
     var produtoId = $(this).data('produto-id');
+    var $rowToRemove = $(this).closest('tr'); 
+
     if (confirm('Tem certeza de que deseja excluir este produto?')) {
         $.ajax({
             type: 'POST',
@@ -179,8 +219,9 @@ $('#productTable').on('click', '.btn-excluir', function (e) {
             },
             success: function (result) {
                 alert('Produto excluído com sucesso.');
-                window.location.reload();
-            },
+                $rowToRemove.fadeOut(400, function() {
+                    $rowToRemove.remove(); 
+                });            },
             error: function () {
                 alert('Erro ao excluir o produto associado a uma licença!');
             }

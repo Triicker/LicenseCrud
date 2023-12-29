@@ -7,7 +7,6 @@
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <div class="container">
     <h1 class="text-center mg-top-title">Registros de Log</h1>
-    <button onclick="goBack()" class="btn-ajust btn-edit">Voltar</button>
 
     <table id="logTable" class="table table-striped table-bordered text-center mt-5">
         <thead>
@@ -29,7 +28,7 @@
             <tr>
                 <td class="align-middle">{{ $log->IDLOGLIC }}</td>
                 <td class="align-middle">{{ $log->RECCREATEDON }}</td>
-                <td class="align-middle">{{ $log->cliente->NOME }}</td>
+                <td class="align-middle">{{ $log->cliente ? $log->cliente->NOME : '' }}</td>
                 <td class="align-middle">{{ $log->produto->NOME ?? '' }}</td>
                 <td class="align-middle">{{ $log->IDCOLIGADA . '-' . $log->IDFILIAL . '-' . $log->IDTIPOCURSO ?? '' }}</td>
                 <td class="align-middle">{{ $log->VERSAOTOTVS }}</td>
